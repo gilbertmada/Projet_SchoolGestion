@@ -20,9 +20,9 @@ const axiosInstance = axios.create({
 });
 
 const UploadFileOther: FC<UploadFileOtherProps> = ({ setData, document, category }) => {
-  const [responseApi, setResponseApi] = useState<any>(document?.Other ? document?.Other : {});
+  const [responseApi, setResponseApi] = useState<any>(document?.Document ? document?.Document : {});
   const [name, setName] = useState<any>('');
-  const endPoint = 'Message';
+  const endPoint = 'Document';
   const [progress, setProgress] = useState<any>(0);
   const hiddenFileInput = useRef<any>({});
   const [checked, setChecked] = useState(false);
@@ -36,6 +36,8 @@ const UploadFileOther: FC<UploadFileOtherProps> = ({ setData, document, category
       setError_name(true);
     }
   };
+
+  const listDocument:any=[];
 
   const getExtName = (FileName: string) => {
     const fileName = FileName.split('/');
@@ -81,13 +83,16 @@ const UploadFileOther: FC<UploadFileOtherProps> = ({ setData, document, category
         })
         .then((res: any) => {
           const response = {
-            label: `Message : ${name}`,
-            date: moment().format('DD-MM-YYYY'),
+            label: `${name}`,
+            date: moment().format('MM-DD-YYYY'),
             path: res.data.path,
             filename: res.data.filename,
           };
-          setData({ ...response }, 'Message');
+          setData({ ...response }, 'Document');
           setResponseApi({ ...response });
+          listDocument.push(responseApi);
+
+          
           setChecked(false);
         })
         .catch((err: any) => {
@@ -112,7 +117,6 @@ const UploadFileOther: FC<UploadFileOtherProps> = ({ setData, document, category
         const fileUpload = { ...document };
         delete fileUpload[endPoint];
         setData({ ...fileUpload }, 'deleted');
-
         setResponseApi({});
       })
       .catch((err: any) => {
@@ -133,35 +137,43 @@ const UploadFileOther: FC<UploadFileOtherProps> = ({ setData, document, category
 
   return (
     <div className={classes.container}>
+      <div /* className={classes.containerPreview} */>
       <Preview
         handleClose={toggleModal}
         openModal={openModal}
         link={`${config.servers.apiUrl}uploadFile/file/${endPoint}/${responseApi?.filename}`}
         downloadLink={`${config.servers.apiUrl}uploadFile/file/download/${endPoint}/${responseApi?.filename}`}
       />
+      </div>
+    
+      {/* <div className={classes.containerFormUpload}> */}
+     
+          <FormUpload
+            name={name}
+            handleChange={handleChange}
+            error_name={error_name}
+            handleClick={handleClick}
+            onChange={onChange}
+            hiddenFileInput={hiddenFileInput}
+            category={category}
+          />
+      
+      {/* </div> */}
 
-      {!responseApi?.filename && (
-        <FormUpload
-          name={name}
-          handleChange={handleChange}
-          error_name={error_name}
-          handleClick={handleClick}
-          onChange={onChange}
-          hiddenFileInput={hiddenFileInput}
-          category={category}
-        />
-      )}
-         
-      {responseApi?.filename && (
-        <ViewAfterUpload
-          checked={checked}
-          progress={progress}
-          responseApi={responseApi}
-          download={download}
-          toggleModal={toggleModal}
-          deleteFile={deleteFile}
-        />
-      )}
+      {/* <div className={classes.containerViewAfterUpload}> */}
+        {responseApi?.filename && (
+          <ViewAfterUpload
+            checked={checked}
+            progress={progress}
+            responseApi={responseApi}
+            download={download}
+            toggleModal={toggleModal}
+            deleteFile={deleteFile}
+          />
+        )}
+      {/* </div> */}
+
+
     </div>
   );
 };

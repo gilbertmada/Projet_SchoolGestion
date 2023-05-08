@@ -22,7 +22,15 @@ const useStyles = makeStyles(theme => ({
     margin: 0,
     boxShadow: 'none',
   },
+  // containerFormUpload:{
+  //   width: "100%",
+  //   height: "10%",
+  // },
+  containerViewAfterUpload:{
+    width: "100%",
+    height: "100%",
 
+  },
   svg: {
     width: 100,
     height: 100,

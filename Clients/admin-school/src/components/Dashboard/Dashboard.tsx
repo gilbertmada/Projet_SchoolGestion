@@ -58,6 +58,7 @@ const Dashboard: FC<AbstractEmptyInterface> = props => {
   setInterval(() => {
     setHour(moment().format('h:mm'));
   }, 1000);
+  
   const [houor, setHour] = useState(moment().format('h:mm:ss'))
 
   const [selectedDate, setSelectedDate] = useState(new Date());

@@ -167,11 +167,11 @@ const profRoles = [
 ]
 const matieres = ["Malagasy", "Philosophie", "Français", "Anglais", "Science-Eco-Social", "Mathématiques", "PC", "SVT", "Histo-Géo"];
 
-const allUsers = ["ADMIN", "DIR", "PROV", "SURV", "ELEV", "PROF"];
+const allUsers = ["ADMIN", "DIR","DIRC","PROV", "SURV", "SURVE","ELEV", "PROF"];
 
-const admins = ["ADMIN", "DIR", "PROV", "PA", "SURV"];
+const admins = ["ADMIN", "DIR", "PROV", "PA","DIRC", "SURV"];
 
-const utilisateurPermission = ["ADMIN", "DIR", "PROV", "PA", "SURV"];
+const utilisateurPermission = ["ADMIN", "DIR", "PROV","DIRC", "PA", "SURV"];
 
 const superUtilisateur = ["ADMIN"];
 

@@ -39,9 +39,6 @@ const ViewModal: FC<SearchModalProps> = ({ handleClose, openModal, link, downloa
       classes={{ paper: classes.paper }}
       fullWidth={true}>
       <DialogActions className={classes.menuTitle}>
-        {/* <Button className={classes.btnSearch}>
-          Télécharger
-        </Button> */}
         <Button onClick={handleClose} className={classes.btnSearch}>
           Fermer
         </Button>

@@ -76,7 +76,7 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
       setIsRole(false);
     }
   }, [studentStore.selectedStudent]);
-console.log("role.....",studentStore.selectedStudent?.role );
+
 
   useEffect(() => {
     studentStore.getAllStudent();
@@ -184,8 +184,6 @@ console.log("role.....",studentStore.selectedStudent?.role );
       return;
     }
 
-  
-
     if (!studentStore.selectedStudent) {
 
       props.studentStore.createStudent(student).then((addUser: any) => {
@@ -211,7 +209,7 @@ console.log("role.....",studentStore.selectedStudent?.role );
 
 
   const handleDownload = () => {
-    
+
     const selectStudent = studentStore.selectedStudent;
     if (!studentStore.selectedStudent) {
       exportPDFStore.exportToPdfRecuDroit(student);
@@ -487,7 +485,7 @@ console.log("role.....",studentStore.selectedStudent?.role );
                       onChange={handleChange}
                     />
                   </Grid>
-                  {isRole &&
+                  {isRole ?
                     (<Grid item={true} xs={12} md={4}>
                       <TextField
                         label="Email"
@@ -497,7 +495,7 @@ console.log("role.....",studentStore.selectedStudent?.role );
                         fullWidth={true}
                         onChange={handleChange}
                       />
-                    </Grid>)}
+                    </Grid>) : ""}
 
                   <Grid item={true} xs={12} md={4}>
                     <TextField

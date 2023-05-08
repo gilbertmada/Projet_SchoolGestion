@@ -30,7 +30,7 @@ const ViewAfterUpload: FC<ViewAfterUploadProps> = ({
   const classes = useStyles();
 
   return (
-    <div>
+    <div className={classes.containerViewAfterUpload}>
       <Zoom in={checked}>
         <Box display="flex" alignItems="center">
           <Box width="100%" mr={1}>
@@ -51,15 +51,6 @@ const ViewAfterUpload: FC<ViewAfterUploadProps> = ({
           </Grid>
           <Grid item={true} md={8} xs={12}>
             <Grid container={true} className={classes.containedIcon}>
-              <Grid item={true} md={2}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  className={classes.bgBlackbtn}
-                  onClick={download}>
-                  <GetAppIcon />
-                </Button>
-              </Grid>
               <Grid item={true} md={2}>
                 <Button
                   variant="contained"

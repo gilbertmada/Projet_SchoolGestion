@@ -1,37 +1,73 @@
 import axios from 'axios';
-import { action, makeObservable, observable, runInAction } from 'mobx';
+import { action, makeObservable, observable, runInAction, toJS } from 'mobx';
 import config from '../config';
 import rootStore from './AppStore';
 import { parseError } from '../services/utils';
+import moment from "moment";
 import { IEcolagePrive, IFraisDivers, IStudent } from '../common/interface/StudentInterface';
-// import AppStore from './AppStore';
+import { IUser } from '../common/interface/userInterface';
+import getTime from 'date-fns/getTime';
 
 
+interface IHistoryDetails {
+    text: string;
+    date: Date;
+}
+
+// interface IHistory {
+//     document: IHistoryDetails;
+//     ecolagePrive: IHistoryDetails;
+//     fraisDivers: IHistoryDetails;
+//     droit: IHistoryDetails,
+
+// }
+const defaultHistory = {
+    text: "",
+    date: new Date(),
+
+}
 
 export interface StudentStoreInterface {
+
+
     allStudent: IStudent[];
-    isCreate: boolean;
-    isCreateDoc: boolean;
     isLoading: boolean;
-    isJ6true: boolean;
     isMessage: boolean;
     isNewMessage: boolean;
     newMessag: string;
     setIsMessage: (data: boolean) => void;
     setNewMessg: (data: any) => void;
     setopenDialogDoc: (data: boolean) => void;
-    setisJ6true: (data: boolean) => void;
-    setBoolDoc: (data: boolean) => void;
     Student: IStudent | null;
     droit: IFraisDivers[];
     ecolagePrive: IEcolagePrive[];
     sumEcolagePrive: any;
     sumFraisDivers: any;
+    listHistoryDocument: [IHistoryDetails];
+    listHistoryEcolagePrive: [IHistoryDetails];
+    listHistoryFraisDivers: [IHistoryDetails];
+    listHistoryDroit: [IHistoryDetails];
+    loadingListHistoryDocument: boolean;
+    loadingListHistoryEcolagePrive: boolean;
+    loadingListHistoryFraisDivers: boolean;
+    loadingListHistoryDroit: boolean;
+    // setListHistoryDocument: (data: any[]) => void;
+    // setListHistoryEcolagePrive: (data: any[]) => void;
+    // setListHistoryFraisDivers: (data: any[]) => void;
+    // setListHistoryDroit: (data: any[]) => void;
+    sendMail: (data: any) => void;
     setDroit: (data: IFraisDivers) => void;
+    AddNewHistoryDocument: (user: any, docName: any, student: IStudent) => void;
+    // AddNewHistoryEcolagePrive: (user: any, docName: any, student: IStudent) => void;
+    // AddNewHistoryFraisDivers: (user: any, docName: any, student: IStudent) => void;
+    // AddNewHistoryDroit: (user: any, docName: any, student: IStudent) => void;
+    getListHistoryDocument: () => void;
+    // getListHistoryEcolagePrive:() => void;
+    // getListHistoryFraisDivers:() => void;
+    // getListHistoryDroit:() => void;
     setEcolagePrive: (data: IEcolagePrive) => void;
     setSumEcolagePrive: (data: number) => void;
     setSumFraisDivers: (data: number) => void;
-    setIsCreate: (data: boolean) => void;
     setStudent: (student: IStudent | null) => void;
     getAllStudent: () => Promise<any>;
     getListFraisDivers: () => Promise<any>;
@@ -49,10 +85,9 @@ export interface StudentStoreInterface {
     deleteTotalFraisDivers: (data: IFraisDivers) => void;
     selectedStudent: IStudent | null;
     setSelectedStudent: (data: IStudent | null) => void;
-    boutonLoad: (data: any) => Promise<any>;
+    // AddNewHistoryStudent: (data: IStudent | null) => void;
     urlDocument: any[] | [];
     document: any;
-    setDefaultDocument: () => void;
     setDocument: (e: any, key: string) => void;
 
 }
@@ -66,11 +101,15 @@ class StudentStore implements StudentStoreInterface {
 
     @observable document: any = {};
 
-    @observable isCreateDoc = false;
-
-    @observable isJ6true = false;
-
     @observable isMessage = false;
+
+    @observable loadingListHistoryDocument = false;
+
+    @observable loadingListHistoryEcolagePrive = false;
+
+    @observable loadingListHistoryFraisDivers = false;
+
+    @observable loadingListHistoryDroit = false;
 
     @observable newMessag = "";
 
@@ -82,13 +121,20 @@ class StudentStore implements StudentStoreInterface {
 
     @observable urlDocument: any[] = [];
 
+
     @observable ecolagePrive: IEcolagePrive[] = [];
 
     @observable isLoading = false;
 
     @observable openDialogDoc = false;
 
-    @observable isCreate = false;
+    @observable listHistoryDocument: [IHistoryDetails] = [defaultHistory];
+
+    @observable listHistoryEcolagePrive: [IHistoryDetails] = [defaultHistory];
+
+    @observable listHistoryFraisDivers: [IHistoryDetails] = [defaultHistory];
+
+    @observable listHistoryDroit: [IHistoryDetails] = [defaultHistory];
 
     @observable sumEcolagePrive = 0;
 
@@ -103,54 +149,17 @@ class StudentStore implements StudentStoreInterface {
         };
     }
 
-    @action setisJ6true = (data: boolean) => {
-        this.isJ6true = data;
-    }
-
     @action setIsMessage = (data: boolean) => {
         this.isMessage = data;
     }
 
     @action setNewMessg = (data: any) => {
-        this.newMessag = {...data};
+        this.newMessag = { ...data };
     }
 
-    @action setBoolDoc = (data: boolean) => {
-        this.isCreateDoc = data;
-    }
+    @action setDocument = (data: any) => {
 
-    @action setDefaultDocument = () => {
-        this.document = {};
-    }
-
-    @action setDocument = (data: any, key: string) => {
-
-        if (key === "deleted") {
-            this.document = { ...data };
-        } else {
-
-            this.document = {
-                ...this.document,
-                [key]: { ...data },
-
-            };
-
-            if (key !== "message") {
-
-                const urlDocument: any[] = [...this.urlDocument]
-
-                urlDocument.push(data.path);
-
-                this.urlDocument = urlDocument;
-
-                // this.setConditionAtStart(urlDocument);
-
-
-            }
-
-
-        }
-
+        this.document = data;
     };
 
     @observable filters = {
@@ -172,62 +181,27 @@ class StudentStore implements StudentStoreInterface {
         this.Student = s;
     };
 
+    // @action setListHistoryDocument = (doc:any []) => {
+    //     this.listHistoryDocument.push({doc});
+    // };
+
     @action setopenDialogDoc = (bool: boolean) => {
         this.openDialogDoc = bool;
     };
 
-    @action boutonLoad = async (data: any) => {
-
-        this.isLoading = true;
-
-        try {
-
-            const dataSendToBack = data.numberContrat;
-
-            const result = await axios.post(
-                `${config.servers.apiUrl}student/load/`, { dataSendToBack }
-            );
-
-            const dataSend = result.data[0]
-
-            if (dataSend.length !== 0) {
-                // this.setComment("");
-
-                // this.setContrat(result.data[0]);
-
-                return rootStore.succesSnackBar(true, "Page mis à jour !");
-            }
-
-            return rootStore.updateSnackBar(true, "Il n'y a pas encore de EDL !");
-
-        } catch (err) {
-            parseError(err, {
-                401: "Vous n'êtes pas autorisé à voir ce contenu",
-                400: "Veuillez remplir correctement les champs",
-                500: "Il n'y a pas encore de EDL !",
-            });
-        } finally {
-            this.isLoading = false;
-        }
-    };
-
-    @action setIsCreate = (data: boolean) => {
-        this.isCreate = data;
-        if (data) {
-            this.Student = null;
-            this.droit = [];
-            this.ecolagePrive = [];
-
-        }
-    };
-
     @action setDroit = (d: IFraisDivers) => {
-        this.droit = [...this.droit, d];
+        // if (!this.selectedStudent?.schoolName.includes("Privé")) {
+        //     this.Student?.isFrais === true;
+            this.droit = [...this.droit, d];
+        // }
 
     };
 
     @action setEcolagePrive = (ecolage: IEcolagePrive) => {
-        this.ecolagePrive = [...this.ecolagePrive, ecolage];
+        // if (this.selectedStudent?.schoolName.includes("Privé")) {
+        //     this.Student?.isPrive === true;
+            this.ecolagePrive = [...this.ecolagePrive, ecolage];
+        // }
 
     };
 
@@ -249,21 +223,48 @@ class StudentStore implements StudentStoreInterface {
 
     };
 
-    @action saveMessage = async (newEdl: any, saveEdl: any, isdefault: any, signature: any, contrat: any) => {
-
+    @action AddNewHistoryDocument = async (user: any, student: IStudent, docName: any) => {
         try {
 
-            const result = await axios.post(`${config.servers.apiUrl}contrat/saveMessage`, { newEdl, saveEdl, isdefault, signature, contrat });
+            const add = await axios.patch(`${config.servers.apiUrl}student/historyDocument`,
+                {
+                    user,
+                    student,
+                    docName
+                });
 
-            this.boutonLoad(result.data.contrats)
+            console.log("add....", add);
 
-            rootStore.succesSnackBar(true, "Message enregistré avec succès");
+            rootStore.updateSnackBar(true, 'Modifié', 'success');
 
-        } catch (error: any) {
-            rootStore.updateSnackBar(true, "Une erreur s'est produit, veuillez réessayer ultérieurement");
+            return add;
+
+        } catch (err: any) {
+            if (err.message.includes('code 400')) {
+                rootStore.updateSnackBar(true, 'Le type ');
+                return;
+            }
+
+            rootStore.updateSnackBar(true, "Une erreur s'est produite. Veuillez réessayer plus tard!");
         }
-    };
 
+    }
+
+    // @action AddNewHistoryDocument = async (user: any, student: IStudent, docName: any) => {
+    //     this.loadingListHistoryDocument = true;
+    //     if (student.class) {
+    //         if ((student.role === "LEAD_H" || student.role === "LEAD_F")) {
+
+    //             this.listHistoryDocument?.push({
+    //                 text: `- <b>${user.lastName}</b> a envoyé de document <b>${docName.label}</b> à <b>${student.lastName}</b>,
+    //               <b>${student.nomRole}</b>  <b>${student.class}</b> le <b>${moment().format("DD/MM/YYYY")}</b>.`,
+    //                 date:  new Date(),
+    //             })
+
+    //         }
+    //     }
+    //     this.loadingListHistoryDocument = false;
+    // }
 
     @action getAllStudent = async () => {
         this.isLoading = true;
@@ -281,6 +282,27 @@ class StudentStore implements StudentStoreInterface {
             this.isLoading = false;
         } finally {
             this.isLoading = false;
+        }
+    };
+
+
+    @action getListHistoryDocument = async () => {
+        this.loadingListHistoryDocument = true;
+        try {
+            const documentList = await axios.get(`${config.servers.apiUrl}student/historyDocument`);
+            console.log("documentList....", documentList);
+
+            // this.listHistoryDocument.document = students.data;
+            this.loadingListHistoryDocument = false;
+        } catch (error) {
+
+            parseError(
+                error,
+                "Une erreur s'est produite lors de la requête de vos infos. Veuillez réessayer"
+            );
+            this.loadingListHistoryDocument = false;
+        } finally {
+            this.loadingListHistoryDocument = false;
         }
     };
 
@@ -321,6 +343,7 @@ class StudentStore implements StudentStoreInterface {
     };
 
     @action createStudent = async (data: IStudent) => {
+
         try {
 
             const add = await axios.post(`${config.servers.apiUrl}student`, data);
@@ -332,6 +355,32 @@ class StudentStore implements StudentStoreInterface {
                 rootStore.succesSnackBar(true, 'Elève ajouter avec succès');
 
             }
+            return add;
+
+        } catch (err: any) {
+            if (err.message.includes('code 400')) {
+                rootStore.updateSnackBar(true, 'Le type ');
+                return;
+            }
+
+            rootStore.updateSnackBar(true, "Une erreur s'est produite. Veuillez réessayer plus tard!");
+        }
+    };
+
+    @action sendMail = async (data: any) => {
+        this.isLoading = true;
+        try {
+
+            const add = await axios.post(`${config.servers.apiUrl}student/sendMail`, data);
+
+            if (!add.data.Document.label) {
+                rootStore.updateSnackBar(true, 'Pas de nom de document');
+
+            } else {
+                rootStore.succesSnackBar(true, 'Mail envoyé avec succès');
+
+            }
+            this.isLoading = false;
             return add;
 
         } catch (err: any) {
@@ -404,6 +453,7 @@ class StudentStore implements StudentStoreInterface {
             //   if (this.user?._id === userUpdate._id) {
             //     this.getUserInfo();
             //   }
+
 
             return student;
         } catch (err) {
@@ -490,6 +540,7 @@ class StudentStore implements StudentStoreInterface {
             });
         }
     };
+
 
 }
 export default new StudentStore();

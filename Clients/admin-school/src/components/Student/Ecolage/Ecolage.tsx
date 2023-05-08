@@ -42,20 +42,24 @@ const Ecolage: FC<AbstractEmptyInterface> = (props: any) => {
   const [pathRedirect, setPathRedirect] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [openTotalDeleteModal, setOpenTotalDeleteModal] = useState(false);
-  const [isPrive, setIsPrive] = useState(false);
+  // const [isPrive, setIsPrive] = useState(false);
 
 
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (studentStore.selectedStudent?.schoolName.includes("Privé")) {
-      setIsPrive(false);
-    } else {
-      setIsPrive(true);
-    }
+  //   if (studentStore.selectedStudent?.schoolName.includes("Privé")) {
 
-  }, [studentStore.selectedStudent]);
+  //     setIsPrive(true);
+  //     console.log("isprive true");
+      
+  //   } else {
+  //     setIsPrive(false);
+  //     console.log("isprive false");
+  //   }
+
+  // }, [studentStore.selectedStudent]);
 
   useEffect(() => {
     if (studentStore.selectedStudent) {
@@ -166,7 +170,6 @@ const Ecolage: FC<AbstractEmptyInterface> = (props: any) => {
   const totalDroitEcolage = +totalEcolage + +droit;
   const totalDroitFrais = +totalFrais + +droit;
 
-
   const handleDownload = () => {
 
     const otherData = {
@@ -174,7 +177,7 @@ const Ecolage: FC<AbstractEmptyInterface> = (props: any) => {
       height: studentStore.selectedStudent?.height,
       class: studentStore.selectedStudent?.class,
     }
-    if (!isPrive) {
+    if (studentStore.selectedStudent?.isPrive) {
 
       const data = {
         ecolagePrive: selectListEcolage,
@@ -197,13 +200,14 @@ const Ecolage: FC<AbstractEmptyInterface> = (props: any) => {
 
 
   const deleteTotalData = () => {
-
-    if (!isPrive) {
+    
+    if (studentStore.selectedStudent?.isPrive) {
 
       if (selectListEcolage.length > 0) {
         for (let i = 0; i < selectListEcolage.length; i++) {
 
-          props.studentStore
+
+          props.studsentStore
             .deleteTotalEcolage(selectListEcolage[i])
             .then((edit: any) => {
               if (edit?.status === 200) {
@@ -274,18 +278,24 @@ const Ecolage: FC<AbstractEmptyInterface> = (props: any) => {
             clickHandler: handleOpenConfirmModal,
           },
           {
-            label: "Elèves",
+            label: "Liste des élèves",
             path: "/student/list",
             clickHandler: handleOpenConfirmModal,
           },
           {
-            label: `${!isPrive ? "Ecolage Payement" : "Frais Divers"
+            label: "Elève",
+            path: "/student/new-student",
+            clickHandler: handleOpenConfirmModal,
+          },
+          {
+            label: `${studentStore.selectedStudent?.isPrive ? "Ecolage Payement" : "Frais Divers"
               }`,
             path: "/student/ecolage",
           },
         ]}
       />
-      {!isPrive ? <CommonItem
+      {studentStore.selectedStudent?.isPrive ?(
+        <CommonItem
         total="Total avec droit :  "
         valueTotal={totalDroitEcolage ? formatAmountToFr(totalDroitEcolage).replace(".", " ") : "0 Ar"}
         title="Ecolage"
@@ -295,29 +305,32 @@ const Ecolage: FC<AbstractEmptyInterface> = (props: any) => {
         loading={studentStore.isLoading}
         handleAdd={handleAdd}
         onRowClick={onRowSelected}
-      /> :
+      />
+      )  :
+       (
         <CommonItem
-          total="Total avec droit : "
-          valueTotal={totalDroitFrais ? formatAmountToFr(totalDroitFrais).replace(".", " ") : "0 Ar"}
-          title="Frais Divers"
-          blockTarif={false}
-          columns={columnDivers}
-          rows={selectListFrais}
-          handleAdd={handleAddFrais}
-          loading={studentStore.isLoading}
-          onRowClick={onRowSelected}
-        />}
+        total="Total avec droit : "
+        valueTotal={totalDroitFrais ? formatAmountToFr(totalDroitFrais).replace(".", " ") : "0 Ar"}
+        title="Frais Divers"
+        blockTarif={false}
+        columns={columnDivers}
+        rows={selectListFrais}
+        handleAdd={handleAddFrais}
+        loading={studentStore.isLoading}
+        onRowClick={onRowSelected}
+      />
+       )}
 
-      {!isPrive ? <EcolageDialog
+      {studentStore.selectedStudent?.isPrive ?(<EcolageDialog
         dataPrive={editEcolage}
         openEdit={openEdit}
         handleClose={handleToggleEditDialog(false)}
-      /> :
-        <FraisDiversDialog
-          dataDivers={editFrais}
-          openEdit={openEdit}
-          handleClose={handleToggleEditDialog(false)}
-        />}
+      />)  :
+       (<FraisDiversDialog
+        dataDivers={editFrais}
+        openEdit={openEdit}
+        handleClose={handleToggleEditDialog(false)}
+      />) }
       <EditFooter icons={footerIcons} />
     </div>
   );

@@ -149,7 +149,7 @@ const OptionsDialog: FC<AbstractEmptyInterface & DefaultProps> = (props) => {
             label="Date de payement"
             name="datePayDivers"
             type="date"
-            value={current?.datePayDivers  || moment().format("YYYY/MM/DD")}
+            value={current?.datePayDivers  || moment().format("DD/MM/YYYY")}
             onChange={handleChange}
             required={true}
             fullWidth={true}

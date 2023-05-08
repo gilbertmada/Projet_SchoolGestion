@@ -4,11 +4,12 @@ export interface IStudent {
   lastName: string;
   firstName: string;
   role: string;
-  nomRole:string;
-  email:string;
+  nomRole: string;
+  email: string;
   height: string;
   matriculNumber: string;
-  pieceJoin:string;
+  documents: any;
+  historyStudent: any[];
   inscriptionDroit: string;
   class: string;
   address: string;
@@ -17,13 +18,9 @@ export interface IStudent {
   photo: string;
   urlPlus?: string;
   isPrive: boolean;
-  isEtat: boolean;
 }
 
-export interface IMessage {
-  _id?: string;
-  message: string;
-}
+
 export interface IFraisDivers {
   id: number;
   student: string;
@@ -39,6 +36,6 @@ export interface IEcolagePrive {
   matriculNumber: string;
   ecolage: string;
   datePayEcolage: Date | string;
-  ecolageMonth:string;
+  ecolageMonth: string;
   isEcolage: boolean;
 }

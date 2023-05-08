@@ -48,7 +48,6 @@ const OptionsDialog: FC<AbstractEmptyInterface & DefaultProps> = (props) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isSelectAll, setIsSelectAll] = useState<boolean>(false);
   const [student, setStudent] = useState<any>({});
-  const [isPrive, setIsPrive] = useState(false);
 
 
   useEffect(() => {
@@ -62,21 +61,6 @@ const OptionsDialog: FC<AbstractEmptyInterface & DefaultProps> = (props) => {
   }, [dataPrive]);
 
 
-  useEffect(() => {
-
-    if (studentStore.selectedStudent?.schoolName.includes("Privé")) {
-      setIsPrive(false);
-      setStudent(studentStore.selectedStudent);
-    } else {
-      setIsPrive(true);
-    }
-
-  }, [studentStore.selectedStudent]);
-
-  // useEffect(() => {
-  //   setCurrent(defaultDataPrive);
-
-  // }, [defaultDataPrive]);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -150,7 +134,7 @@ const OptionsDialog: FC<AbstractEmptyInterface & DefaultProps> = (props) => {
             label="Date de payement"
             name="datePayEcolage"
             type="date"
-            value={current?.datePayEcolage || moment().format("YYYY/MM/DD")}
+            value={current?.datePayEcolage || moment().format("DD/MM/YYYY")}
             onChange={handleChange}
             required={true}
             fullWidth={true}

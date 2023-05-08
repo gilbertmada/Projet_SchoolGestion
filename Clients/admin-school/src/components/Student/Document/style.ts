@@ -23,14 +23,11 @@ const useStyles = makeStyles({
   },
   fields: {
     ...contentCommonStyle,
+    width:"100%",
+    height:"auto",
     marginTop: '1px',
     minHeight: '65vh',
-  },
-  firstSection: {
-    ...contentCommonStyle,
-    margin: '5px 10px 10px 10px',
-    padding: '0px 10px 10px 15px',
-    background: 'white',
+
   },
   footer: {
     background: '#0AB1E1',
