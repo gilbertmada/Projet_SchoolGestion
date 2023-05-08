@@ -6,7 +6,9 @@ export const allUsers = [
   ]
 
   export const admins = [
-    'ADMIN',
+   'ADMIN',
+    'PROF',
+    'DIR',
   ]
 
 

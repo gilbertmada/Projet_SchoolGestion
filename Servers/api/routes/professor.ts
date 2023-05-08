@@ -12,7 +12,7 @@ router.get("/"  , [checkJwt, checkRole(allUsers)]  , ProfessorController.listPro
 
 //Create a new user
 // router.post("/", [checkJwt, checkRole(admins)], UserController.newUser);
-router.post("/",[checkJwt, checkRole(admins)],ProfessorController.newProfessor);
+router.post("/",[checkJwt, checkRole(allUsers)],ProfessorController.newProfessor);
 
 
 //Edit one user
@@ -26,7 +26,7 @@ router.patch(
 //Delete one user
 router.patch(
   "/delete",
-  [checkJwt, checkRole(admins)],
+  [checkJwt, checkRole(allUsers)],
   ProfessorController.deleteProfessor
 );
 

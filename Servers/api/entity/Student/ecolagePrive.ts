@@ -5,7 +5,7 @@ export interface IEcolagePrive extends Document {
     student: any;
     matriculNumber:string,
     ecolage: string;
-    datePayEcolage: Date ;
+    datePayEcolage: string ;
     ecolageMonth: string;
     transform: any;
     isEcolage: boolean;
@@ -31,8 +31,8 @@ const EcolagePriveSchema: Schema = new Schema({
         required: false,
     },
     datePayEcolage: {
-        type: Date,
-        required: false,
+        type: String,
+   
     },
 
     isEcolage: {
@@ -43,7 +43,7 @@ const EcolagePriveSchema: Schema = new Schema({
 });
 
 EcolagePriveSchema.method("transform", function () {
-    const obj = this.toObject();
+    const obj:any = this.toObject();
     obj.id = obj._id;
     // delete obj._id;
 

@@ -59,7 +59,6 @@ export default class UserController {
         try {
 
           const user = await newUser.save();
-          console.log("identifiant....", user);
           res.send(user);
         } catch (err) {
           console.log(err)

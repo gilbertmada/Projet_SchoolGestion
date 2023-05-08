@@ -9,7 +9,7 @@ export const checkRole = (roles: Array<string>) => {
 
     let user;
     try {
-      user = await User.findOne({ _id: id });
+      user = await User.findOne({ _id: id});
     } catch (err) {
       res.status(400).send("Could not check who you are");
     }

@@ -7,6 +7,7 @@ export interface IStudent extends Document {
     height: string;
     matriculNumber: string;
     role: string;
+    document:IDocument;
     nomRole: string;
     email: string;
     class: string;
@@ -14,9 +15,9 @@ export interface IStudent extends Document {
     inscriptionDroit?: string;
     deleted: boolean;
     isPrive: boolean;
-    isEtat: boolean;
     photo: string;
-    // blackList: string;
+    historyDocument:any[];
+    historyStudent:HistoryInfo[];
     createdBy: string;
     updatedBy: string;
     deletedBy: string;
@@ -26,6 +27,48 @@ export interface IStudent extends Document {
     transform: any;
     urlPlus?: string;
 }
+
+export  interface HistoryInfo {
+    text: string;
+    date: Date;
+  
+  }
+export interface IDocument extends Document {
+    label:string;
+    date:Date;
+    path:string;
+    filename:string
+}
+
+const HistoryInfoSchema: Schema = new Schema({
+    text: {
+        type: String,
+        required: false,
+    },
+    date: {
+        type: Date,
+        required: false,
+    },
+
+})as any;
+const DocumentSchema: Schema = new Schema({
+    label: {
+        type: String,
+        required: false,
+    },
+    date: {
+        type: Date,
+        required: false,
+    },
+    path: {
+        type: String,
+        required: false,
+    },
+    filename: {
+        type: String,
+        required: false,
+    },
+}) as any;
 
 //Create Schema
 const StudentSchema: Schema = new Schema({
@@ -41,6 +84,12 @@ const StudentSchema: Schema = new Schema({
         type: String,
         required: false,
     },
+    historyDocument: {
+        type: String,
+     
+    },
+    historyStudent: [HistoryInfoSchema],
+    document: [DocumentSchema],
     height: {
         type: String,
         required: false,
@@ -82,19 +131,11 @@ const StudentSchema: Schema = new Schema({
         type: Boolean,
         required: false,
     },
-    isEtat: {
-        type: Boolean,
-        required: false,
-    },
+
     address: {
         type: String,
         required: false,
     },
-    // blackList: {
-    //     type: Boolean,
-    //     default: false,
-    //     required: false,
-    //   },
     createdBy: {
         type: mongoose.Types.ObjectId,
         required: false,
@@ -122,7 +163,7 @@ const StudentSchema: Schema = new Schema({
 });
 
 StudentSchema.method("transform", function () {
-    const obj = this.toObject();
+    const obj:any = this.toObject();
     obj.id = obj._id;
     // delete obj._id;
 

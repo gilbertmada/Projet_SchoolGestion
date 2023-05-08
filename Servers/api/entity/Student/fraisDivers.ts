@@ -5,7 +5,7 @@ export interface IFraisDivers extends Document {
     student: any;
     matriculNumber:string,
     frais: string;
-    datePayDivers: Date;
+    datePayDivers: string;
     transform: any;
     isFrais: boolean;
 }
@@ -26,8 +26,8 @@ const FraisDiversSchema: Schema = new Schema({
         required: false,
     },
     datePayDivers: {
-        type: Date,
-        required: false,
+        type: String,
+    
     },
 
     isFrais: {
@@ -38,7 +38,7 @@ const FraisDiversSchema: Schema = new Schema({
 });
 
 FraisDiversSchema.method("transform", function () {
-    const obj = this.toObject();
+    const obj:any = this.toObject();
     obj.id = obj._id;
     // delete obj._id;
 

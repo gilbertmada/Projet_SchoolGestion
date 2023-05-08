@@ -39,6 +39,31 @@ router.post("/ecolage", [checkJwt, checkRole(allUsers)], studentControleur.creat
 
 //Create Frais Divers
 router.post("/fraisDivers", [checkJwt, checkRole(allUsers)], studentControleur.createFraisDivers);
+//sendMail
+router.post("/sendMail", [checkJwt, checkRole(allUsers)], studentControleur.sendMail);
+//AddNewhistoryDocument
+router.patch("/historyDocument", [checkJwt, checkRole(allUsers)], studentControleur.AddNewHistoryDocument);
+
+// //AddNewHistoryEcolagePrive
+// router.post("/historyEcolagePrive", [checkJwt, checkRole(allUsers)], studentControleur.AddNewHistoryEcolagePrive);
+
+// //AddNewHistoryFraisDivers
+// router.post("/historyFraisDivers", [checkJwt, checkRole(allUsers)], studentControleur.AddNewHistoryFraisDivers);
+
+// //AddNewHistoryDroit
+// router.post("/historyDroit", [checkJwt, checkRole(allUsers)], studentControleur.AddNewHistoryDroit);
+
+//getHistoryDocument
+router.get("/historyDocument", [checkJwt, checkRole(allUsers)], studentControleur.getHistoryDocument);
+
+// //getHistoryEcolagePrive
+// router.get("/historyEcolagePrive", [checkJwt, checkRole(allUsers)], studentControleur.getHistoryEcolagePrive);
+
+// //getHistoryFraisDivers
+// router.get("/historyFraisDivers", [checkJwt, checkRole(allUsers)], studentControleur.getHistoryFraisDivers);
+
+// //getHistoryDroit
+// router.get("/historyDroit", [checkJwt, checkRole(allUsers)], studentControleur.getHistoryDroit);
 // Get list ecolage
 router.get("/getEcolage", [checkJwt, checkRole(allUsers)], studentControleur.getListEcolage);
 //Get list Frais Divers
