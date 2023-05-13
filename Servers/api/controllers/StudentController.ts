@@ -11,8 +11,6 @@ import fs from "fs";
 import * as bcrypt from "bcryptjs";
 import { getUserIdFromToken } from "../utils/user";
 import moment from "moment";
-import { History } from "../entity/HistoryStudent";
-import { HistoryDocument } from "~~/entity/HistoryDocument";
 
 
 
@@ -30,18 +28,19 @@ export default class studentControleur {
 
   //new student
   static createStudent = async (req: Request, res: Response) => {
-    console.log("studeDoc...", req.body);
+ 
+    console.log("newData....", req.body);
 
     const token = <string>res.getHeader("token");
-    Student.findOne({
+    const eleve = Student.findOne({
       $and: [{ matriculNumber: req.body.matriculNumber }, { class: req.body.class }],
     }).then(async (student: any) => {
       if (student) {
         return res.status(200).json({
-          matriculNumber: student.matriculNumber == req.body.matriculNumber && student.class == req.body.class ? "MatriculNumber already exists" : "",
+          matriculNumber: student.matriculNumber === req.body.matriculNumber && student.class === req.body.class ? "MatriculNumber already exists" : "",
         });
       } else {
-        const data = {
+        const newData = {
           schoolName: req.body.schoolName,
           firstName: req.body.firstName,
           lastName: req.body.lastName,
@@ -50,28 +49,27 @@ export default class studentControleur {
           height: req.body.height,
           matriculNumber: req.body.matriculNumber,
           address: req.body.address,
-          role: req.body?.role,
-          nomRole: req.body?.nomRole,
+          role: req.body.role,
+          nomRole: req.body.nomRole,
           photo: req.body.photo,
-          inscriptionDroit: req.body?.inscriptionDroit,
+          inscriptionDroit: req.body.inscriptionDroit,
+          historyStudentDroit: req.body.historyStudentDroit,
+          isPrive:req.body.isPrive
         }
-        const newValue = req.body.schoolName.includes("Privé") ? {
-          ...data,
-          isPrive: true,
-        } : {
-          ...data,
-          isPrive: false,
-        }
+
+
         const newStudent = new Student({
-          ...newValue,
+          ...newData,
           createdBy: getUserIdFromToken(token),
           deleted: false,
         });
 
-
+        console.log("newStudent....", newStudent);
         try {
+
           const student = await newStudent.save();
-          res.send(student);
+          console.log("student....", student);
+          res.status(200).send(student);
 
         } catch (err) {
           res.status(500).send("Failed to save student");
@@ -126,8 +124,6 @@ export default class studentControleur {
     let listHistoryDocument: HistoryInfo[] = [];
     const { user, student, docName } = req.body;
 
-    console.log("data......", req.body);
-
 
     const eleve = await Student.findOne({ _id: student._id });
 
@@ -160,13 +156,8 @@ export default class studentControleur {
 
           return new Date(date2).getTime() - new Date(date1).getTime();
         });
-      console.log("listHistoryDocument....", listHistoryDocument);
-      //   const updatedInfo: any = {
-      // ...eleve,
-      //     historyStudent: listHistoryDocument,
 
-      //   };
-      // console.log("updatedInfo....", updatedInfo);
+
       const resp = await Student.updateOne({ _id: eleve._id },
         {
           $set: {
@@ -188,6 +179,7 @@ export default class studentControleur {
 
 
   static updateStudent = async (req: Request, res: Response) => {
+
     const { _id, ...info } = req.body;
 
     const token = <string>res.getHeader("token");
@@ -228,7 +220,13 @@ export default class studentControleur {
         updatedAt: Date.now(),
       };
 
-      const resp = await Student.updateOne({ _id: req.body._id }, updatedInfo);
+      // res.status(200).send(student);
+
+
+      const resp = await Student.updateOne({ _id: req.body._id },
+        updatedInfo,
+
+      );
 
       res.status(200).send(resp);
     } catch (err) {
@@ -296,25 +294,172 @@ export default class studentControleur {
     }
   }
 
-  static getHistoryDocument = async (req: Request, res: Response) => {
+  static AddNewHistoryStudentEcolage = async (req: Request, res: Response) => {
 
-    // try {
-    //   const document = await Student.find({ deleted: false });
+    let listHistoryEcolage: HistoryInfo[] | undefined = [];
+    const { data, student } = req.body;
 
-    //   let returnedUsers = [];
 
-    //   for (let i = 0; i < students.length; i++) {
-    //     returnedUsers.push(students[i].transform());
-    //   }
+    const eleve = await Student.findOne({ _id: student._id });
 
-    //   return res.status(200).send(returnedUsers);
+    if (!eleve) {
+      res.status(404).send({
+        status: 'ERROR',
+        code: 'STUDENT_NOT_FOUND',
+        message: "Unable to find student to update"
+      });
+      return;
+    }
 
-    // } catch (err) {
-    //   res.status(500).send("Unable to update student");
-    // }
+    try {
+
+      if (eleve.class) {
+
+        eleve?.historyStudentEcolage.push({
+          text: `- <b>${data.student}</b>, classe de <b>${student.class}</b>, de numéro de matricule  <b>${data.matriculNumber}</b> a payé d'ecolage mois de <b>${data.ecolageMonth}</b>
+             de somme <b>${data.ecolage} Ar</b> le <b>${moment(data.datePayEcolage).format("DD/MM/YYYY")}</b>.`,
+          date: new Date()
+        })
+
+      }
+      listHistoryEcolage = eleve?.historyStudentEcolage
+        .slice()
+        .sort((a: HistoryInfo, b: HistoryInfo) => {
+          const date1 = a.date;
+          const date2 = b.date;
+
+          return new Date(date2).getTime() - new Date(date1).getTime();
+        });
+
+      const resp = await Student.updateOne({ _id: eleve?._id },
+        {
+          $set: {
+            historyStudentEcolage: listHistoryEcolage,
+          }
+        }
+      );
+
+      res.status(200).send(resp);
+    } catch (err) {
+      res.status(500).send({
+        status: 'ERROR',
+        code: 'INTERNAL_SERVER_ERROR',
+        message: "Unable to update user"
+      });
+    }
   }
 
+  static AddNewHistoryStudentFrais = async (req: Request, res: Response) => {
 
+    let listHistoryFrais: HistoryInfo[] | undefined = [];
+    const { data, student } = req.body;
+
+
+
+    const eleve = await Student.findOne({ _id: student._id });
+
+    if (!eleve) {
+      res.status(404).send({
+        status: 'ERROR',
+        code: 'STUDENT_NOT_FOUND',
+        message: "Unable to find student to update"
+      });
+      return;
+    }
+
+    try {
+
+      if (eleve.class) {
+
+        eleve?.historyStudentFrais.push({
+          text: `- <b>${data.student}</b>, classe de <b>${student.class}</b>, de numéro de matricule  <b>${data.matriculNumber}</b> a payé de frais divers de somme <b>${data.frais} Ar</b> le <b>${moment(data.datePayDivers).format("DD/MM/YYYY")}</b>.`,
+          date: new Date()
+        })
+
+      }
+      listHistoryFrais = eleve?.historyStudentFrais
+        .slice()
+        .sort((a: HistoryInfo, b: HistoryInfo) => {
+          const date1 = a.date;
+          const date2 = b.date;
+
+          return new Date(date2).getTime() - new Date(date1).getTime();
+        });
+
+      const resp = await Student.updateOne({ _id: eleve?._id },
+        {
+          $set: {
+            historyStudentFrais: listHistoryFrais,
+          }
+        }
+      );
+
+      res.status(200).send(resp);
+    } catch (err) {
+      res.status(500).send({
+        status: 'ERROR',
+        code: 'INTERNAL_SERVER_ERROR',
+        message: "Unable to update user"
+      });
+    }
+  }
+
+  static AddNewHistoryStudentDroit = async (req: Request, res: Response) => {
+
+    let listHistoryDroit: HistoryInfo[] | undefined = [];
+    const { student } = req.body;
+
+    console.log("data......", req.body);
+
+
+    const eleve = await Student.findOne({ _id: student._id });
+    console.log("eleve....", eleve);
+    if (!eleve) {
+      res.status(404).send({
+        status: 'ERROR',
+        code: 'STUDENT_NOT_FOUND',
+        message: "Unable to find student to update"
+      });
+      return;
+    }
+
+    try {
+
+      // if (eleve.class) {
+
+      //   eleve?.historyStudentDroit.push({
+      //       text: `- <b>${data.student}</b>, classe de <b>${student.class}</b>, de numéro de matricule  <b>${data.matriculNumber}</b> a payé de frais divers de somme <b>${data.frais} Ar</b> le <b>${ moment(data.datePayDivers).format("DD/MM/YYYY") }</b>.`,
+      //       date: new Date()
+      //     })
+
+      //   }
+      // listHistoryFrais = eleve?.historyStudentFrais
+      //   .slice()
+      //   .sort((a: HistoryInfo, b: HistoryInfo) => {
+      //     const date1 = a.date;
+      //     const date2 = b.date;
+
+      //     return new Date(date2).getTime() - new Date(date1).getTime();
+      //   });
+
+
+      // const resp = await Student.updateOne({ _id: eleve?._id },
+      //   {
+      //     $set: {
+      //       historyStudentDroit: listHistoryDroit,
+      //     }
+      //   }
+      // );
+      // console.log("resp....", resp);
+      // res.status(200).send(resp);
+    } catch (err) {
+      res.status(500).send({
+        status: 'ERROR',
+        code: 'INTERNAL_SERVER_ERROR',
+        message: "Unable to update user"
+      });
+    }
+  }
   static getFilteredStudent = async (req: Request, res: Response) => {
 
     const { filter } = req.body;

@@ -9,6 +9,7 @@ export default class DefaultController {
 
 
     static getAllCount = async (req: Request, res: Response) => {
+        
    const school=await School.find({ delete: false, });
         try {
 

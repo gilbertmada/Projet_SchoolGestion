@@ -2,25 +2,25 @@ import { Router } from "express";
 import SchoolController from "../controllers/SchoolController";
 import { checkJwt } from "../middlewares/checkJwt";
 import { checkRole } from "../middlewares/checkRole";
-import { admins, allUsers } from "../utils";
+import { superAdmins } from "../utils";
 
 const router = Router();
 
 //Get all users
-router.get("/get"  , [checkJwt, checkRole(admins)]  , SchoolController.listAll);
+router.get("/get"  , [checkJwt, checkRole(superAdmins)]  , SchoolController.listAll);
 
 
 
 //Create a new user
 // router.post("/", [checkJwt, checkRole(admins)], UserController.newUser);
-router.post("/",[checkJwt, checkRole(admins)],SchoolController.newSchool);
+router.post("/",[checkJwt, checkRole(superAdmins)],SchoolController.newSchool);
 
 
 //Edit one user
 router.patch(
   // "/:id([0-9a-f]+)",
   "/edit",
-  [checkJwt, checkRole(admins)],
+  [checkJwt, checkRole(superAdmins)],
   SchoolController.editSchool
 );
 
@@ -28,14 +28,14 @@ router.patch(
 //Delete one user
 router.patch(
   "/deleteTotal",
-  [checkJwt, checkRole(admins)],
+  [checkJwt, checkRole(superAdmins)],
   SchoolController.deleteTotalSchool
 );
 
 // Get filtered User
 router.post(
   "/filter",
-  [checkJwt, checkRole(admins)],
+  [checkJwt, checkRole(superAdmins)],
   SchoolController.getFilteredSchool
 );
 
@@ -43,7 +43,7 @@ router.post(
 //Edit one user
 router.post(
   "/urlPlus",
-  [checkJwt, checkRole(allUsers)],
+  [checkJwt, checkRole(superAdmins)],
   SchoolController.updateUrl
 );
 export default router;

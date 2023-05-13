@@ -40,7 +40,7 @@ export const sendPasswordReinitMail = (email: string, name: string, token: strin
             Vous avez demandé la réinitialisation de votre mot de passe sur la plateforme SCHOOL_GESTION.
         </p>
         <p>
-          Vous pouvez suivre <a href='https://new.clicar.fr/changePassword/${token}' style='
+          Vous pouvez suivre <a href='https://new.school.fr/changePassword/${token}' style='
                 background-color: #4CAF50; 
                 border: none;
                 color: white;

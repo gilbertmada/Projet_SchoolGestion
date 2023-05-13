@@ -18,6 +18,9 @@ export interface IStudent extends Document {
     photo: string;
     historyDocument:any[];
     historyStudent:HistoryInfo[];
+    historyStudentEcolage: HistoryInfo[];
+    historyStudentFrais: HistoryInfo[];
+    historyStudentDroit: HistoryInfo[];
     createdBy: string;
     updatedBy: string;
     deletedBy: string;
@@ -89,6 +92,9 @@ const StudentSchema: Schema = new Schema({
      
     },
     historyStudent: [HistoryInfoSchema],
+    historyStudentEcolage: [HistoryInfoSchema],
+    historyStudentFrais: [HistoryInfoSchema],
+    historyStudentDroit: [HistoryInfoSchema],
     document: [DocumentSchema],
     height: {
         type: String,

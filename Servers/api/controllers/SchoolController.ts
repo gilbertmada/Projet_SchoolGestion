@@ -17,7 +17,7 @@ export default class SchoolController {
 
     console.log("createCreate....", req.body);
     const newSchool = new School({
-      schoolName: school.schoolName,
+      // schoolName: school.schoolName,
       user: user,    
       createdBy: getUserIdFromToken(token),
       deleted: false,

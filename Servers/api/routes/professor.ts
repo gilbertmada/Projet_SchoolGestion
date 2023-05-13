@@ -11,7 +11,6 @@ router.get("/"  , [checkJwt, checkRole(allUsers)]  , ProfessorController.listPro
 
 
 //Create a new user
-// router.post("/", [checkJwt, checkRole(admins)], UserController.newUser);
 router.post("/",[checkJwt, checkRole(allUsers)],ProfessorController.newProfessor);
 
 
@@ -26,7 +25,7 @@ router.patch(
 //Delete one user
 router.patch(
   "/delete",
-  [checkJwt, checkRole(allUsers)],
+  [checkJwt, checkRole(admins)],
   ProfessorController.deleteProfessor
 );
 
@@ -37,12 +36,6 @@ router.patch(
   ProfessorController.archive
 );
 
-//Delete one user
-// router.patch(
-//   "/deleteTotal",
-//   [checkJwt, checkRole(admins)],
-//   ProfessorController.deleteTotalProfessor
-// );
 
 //  Get filtered User
 router.post(
@@ -51,12 +44,7 @@ router.post(
   ProfessorController.getFilteredProfessor
 );
 
-// Get filtered UserArchive
-// router.get(
-//   "/filterArchive",
-//   [checkJwt, checkRole(allUsers)],
-//   UserController.getFilteredUserArchive
-// );
+
 
 //Edit one user
 router.post(

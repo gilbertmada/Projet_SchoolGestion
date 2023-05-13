@@ -22,6 +22,7 @@ export default class ProfessorController {
         const newProfessor = new Professor({
           lastName: req.body?.lastName,
           firstName: req.body?.firstName,
+          schoolName: req.body?.schoolName,
           email: req.body?.email,
           IM: req.body?.IM,
           matiere: req.body?.matiere,
@@ -35,7 +36,7 @@ export default class ProfessorController {
 
         try {
           const professor = await newProfessor.save();
-          
+
           res.send(professor);
         } catch (err) {
           console.log(err)
@@ -97,6 +98,7 @@ export default class ProfessorController {
         lastName: info.lastName,
         firstName: info.firstName,
         email: info.email,
+        schoolName: info.schoolName,
         photo: info.photo,
         IM: info.IM,
         role: info.role,
@@ -135,9 +137,7 @@ export default class ProfessorController {
         {
           _id: req.body.id,
         },
-        // {
-        //   $set: { deleted: true, deletedBy: professorId, deletedAt: new Date() },
-        // }
+
       );
       return res.status(200).send("Professor deleted successfully");
     } catch (err) {
@@ -167,26 +167,7 @@ export default class ProfessorController {
     }
   };
 
-  static deleteTotalProfessor = async (req: Request, res: Response) => {
-    const token = <string>res.getHeader("token");
-    const professorId = getUserIdFromToken(token);
 
-    if (!professorId) {
-      return res.status(500).send("Unable to delete user");
-    }
-    try {
-      const isTest = false;
-      const professor = await Professor.deleteOne(
-        {
-          _id: req.body.id,
-        },
-      );
-
-      return res.status(200).send("Professor deleted successfully");
-    } catch (err) {
-      res.status(500).send("Unable to delete professor");
-    }
-  };
 
   static getFilteredProfessor = async (req: Request, res: Response) => {
 

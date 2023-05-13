@@ -12,24 +12,19 @@ router.get("/", [checkJwt, checkRole(allUsers)], studentControleur.getListStuden
 router.post("/", [checkJwt, checkRole(allUsers)], studentControleur.createStudent);
 
 
-// router.get("/get", studentControleur.getData);
-
-// router.post("/save", studentControleur.save);
-
 router.patch("/edit", [checkJwt, checkRole(allUsers)], studentControleur.updateStudent);
 
-//delete student in Front
-// router.patch("/delete",[checkJwt, checkRole(allUsers)], studentControleur.deleteStudent);
+
 
 //delete student in Front and back
-router.patch("/deleteTotal", [checkJwt, checkRole(allUsers)], studentControleur.deleteTotalStudent);
+router.patch("/deleteTotal", [checkJwt, checkRole(admins)], studentControleur.deleteTotalStudent);
 
 //delete ecolage in Front and back
-router.patch("/deleteTotalEcolage", [checkJwt, checkRole(allUsers)], studentControleur.deleteTotalEcolage);
+router.patch("/deleteTotalEcolage", [checkJwt, checkRole(admins)], studentControleur.deleteTotalEcolage);
 
 
 //delete fraisDivers in Front and back
-router.patch("/deleteTotalFraisDivers", [checkJwt, checkRole(allUsers)], studentControleur.deleteTotalFraisDivers);
+router.patch("/deleteTotalFraisDivers", [checkJwt, checkRole(admins)], studentControleur.deleteTotalFraisDivers);
 
 // Get filtered student
 router.post("/filter", [checkJwt, checkRole(allUsers)], studentControleur.getFilteredStudent);
@@ -44,26 +39,15 @@ router.post("/sendMail", [checkJwt, checkRole(allUsers)], studentControleur.send
 //AddNewhistoryDocument
 router.patch("/historyDocument", [checkJwt, checkRole(allUsers)], studentControleur.AddNewHistoryDocument);
 
-// //AddNewHistoryEcolagePrive
-// router.post("/historyEcolagePrive", [checkJwt, checkRole(allUsers)], studentControleur.AddNewHistoryEcolagePrive);
-
-// //AddNewHistoryFraisDivers
-// router.post("/historyFraisDivers", [checkJwt, checkRole(allUsers)], studentControleur.AddNewHistoryFraisDivers);
-
-// //AddNewHistoryDroit
-// router.post("/historyDroit", [checkJwt, checkRole(allUsers)], studentControleur.AddNewHistoryDroit);
-
-//getHistoryDocument
-router.get("/historyDocument", [checkJwt, checkRole(allUsers)], studentControleur.getHistoryDocument);
 
 // //getHistoryEcolagePrive
-// router.get("/historyEcolagePrive", [checkJwt, checkRole(allUsers)], studentControleur.getHistoryEcolagePrive);
+router.patch("/historyEcolage", [checkJwt, checkRole(allUsers)], studentControleur.AddNewHistoryStudentEcolage);
 
-// //getHistoryFraisDivers
-// router.get("/historyFraisDivers", [checkJwt, checkRole(allUsers)], studentControleur.getHistoryFraisDivers);
+//getHistoryFraisDivers
+router.patch("/historyFrais", [checkJwt, checkRole(allUsers)], studentControleur.AddNewHistoryStudentFrais);
 
-// //getHistoryDroit
-// router.get("/historyDroit", [checkJwt, checkRole(allUsers)], studentControleur.getHistoryDroit);
+//getHistoryDroit
+router.patch("/historyDroit", [checkJwt, checkRole(allUsers)], studentControleur.AddNewHistoryStudentDroit);
 // Get list ecolage
 router.get("/getEcolage", [checkJwt, checkRole(allUsers)], studentControleur.getListEcolage);
 //Get list Frais Divers

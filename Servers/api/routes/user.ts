@@ -7,11 +7,11 @@ import { admins, allUsers } from "../utils";
 const router = Router();
 
 //Get all users
-router.get("/"  , [checkJwt, checkRole(allUsers)]  , UserController.listAll);
+router.get("/"  , [checkJwt, checkRole(admins)]  , UserController.listAll);
 
 //Get all admin users 
 
-router.get("/allAdmin", [checkJwt, checkRole(allUsers)], UserController.listAllAdmin);
+router.get("/allAdmin", [checkJwt, checkRole(admins)], UserController.listAllAdmin);
 
 // Get one user
 router.get(
@@ -25,8 +25,8 @@ router.get("/me", [checkJwt], UserController.getMe);
 
 
 //Create a new user
-// router.post("/", [checkJwt, checkRole(admins)], UserController.newUser);
-router.post("/",UserController.newUser);
+router.post("/", [checkJwt, checkRole(admins)], UserController.newUser);
+
 
 //Create a new user
 router.post("/subscribe", UserController.subscribeUser);
@@ -35,7 +35,7 @@ router.post("/subscribe", UserController.subscribeUser);
 router.patch(
   // "/:id([0-9a-f]+)",
   "/edit",
-  [checkJwt, checkRole(allUsers)],
+  [checkJwt, checkRole(admins)],
   UserController.editUser
 );
 
@@ -43,7 +43,7 @@ router.patch(
 router.patch(
   "/:id([0-9a-f]+)",
   // "/edit",
-  [checkJwt, checkRole(allUsers)],
+  [checkJwt, checkRole(admins)],
   UserController.updateUser
 );
 
@@ -85,7 +85,7 @@ router.get(
 //Edit one user
 router.post(
   "/urlPlus",
-  [checkJwt, checkRole(allUsers)],
+  [checkJwt, checkRole(admins)],
   UserController.updateUrl
 );
 export default router;

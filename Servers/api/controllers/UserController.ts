@@ -5,12 +5,15 @@ import * as jwt from "jsonwebtoken";
 import config from "config";
 import { IUser } from "../entity/User";
 import { getUserIdFromToken } from "../utils/user";
-
+import { ISchool, School } from "~~/entity/Ecole";
 export default class UserController {
 
   static getMe = async (req: Request, res: Response) => {
     const token = <string>res.getHeader("token");
     let jwtPayload;
+    const listSchool = await School.find({ delete: false });
+    console.log("listSchool./", listSchool);
+
     try {
       jwtPayload = <any>jwt.verify(token, config.get("jwtSecret"));
       res.locals.jwtPayload = jwtPayload;
@@ -20,6 +23,15 @@ export default class UserController {
 
     const { userId } = jwtPayload;
     const user = await User.findOne({ _id: userId });
+    // for (let i = 0; i < listSchool.length; i++) {
+
+    //   if (user) {
+    //     return res.status(200).send({ schoolName: user?.schoolName !== listSchool[i].user.schoolName || user.role !== "ADMIN" ? "User not found" : "" });
+    //   } else {
+    //     return res.json(user);
+    //   }
+
+    // }
     if (!user) {
       return res.status(404).send("user not found");
     }
@@ -31,7 +43,6 @@ export default class UserController {
 
   static newUser = async (req: Request, res: Response, next: NextFunction) => {
     const token = <string>res.getHeader("token");
-
     User.findOne({
       $or: [{ email: req.body?.email }, { username: req.body?.username }],
     }).then(async (user: any) => {
@@ -120,14 +131,14 @@ export default class UserController {
   };
 
   static listAll = async (req: Request, res: Response) => {
-   
+
     const users = await User.find({ deleted: false, isArchive: false, });
     const returnedUsers = [];
 
     for (let i = 0; i < users.length; i++) {
       returnedUsers.push(users[i].transform());
     }
-
+    console.log("returnedUsers....", returnedUsers);
     return res.status(200).send(returnedUsers);
   };
 
@@ -138,8 +149,9 @@ export default class UserController {
           $or: [
             { role: "ADMIN" },
             { role: "DIR" },
+            { role: "DIRC" },
             { role: "PROV" },
-            { role: "SURV" },
+
           ],
         },
         {
@@ -348,7 +360,7 @@ export default class UserController {
     try {
       const user = await User.findOne({ _id: req.body._id || req.body.id });
 
-      if (!user ) {
+      if (!user) {
         res.status(404).send({
           status: 'ERROR',
           code: 'USER_NOT_FOUND',
@@ -400,11 +412,6 @@ export default class UserController {
     const random: any = `${Math.random()}`;
     const words = random.split(".");
     const urlPlus = words[1]
-
-
-    // if (!userId) {
-    //   return res.status(500).send("Unable to delete user");
-    // }
 
 
     try {

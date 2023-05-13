@@ -4,7 +4,6 @@ export interface IUser extends Document {
   firstName: string;
   schoolName: string;
   lastName: string;
-  identifiant:Date;
   email: string;
   username: string;
   role: string;
@@ -33,10 +32,6 @@ const UserSchema: Schema = new Schema({
   schoolName: {
     type: String,
     required: false,
-},
-identifiant: {
-  type: Date,
-  default: Date.now,
 },
   firstName: {
     type: String,
@@ -106,7 +101,7 @@ identifiant: {
 });
 
 UserSchema.method("transform", function () {
-  const obj = this.toObject();
+  const obj:any = this.toObject();
 
   //Rename fields
   obj.id = obj._id;

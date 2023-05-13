@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IProfessor extends Document {
   firstName: string;
   lastName: string;
+  schoolName: string;
   email: string;
   role: string;
   nomRole:string;
@@ -29,6 +30,10 @@ const ProfessorSchema: Schema = new Schema({
     required: false,
   },
   firstName: {
+    type: String,
+    required: false,
+  },
+  schoolName: {
     type: String,
     required: false,
   },

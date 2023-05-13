@@ -35,6 +35,7 @@ const EcolagePriveSchema: Schema = new Schema({
    
     },
 
+
     isEcolage: {
         type: Boolean,
         required: false,

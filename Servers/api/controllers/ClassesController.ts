@@ -7,7 +7,6 @@ export default class classesController {
 
     const token = <string>res.getHeader("token");
     const classe: IClasse | any = req.body;
-    console.log("createCreate....",req.body);
     const professor: IProfessor | any = await Professor.findById({ _id: classe.prof._id });
     const newClasse = new Classe({
       className: classe.className,
@@ -78,10 +77,10 @@ export default class classesController {
     const classes = await Classe.find({ deleted: false });
 
     const returnedClasses = [];
+
     for (let i = 0; i < classes.length; i++) {
       returnedClasses.push(classes[i].transform());
     }
-  //  console.log("returnedClasses....",returnedClasses);
    
     return res.status(200).send(returnedClasses);
   };
