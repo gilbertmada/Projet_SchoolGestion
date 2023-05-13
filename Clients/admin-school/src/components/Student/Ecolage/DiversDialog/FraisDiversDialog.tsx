@@ -17,6 +17,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { inject, observer } from "mobx-react";
 import moment from "moment";
 import { months } from "../../../../common/utils/data";
+import { useHistory } from "react-router-dom";
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { IEcolagePrive, IFraisDivers, IStudent } from '../../../../common/interface/StudentInterface';
@@ -25,10 +26,8 @@ import rootStore from '../../../../store/AppStore';
 import { defaultDataDivers } from "../table.info";
 import { AbstractEmptyInterface } from "../../../../types";
 import useStyles from "../style";
-// import { defaultDataPrive } from "./table.info";
 import { StudentStoreInterface } from "../../../../store/StudentStore";
 import { toJS } from "mobx"
-// import { defaultDataDivers } from "./table.info";
 
 interface DefaultProps {
   dataDivers: IFraisDivers;
@@ -45,6 +44,7 @@ const OptionsDialog: FC<AbstractEmptyInterface & DefaultProps> = (props) => {
   const { dataDivers, openEdit, handleClose, userStore, studentStore } =
     props as Props;
   const classes = useStyles();
+  const history = useHistory();
   const [current, setCurrent] = useState<IFraisDivers>(defaultDataDivers);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isSelectAll, setIsSelectAll] = useState<boolean>(false);
@@ -70,10 +70,7 @@ const OptionsDialog: FC<AbstractEmptyInterface & DefaultProps> = (props) => {
     }
   }, [dataDivers]);
 
-  // useEffect(() => {
-  //   setCurrent(defaultDataDivers);
 
-  // }, [defaultDataDivers]);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -111,7 +108,8 @@ const OptionsDialog: FC<AbstractEmptyInterface & DefaultProps> = (props) => {
         ...current
       });
     }
-
+    studentStore.AddNewHistoryStudentFrais(current,studentStore.selectedStudent)
+    history.push("/student/list");
     handleClose(e);
   };
 

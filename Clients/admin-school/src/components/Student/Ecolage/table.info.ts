@@ -27,13 +27,13 @@ export const getColumnPrive = (
     {
       field: 'ecolageMonth',
       headerName: "Mois d'ecolage",
-      width: Math.ceil(screenSize / 4),
+      width: Math.ceil(screenSize / 5),
       headerClassName: classes.tableHeader,
     },
     {
       field: 'ecolage',
       headerName: "Ecolage",
-      width: Math.ceil(screenSize / 4),
+      width: Math.ceil(screenSize / 5),
       headerClassName: classes.tableHeader,
     },
    

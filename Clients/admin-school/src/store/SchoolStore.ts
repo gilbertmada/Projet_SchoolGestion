@@ -11,8 +11,9 @@ export interface SchoolStoreInterface {
     allSchool: ISchool[];
     isFromBooking: boolean;
     ecole: ISchool  | null ;
-    dataSchool:any;
-    setDataSchool: (data: any) => void;
+    user: IUser  | null ;
+    // dataSchool:any;
+    // setDataSchool: (data: any) => void;
     setIsFromBooking: (val: boolean) => void;
     setEcole: (cla: ISchool | null) => void;
     setUser: (user: IUser | null) => void;
@@ -33,7 +34,7 @@ class Schools implements SchoolStoreInterface {
 
     @observable user: IUser | null = null;
 
-    @observable dataSchool: any  = "";
+    // @observable dataSchool: any  = "";
 
     @observable isFromBooking = false;
 
@@ -48,9 +49,9 @@ class Schools implements SchoolStoreInterface {
     };
 
 
-    @action setDataSchool = (data: any ) => {
-        this.dataSchool = data;
-    };
+    // @action setDataSchool = (data: any ) => {
+    //     this.dataSchool = data;
+    // };
 
     @action setEcole = (data: ISchool | null) => {
         this.ecole = data;

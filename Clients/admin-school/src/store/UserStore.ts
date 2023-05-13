@@ -16,15 +16,12 @@ export interface UserStoreInterface {
   updateUserInfo: (userUpdate: IUser & { newPassword?: string }) => void;
   getAllUser: () => Promise<any>;
   getFilteredUser: (filter: Record<string, unknown>) => Promise<any>;
-  // getFilteredUserArchive: (filter: Record<string, unknown>) => Promise<any>;
   filters: { currentlyWorking: boolean };
   resetUser: () => void;
   updateFilters: (name: "currentlyWorking", status: boolean) => void;
   createUser: (data: IUser) => void;
   updateUser: (data: IUser) => void;
   deleteUser: (data: IUser) => void;
-  // archiveUser: (data: IUser) => void;
-  // deleteTotalUser: (data: IUser) => void;
   selectedUser: IUser | null;
   setSelectedUser: (data: IUser | null) => void;
   getAllUserAdmin: () => void;
@@ -84,10 +81,6 @@ class UserStore implements UserStoreInterface {
       this.getFilteredUser({ filter: "" });
 
     }
-    // if(status === false){
-    //   this.filters = { ...this.filters, [name]: status };
-    //   this.getFilteredUserArchive({ filter: "" });
-    // }
 
   };
 
@@ -98,6 +91,7 @@ class UserStore implements UserStoreInterface {
       this.isGettingInfo = false;
       console.log("me....",me);
     
+   
       if (me.data) {
         runInAction(() => {
           this.user = me.data as IUser;

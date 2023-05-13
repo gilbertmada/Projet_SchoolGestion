@@ -10,16 +10,16 @@ const useStyles = makeStyles({
   },
   data: {
     background: 'white',
-    padding: '5px',
-    height: '32vh',
+    padding: 'spx',
+    height: '50vh',
     border: '2px solid #C4C4C4',
     overflowY: 'scroll',
-    width: '100%',
+    marginBottom:'80px'
   },
   container: {
     margin: '2vh 0',
-    marginTop: '50px',
   },
+
   amount: {
     fontWeight: 'bold',
   },

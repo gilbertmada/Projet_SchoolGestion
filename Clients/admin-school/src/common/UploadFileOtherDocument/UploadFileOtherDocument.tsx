@@ -137,7 +137,7 @@ const UploadFileOther: FC<UploadFileOtherProps> = ({ setData, document, category
 
   return (
     <div className={classes.container}>
-      <div /* className={classes.containerPreview} */>
+      <div>
       <Preview
         handleClose={toggleModal}
         openModal={openModal}
@@ -146,7 +146,6 @@ const UploadFileOther: FC<UploadFileOtherProps> = ({ setData, document, category
       />
       </div>
     
-      {/* <div className={classes.containerFormUpload}> */}
      
           <FormUpload
             name={name}
@@ -157,10 +156,7 @@ const UploadFileOther: FC<UploadFileOtherProps> = ({ setData, document, category
             hiddenFileInput={hiddenFileInput}
             category={category}
           />
-      
-      {/* </div> */}
 
-      {/* <div className={classes.containerViewAfterUpload}> */}
         {responseApi?.filename && (
           <ViewAfterUpload
             checked={checked}
@@ -171,7 +167,6 @@ const UploadFileOther: FC<UploadFileOtherProps> = ({ setData, document, category
             deleteFile={deleteFile}
           />
         )}
-      {/* </div> */}
 
 
     </div>

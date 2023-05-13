@@ -41,7 +41,7 @@ const Dashboard: FC<AbstractEmptyInterface> = props => {
 
 
   const redirect = (link: string) => () => {
-    if (link === "/user/list" && userStore.user?.role === 'COLLABORATEUR') {
+    if (link === "/user/list"  && userStore.user?.role === 'COLLABORATEUR'  ) {
       return;
     }
     history.push(link);
@@ -87,7 +87,7 @@ const Dashboard: FC<AbstractEmptyInterface> = props => {
         <div className={classes.image}>
           <img src={`${config.servers.apiUrl}${userStore.user?.photo.replace("/uploadFile", "uploadFile")}` || photo} alt="profilephoto" className={classes.profil} />
           <div className={classes.userName}>
-            Bonjour {userStore.user?.firstName}
+            Bonjour {userStore.user?.lastName}
             <br />
             <div className={classes.userDate}>
               {formatDate}

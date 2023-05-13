@@ -128,11 +128,11 @@ class Classes implements ClasseStoreInterface {
 
   @action updateClasses = async (classeUpdate: IClasse) => {
     try {
-        console.log("classeUpdate...",classeUpdate);
+   
       const classe = await axios.patch(`${config.servers.apiUrl}classes/edit`, classeUpdate);
      
         rootStore.updateSnackBar(true, 'Modifié', 'success');
-        console.log("classe.upda...",classe);
+
       return classe;
     } catch (err) {
       parseError(err, {
@@ -163,9 +163,9 @@ class Classes implements ClasseStoreInterface {
 
     @action deleteTotalClasses = async (classeDelete: IClasse) => {
         try {
-            console.log("classeDelete.del...",classeDelete);
+
             const delClass = await axios.patch(`${config.servers.apiUrl}classes/deleteTotal`, classeDelete);
-            console.log("classe.del...",delClass);
+      
             rootStore.updateSnackBar(true, 'Supprimé', 'success');
             return delClass;
         } catch (err) {

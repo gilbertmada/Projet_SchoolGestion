@@ -43,28 +43,9 @@ export interface StudentStoreInterface {
     ecolagePrive: IEcolagePrive[];
     sumEcolagePrive: any;
     sumFraisDivers: any;
-    listHistoryDocument: [IHistoryDetails];
-    listHistoryEcolagePrive: [IHistoryDetails];
-    listHistoryFraisDivers: [IHistoryDetails];
-    listHistoryDroit: [IHistoryDetails];
-    loadingListHistoryDocument: boolean;
-    loadingListHistoryEcolagePrive: boolean;
-    loadingListHistoryFraisDivers: boolean;
-    loadingListHistoryDroit: boolean;
-    // setListHistoryDocument: (data: any[]) => void;
-    // setListHistoryEcolagePrive: (data: any[]) => void;
-    // setListHistoryFraisDivers: (data: any[]) => void;
-    // setListHistoryDroit: (data: any[]) => void;
     sendMail: (data: any) => void;
     setDroit: (data: IFraisDivers) => void;
     AddNewHistoryDocument: (user: any, docName: any, student: IStudent) => void;
-    // AddNewHistoryEcolagePrive: (user: any, docName: any, student: IStudent) => void;
-    // AddNewHistoryFraisDivers: (user: any, docName: any, student: IStudent) => void;
-    // AddNewHistoryDroit: (user: any, docName: any, student: IStudent) => void;
-    getListHistoryDocument: () => void;
-    // getListHistoryEcolagePrive:() => void;
-    // getListHistoryFraisDivers:() => void;
-    // getListHistoryDroit:() => void;
     setEcolagePrive: (data: IEcolagePrive) => void;
     setSumEcolagePrive: (data: number) => void;
     setSumFraisDivers: (data: number) => void;
@@ -81,11 +62,12 @@ export interface StudentStoreInterface {
     updateStudent: (data: IStudent) => void;
     resetStudent: () => void;
     deleteTotalStudent: (data: IStudent) => void;
+    AddNewHistoryStudentFrais: (data: IFraisDivers, student: IStudent | null) => void;
+    AddNewHistoryStudentEcolage: (data: IEcolagePrive, student: IStudent | null) => void;
     deleteTotalEcolage: (data: IEcolagePrive) => void;
     deleteTotalFraisDivers: (data: IFraisDivers) => void;
     selectedStudent: IStudent | null;
     setSelectedStudent: (data: IStudent | null) => void;
-    // AddNewHistoryStudent: (data: IStudent | null) => void;
     urlDocument: any[] | [];
     document: any;
     setDocument: (e: any, key: string) => void;
@@ -134,7 +116,7 @@ class StudentStore implements StudentStoreInterface {
 
     @observable listHistoryFraisDivers: [IHistoryDetails] = [defaultHistory];
 
-    @observable listHistoryDroit: [IHistoryDetails] = [defaultHistory];
+    @observable listHistoryDroit: IHistoryDetails[] = [defaultHistory];
 
     @observable sumEcolagePrive = 0;
 
@@ -174,34 +156,32 @@ class StudentStore implements StudentStoreInterface {
     }
 
     @action setSelectedStudent = (student: IStudent | null) => {
-        this.selectedStudent = student;
+
+            this.selectedStudent = student;
+
     };
 
     @action setStudent = (s: IStudent | null) => {
+
         this.Student = s;
     };
 
-    // @action setListHistoryDocument = (doc:any []) => {
-    //     this.listHistoryDocument.push({doc});
-    // };
 
     @action setopenDialogDoc = (bool: boolean) => {
         this.openDialogDoc = bool;
     };
 
     @action setDroit = (d: IFraisDivers) => {
-        // if (!this.selectedStudent?.schoolName.includes("Privé")) {
-        //     this.Student?.isFrais === true;
-            this.droit = [...this.droit, d];
-        // }
+
+        this.droit = [...this.droit, d];
+    
 
     };
 
     @action setEcolagePrive = (ecolage: IEcolagePrive) => {
-        // if (this.selectedStudent?.schoolName.includes("Privé")) {
-        //     this.Student?.isPrive === true;
-            this.ecolagePrive = [...this.ecolagePrive, ecolage];
-        // }
+   
+        this.ecolagePrive = [...this.ecolagePrive, ecolage];
+
 
     };
 
@@ -233,7 +213,6 @@ class StudentStore implements StudentStoreInterface {
                     docName
                 });
 
-            console.log("add....", add);
 
             rootStore.updateSnackBar(true, 'Modifié', 'success');
 
@@ -250,21 +229,59 @@ class StudentStore implements StudentStoreInterface {
 
     }
 
-    // @action AddNewHistoryDocument = async (user: any, student: IStudent, docName: any) => {
-    //     this.loadingListHistoryDocument = true;
-    //     if (student.class) {
-    //         if ((student.role === "LEAD_H" || student.role === "LEAD_F")) {
+    @action AddNewHistoryStudentEcolage = async (data: IEcolagePrive, student: IStudent | null) => {
+        try {
 
-    //             this.listHistoryDocument?.push({
-    //                 text: `- <b>${user.lastName}</b> a envoyé de document <b>${docName.label}</b> à <b>${student.lastName}</b>,
-    //               <b>${student.nomRole}</b>  <b>${student.class}</b> le <b>${moment().format("DD/MM/YYYY")}</b>.`,
-    //                 date:  new Date(),
-    //             })
+            const add = await axios.patch(`${config.servers.apiUrl}student/historyEcolage`,
+                {
+                    data,
+                    student,
 
-    //         }
-    //     }
-    //     this.loadingListHistoryDocument = false;
-    // }
+                });
+
+
+            rootStore.updateSnackBar(true, 'Modifié', 'success');
+
+            return add;
+
+        } catch (err: any) {
+            if (err.message.includes('code 400')) {
+                rootStore.updateSnackBar(true, 'Le type ');
+                return;
+            }
+
+            rootStore.updateSnackBar(true, "Une erreur s'est produite. Veuillez réessayer plus tard!");
+        }
+
+    }
+
+
+    @action AddNewHistoryStudentFrais = async (data: IFraisDivers, student: IStudent | null) => {
+        try {
+
+            const add = await axios.patch(`${config.servers.apiUrl}student/historyFrais`,
+                {
+                    data,
+                    student,
+
+                });
+
+
+            rootStore.updateSnackBar(true, 'Modifié', 'success');
+
+            return add;
+
+        } catch (err: any) {
+            if (err.message.includes('code 400')) {
+                rootStore.updateSnackBar(true, 'Le type ');
+                return;
+            }
+
+            rootStore.updateSnackBar(true, "Une erreur s'est produite. Veuillez réessayer plus tard!");
+        }
+
+    }
+
 
     @action getAllStudent = async () => {
         this.isLoading = true;
@@ -286,25 +303,6 @@ class StudentStore implements StudentStoreInterface {
     };
 
 
-    @action getListHistoryDocument = async () => {
-        this.loadingListHistoryDocument = true;
-        try {
-            const documentList = await axios.get(`${config.servers.apiUrl}student/historyDocument`);
-            console.log("documentList....", documentList);
-
-            // this.listHistoryDocument.document = students.data;
-            this.loadingListHistoryDocument = false;
-        } catch (error) {
-
-            parseError(
-                error,
-                "Une erreur s'est produite lors de la requête de vos infos. Veuillez réessayer"
-            );
-            this.loadingListHistoryDocument = false;
-        } finally {
-            this.loadingListHistoryDocument = false;
-        }
-    };
 
     @action getListEcolage = async () => {
         this.isLoading = true;
@@ -344,10 +342,29 @@ class StudentStore implements StudentStoreInterface {
 
     @action createStudent = async (data: IStudent) => {
 
+
         try {
+            const historyStudentDroit = {
+                text: `- <b>${data.lastName}</b>, classe de <b>${data.class}</b>, de numéro de matricule  <b>${data.matriculNumber}</b> a payé le droit de somme <b>${data.inscriptionDroit} Ar</b> le <b>${moment().format("DD/MM/YYYY")}</b>.`,
+                date: new Date()
+            };
 
-            const add = await axios.post(`${config.servers.apiUrl}student`, data);
+            const newValue = data.schoolName.includes("Privé") ? {
+                ...data,
+                isPrive: true,
+                historyStudentDroit,
 
+            } : {
+                ...data,
+                isPrive: false,
+                historyStudentDroit,
+            }
+
+
+            console.log("newValue....", newValue);
+            const add = await axios.post(`${config.servers.apiUrl}student`, newValue);
+
+            console.log("createStudent...;", add);
             if (add.data.matriculNumber === 'MatriculNumber already exists') {
                 rootStore.updateSnackBar(true, 'Numéro matricule existe déjà');
 

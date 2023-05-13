@@ -208,13 +208,7 @@ const CreateUser: FC<AbstractEmptyInterface> = (props: any) => {
       onClick: handleOpenDeleteModal,
       title: "Supprimer"
     },
-    // {
-    //   id: 4,
-    //   ItemIcon: AddIcon,
-    //   label: "Nouveau",
-    //   onClick: handleAddNew,
-    //   title: "Créer",
-    // },
+
 
   ];
 

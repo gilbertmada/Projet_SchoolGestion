@@ -169,7 +169,7 @@ const matieres = ["Malagasy", "Philosophie", "Français", "Anglais", "Science-Ec
 
 const allUsers = ["ADMIN", "DIR","DIRC","PROV", "SURV", "SURVE","ELEV", "PROF"];
 
-const admins = ["ADMIN", "DIR", "PROV", "PA","DIRC", "SURV"];
+const admins = ["ADMIN", "DIR", "PROV", "DIRC",];
 
 const utilisateurPermission = ["ADMIN", "DIR", "PROV","DIRC", "PA", "SURV"];
 

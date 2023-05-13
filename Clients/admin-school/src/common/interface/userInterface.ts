@@ -1,6 +1,5 @@
 export interface IUser {
     _id?: string;
-    identifiant:Date;
     lastName: string;
     firstName: string;
     schoolName:string;

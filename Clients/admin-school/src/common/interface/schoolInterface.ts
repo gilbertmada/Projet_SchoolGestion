@@ -1,9 +1,12 @@
 import { IUser } from './userInterface';
 export interface ISchool {
     _id: string;
-    schoolName: string;
+    // schoolName: string;
     identifiant: Date;
     user: IUser;
+    listStudent:any[];
+    listProfessor:any[];
+    listClasses:any[];
     deleted: boolean;
     updatedBy: string;
     createdAt: Date;

@@ -7,9 +7,9 @@ import rootStore from '../../store/AppStore';
 import classe from '../../Assets/dashboard/classe.svg';
 import { inject, observer } from 'mobx-react';
 import {
-
+  admins,
   utilisateurPermission,
-superUtilisateur
+  superUtilisateur
 } from '../utils/data';
 import { userStore } from '../../store';
 
@@ -29,7 +29,7 @@ const rowData = (): Idashboard[] => [
     link: '/user/list',
     nbr: rootStore.numbers.usersNumber,
     images: Users,
-    permissions: utilisateurPermission,
+    permissions: admins,
   },
   {
     titre: 'ELEVES',
@@ -66,7 +66,7 @@ const rowData = (): Idashboard[] => [
   //   images: test,
   //   permissions: admins,
   // },
-
+ 
 ];
 
 export default rowData;

@@ -11,8 +11,7 @@ const useStyles = makeStyles({
     padding: '10px 0px 10px 10px',
     fontWeight: 'bold',
     fontFamily: '"Roboto", sans-serif',
-    // display: "flex",
-    // flexAlign: "center",
+
     textAlign:"center",
     justifyContent: "space-between"
   },
@@ -22,7 +21,6 @@ const useStyles = makeStyles({
     }
   },
   resizeTextField: {
-    fontSize: '20px',
     color: 'black',
     width:"100%"
   },

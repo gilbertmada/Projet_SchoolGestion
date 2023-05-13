@@ -134,7 +134,7 @@ const CreateDocument: FC<CreateDocProps> = (props: any) => {
 
             props.studentStore.updateStudent(editEleve).then((addUser: any) => {
                 if (addUser) {
-                    history.push("/student/document");
+                    history.push("/student/list");
 
                 }
             });

@@ -19,7 +19,6 @@ const useStyles = makeStyles({
     }
   },
   resizeTextField: {
-    fontSize: '20px',
     color: 'black',
     width:"100%"
   },

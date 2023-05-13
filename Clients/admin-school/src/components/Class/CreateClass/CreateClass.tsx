@@ -13,15 +13,13 @@ import SaveListIcon from "@material-ui/icons/Save";
 import { inject, observer } from "mobx-react";
 import { FC, useEffect, useState } from "react";
 import EditFooter from "../../../common/EditFooter";
-import FormSelect from "../../../common/FormSelect/FormSelect";
-import HeaderPath from "../../../common/HeaderPath";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useHistory } from "react-router-dom";
 import { FooterIcon } from "../../../common/interface";
 import { ConfirmModal, DeleteTotalModal } from "../../../common/Modal";
 import ErrorSnackbar from "../../../common/ErrorSnackbar";
 import { ClasseStoreInterface } from "../../../store/ClasseStore";
-import { IClasse } from '../../../common/interface/classeInterface/classeInterface';
+import { UserStoreInterface } from "../../../store/UserStore";
 import { ProfessorStoreInterface } from "../../../store/ProfessorStore";
 import { AbstractEmptyInterface } from "../../../types";
 import SearchProfessorModal from "../../../common/SearchModal/SearchProfessorModal";
@@ -35,9 +33,10 @@ import { isFunction } from "lodash";
 interface CreateClassProps extends AbstractEmptyInterface {
     classeStore: ClasseStoreInterface;
     professorStore: ProfessorStoreInterface;
+    userStore: UserStoreInterface
 }
 const CreateClass: FC<AbstractEmptyInterface> = (props: any) => {
-    const { classeStore, professorStore } = props as CreateClassProps;
+    const { classeStore, professorStore,userStore } = props as CreateClassProps;
 
     const classes = useStyles();
     const history = useHistory();
@@ -314,7 +313,7 @@ const CreateClass: FC<AbstractEmptyInterface> = (props: any) => {
                                 name="schoolName"
                                 fullWidth={true}
                                 // value={dataClasse.schoolName || ""}
-                                value={classe.schoolName || ""}
+                                value={userStore.user?.schoolName || classe.schoolName || ""}
                                 onChange={handleChange}
 
                             />
@@ -452,4 +451,4 @@ const CreateClass: FC<AbstractEmptyInterface> = (props: any) => {
         </div>
     );
 }
-export default inject("classeStore")(observer(CreateClass))
+export default inject("classeStore","userStore")(observer(CreateClass))

@@ -1,7 +1,7 @@
 {
     "name": "admin-school",
     "version": "0.1.0",
-    "private": true,
+    "license": "UNLICENSED",
     "dependencies": {
         "@apollo/client": "^3.3.6",
         "@babel/plugin-proposal-decorators": "^7.13.0",

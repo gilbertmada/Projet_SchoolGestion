@@ -24,6 +24,7 @@ import { UserStoreInterface } from "../../../../store/UserStore";
 import { AbstractEmptyInterface } from "../../../../types";
 import useStyles from "../style";
 import { defaultDataPrive } from "../table.info";
+import { useHistory } from "react-router-dom";
 import rootStore from '../../../../store/AppStore';
 import { StudentStoreInterface } from "../../../../store/StudentStore";
 import { toJS } from "mobx"
@@ -44,6 +45,7 @@ const OptionsDialog: FC<AbstractEmptyInterface & DefaultProps> = (props) => {
   const { dataPrive, openEdit, handleClose, userStore, studentStore } =
     props as Props;
   const classes = useStyles();
+  const history = useHistory();
   const [current, setCurrent] = useState<IEcolagePrive>(defaultDataPrive);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isSelectAll, setIsSelectAll] = useState<boolean>(false);
@@ -77,18 +79,19 @@ const OptionsDialog: FC<AbstractEmptyInterface & DefaultProps> = (props) => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
 
-    if (current.student.trim().toLocaleLowerCase()  !== studentStore.selectedStudent?.lastName.trim().toLocaleLowerCase()  || current.matriculNumber !== studentStore.selectedStudent?.matriculNumber) {
+
+    if (current.student.trim().toLocaleLowerCase() !== studentStore.selectedStudent?.lastName.trim().toLocaleLowerCase() || current.matriculNumber !== studentStore.selectedStudent?.matriculNumber) {
 
       rootStore.updateSnackBar(true, 'Prénom ou Numéro matricule incorrect !');
     } else if (!isEdit) {
-     
+
       studentStore.setEcolagePrive({
         ...current,
         id: studentStore.ecolagePrive.length ?
           studentStore.ecolagePrive[studentStore.ecolagePrive.length - 1].id + 1
           : 1,
       });
-      studentStore.createEcolagePrive({...current})
+      studentStore.createEcolagePrive({ ...current })
 
     }
     else {
@@ -96,6 +99,10 @@ const OptionsDialog: FC<AbstractEmptyInterface & DefaultProps> = (props) => {
         ...current
       });
     }
+
+  studentStore.AddNewHistoryStudentEcolage(current, studentStore.selectedStudent)
+  history.push("/student/list");
+     
 
     handleClose(e);
   };
@@ -121,7 +128,7 @@ const OptionsDialog: FC<AbstractEmptyInterface & DefaultProps> = (props) => {
             fullWidth={true}
             InputLabelProps={{ shrink: true }}
           />
-           <TextField
+          <TextField
             label="Numéro matricule"
             name="matriculNumber"
             value={current.matriculNumber}

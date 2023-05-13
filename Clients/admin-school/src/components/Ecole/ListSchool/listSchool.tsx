@@ -9,6 +9,7 @@ import config from "../../../config/index";
 import { SchoolStoreInterface } from "../../../store/SchoolStore";
 import { AbstractEmptyInterface } from "../../../types";
 import useStyles from "./style";
+import { toJS } from "mobx";
 
 interface ListSchoolProps extends AbstractEmptyInterface {
   schoolStore: SchoolStoreInterface;
@@ -38,20 +39,21 @@ const ListSchool: FC<AbstractEmptyInterface> = (props: any) => {
       headerName: "Ecole",
       width: Math.floor(screenSize / 6),
       headerClassName: classes.tableHeader,
-    },
-    {
-      field: "lastName",
-      headerName: "Nom",
-      width: Math.floor(screenSize / 6),
-      headerClassName: classes.tableHeader,
-      valueFormatter: (params) => params.row?.user?.lastName,
+      valueFormatter: (params) => params.row?.user?.schoolName,
     },
     {
       field: "firstName",
-      headerName: "Prénom",
+      headerName: "Nom",
       width: Math.floor(screenSize / 6),
       headerClassName: classes.tableHeader,
       valueFormatter: (params) => params.row?.user?.firstName,
+    },
+    {
+      field: "lastName",
+      headerName: "Prénom",
+      width: Math.floor(screenSize / 6),
+      headerClassName: classes.tableHeader,
+      valueFormatter: (params) => params.row?.user?.lastName,
     },
     {
       field: "username",
@@ -94,7 +96,7 @@ const ListSchool: FC<AbstractEmptyInterface> = (props: any) => {
       schoolStore.getAllSchool();
     }
   };
-
+  console.log("schoolStore....", toJS(schoolStore.allSchool));
   const createNew = () => {
     schoolStore.setSelectedSchool(null);
     schoolStore.allSchool = [];
@@ -111,7 +113,7 @@ const ListSchool: FC<AbstractEmptyInterface> = (props: any) => {
 
   const currentPaths = [
     { label: "Dashboard", path: "/" },
-    { label: "Ecole", path: "/school/list" },
+    // { label: "Ecole", path: "/school/list" },
     { label: "Liste des ecoles", path: "/school/list" },
   ];
 

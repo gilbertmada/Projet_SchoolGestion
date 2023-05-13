@@ -1,4 +1,4 @@
-import { GridColDef,GridValueGetterParams } from '@material-ui/data-grid';
+import { GridColDef } from '@material-ui/data-grid';
 import { usersRoles } from "../utils/data";
 
 
@@ -10,13 +10,13 @@ export const getUserColumns = (
   return [
   
     {
-      field: "lastName",
+      field: "firstName",
       headerName: "Nom",
       width: Math.floor(screenSize / 7),
       headerClassName: classes.tableHeader,
     },
     {
-      field: "firstName",
+      field: "lastName",
       headerName: "Prénom",
       width: Math.floor(screenSize / 5),
       headerClassName: classes.tableHeader,

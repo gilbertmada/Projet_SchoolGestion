@@ -22,6 +22,7 @@ import { FooterIcon } from "../../../common/interface";
 import { ConfirmModal, ConfirmQuitModal, DeleteTotalModal } from "../../../common/Modal";
 import config from "../../../config/index";
 import { StudentStoreInterface } from "../../../store/StudentStore";
+import { UserStoreInterface } from "../../../store/UserStore";
 import { AbstractEmptyInterface } from "../../../types";
 import exportPDFStore from "../../../store/ExportPDFStore";
 import { toJS } from "mobx";
@@ -33,13 +34,13 @@ import { etudiantRoles } from "../../../common/utils/data";
 
 interface CreateStudentProps extends AbstractEmptyInterface {
   studentStore: StudentStoreInterface;
-
+  userStore: UserStoreInterface
 }
 
 const nameImage = "image";
 const CreateStudent: FC<CreateStudentProps> = (props: any) => {
 
-  const { studentStore } = props as CreateStudentProps;
+  const { studentStore, userStore } = props as CreateStudentProps;
   const classes = useStyles();
   const history = useHistory();
   const [isStorage, setIsStorage] = useState(false);
@@ -90,6 +91,7 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
     }
 
   }, [studentStore]);
+
 
 
   const handleOpenConfirmModal = (path: string) => (e: any) => {
@@ -151,10 +153,12 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
   };
 
   const handleAddNew = () => {
+    // location.reload();
     history.push("/student/ecolage");
   };
 
   const handleAddDoc = () => {
+    // location.reload();
     history.push("/student/document");
   };
   const getOptionLabel = (option: any) => option?.label;
@@ -183,6 +187,7 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
       setOpenErrorSnackbar(true);
       return;
     }
+
 
     if (!studentStore.selectedStudent) {
 
@@ -429,7 +434,7 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
                       required={true}
                       name="schoolName"
                       fullWidth={true}
-                      value={student.schoolName || ""}
+                      value={userStore.user?.schoolName || student.schoolName || ""}
                       onChange={handleChange}
                     />
                   </Grid>
@@ -544,5 +549,5 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
     </div>
   );
 }
-export default inject("studentStore")(observer(CreateStudent));
+export default inject("studentStore", "userStore")(observer(CreateStudent));
 

@@ -57,7 +57,7 @@ const SearchSchoolModal: FC<any> = ({ openModal, handleClose, setSchool }) => {
     if (keyword !== '') {
 
       setIsLoading(true);
-      const filtre = await axios
+      await axios
         .post(`${config.servers.apiUrl}user/filter`, { keyword })
         .then(res => {
           setUser(res.data);
@@ -68,7 +68,7 @@ const SearchSchoolModal: FC<any> = ({ openModal, handleClose, setSchool }) => {
 
     } else {
       setIsLoading(true);
-      const profss = await axios
+      await axios
         .get(`${config.servers.apiUrl}user/`)
         .then(res => {
           setUser(res.data);
@@ -81,9 +81,9 @@ const SearchSchoolModal: FC<any> = ({ openModal, handleClose, setSchool }) => {
     }
   };
 
-  const selectUser= (data: GridRowModel) => {
+  const selectUser = (data: GridRowModel) => {
     setSchool(data);
-    
+
     handleClose();
   };
 

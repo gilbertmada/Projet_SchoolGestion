@@ -1,3 +1,6 @@
+import {
+  Grid,
+} from "@material-ui/core";
 import { inject, observer } from "mobx-react";
 import { FC, useLayoutEffect, useEffect, useState, useMemo } from "react";
 import { IEcolagePrive, IFraisDivers, IStudent } from '../../../common/interface/StudentInterface';
@@ -19,9 +22,11 @@ import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import rootStore from '../../../store/AppStore';
 import moment from "moment";
 import { formatAmountToFr } from "../../../common/utils/data";
+import History from "./HistoryEcolage/History";
 import { toJS } from "mobx";
 import { StudentStoreInterface } from "../../../store/StudentStore";
 import { exportPDFStore } from "../../../store";
+import { log } from "console";
 
 interface Props extends AbstractEmptyInterface {
   studentStore: StudentStoreInterface;
@@ -42,28 +47,11 @@ const Ecolage: FC<AbstractEmptyInterface> = (props: any) => {
   const [pathRedirect, setPathRedirect] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [openTotalDeleteModal, setOpenTotalDeleteModal] = useState(false);
-  // const [isPrive, setIsPrive] = useState(false);
-
-
-
-
-  // useEffect(() => {
-
-  //   if (studentStore.selectedStudent?.schoolName.includes("Privé")) {
-
-  //     setIsPrive(true);
-  //     console.log("isprive true");
-      
-  //   } else {
-  //     setIsPrive(false);
-  //     console.log("isprive false");
-  //   }
-
-  // }, [studentStore.selectedStudent]);
 
   useEffect(() => {
-    if (studentStore.selectedStudent) {
+    if (studentStore.selectedStudent?.isPrive) {
       studentStore.getListEcolage();
+    } else {
       studentStore.getListFraisDivers();
     }
 
@@ -200,21 +188,22 @@ const Ecolage: FC<AbstractEmptyInterface> = (props: any) => {
 
 
   const deleteTotalData = () => {
-    
+
     if (studentStore.selectedStudent?.isPrive) {
 
       if (selectListEcolage.length > 0) {
+
         for (let i = 0; i < selectListEcolage.length; i++) {
-
-
-          props.studsentStore
-            .deleteTotalEcolage(selectListEcolage[i])
-            .then((edit: any) => {
-              if (edit?.status === 200) {
-                setOpenTotalDeleteModal(false);
-                history.push("/student/new-student");
-              }
-            });
+          if (selectListEcolage[i]) {
+            props.studentStore
+              .deleteTotalEcolage(selectListEcolage[i])
+              .then((edit: any) => {
+                if (edit?.status === 200) {
+                  setOpenTotalDeleteModal(false);
+                  history.push("/student/new-student");
+                }
+              });
+          }
         }
 
       }
@@ -264,10 +253,7 @@ const Ecolage: FC<AbstractEmptyInterface> = (props: any) => {
           handleCloseDeleteModal={handleCloseDeleteTotalModal}
           deleteData={deleteTotalData}
         />
-        {/* <Documents
-          open={studentStore.openDialogDoc}
-          handleClose={toogleDialogCreate}
-        /> */}
+
       </div>
 
       <HeaderPath
@@ -294,43 +280,62 @@ const Ecolage: FC<AbstractEmptyInterface> = (props: any) => {
           },
         ]}
       />
-      {studentStore.selectedStudent?.isPrive ?(
-        <CommonItem
-        total="Total avec droit :  "
-        valueTotal={totalDroitEcolage ? formatAmountToFr(totalDroitEcolage).replace(".", " ") : "0 Ar"}
-        title="Ecolage"
-        blockTarif={false}
-        columns={columnPrive}
-        rows={selectListEcolage}
-        loading={studentStore.isLoading}
-        handleAdd={handleAdd}
-        onRowClick={onRowSelected}
-      />
-      )  :
-       (
-        <CommonItem
-        total="Total avec droit : "
-        valueTotal={totalDroitFrais ? formatAmountToFr(totalDroitFrais).replace(".", " ") : "0 Ar"}
-        title="Frais Divers"
-        blockTarif={false}
-        columns={columnDivers}
-        rows={selectListFrais}
-        handleAdd={handleAddFrais}
-        loading={studentStore.isLoading}
-        onRowClick={onRowSelected}
-      />
-       )}
+      {studentStore.selectedStudent?.isPrive  ? (
+        <div >
+          <Grid item={true} md={12} xs={12} >
+            <CommonItem
+              total="Total avec droit :  "
+              valueTotal={totalDroitEcolage ? formatAmountToFr(totalDroitEcolage).replace(".", " ") : "0 Ar"}
+              title="Ecolage"
+              blockTarif={false}
+              columns={columnPrive}
+              rows={selectListEcolage}
+              loading={studentStore.isLoading}
+              handleAdd={handleAdd}
+              onRowClick={onRowSelected}
+            />
+          </Grid>
 
-      {studentStore.selectedStudent?.isPrive ?(<EcolageDialog
+          <Grid item={true} md={12} xs={12}>
+            <History />
+          </Grid>
+        </div>
+
+      ) : !studentStore.selectedStudent?.isPrive ?
+        (<div >
+
+          <Grid item={true} md={12} xs={12} >
+            <CommonItem
+              total="Total avec droit : "
+              valueTotal={totalDroitFrais ? formatAmountToFr(totalDroitFrais).replace(".", " ") : "0 Ar"}
+              title="Frais Divers"
+              blockTarif={false}
+              columns={columnDivers}
+              rows={selectListFrais}
+              handleAdd={handleAddFrais}
+              loading={studentStore.isLoading}
+              onRowClick={onRowSelected}
+            />
+          </Grid>
+
+          <Grid item={true} md={12} xs={12}>
+            <History />
+          </Grid>
+
+        </div>
+
+        ):""}
+
+      {studentStore.selectedStudent?.isPrive ? (<EcolageDialog
         dataPrive={editEcolage}
         openEdit={openEdit}
         handleClose={handleToggleEditDialog(false)}
-      />)  :
-       (<FraisDiversDialog
-        dataDivers={editFrais}
-        openEdit={openEdit}
-        handleClose={handleToggleEditDialog(false)}
-      />) }
+      />) :!studentStore.selectedStudent?.isPrive ?
+        (<FraisDiversDialog
+          dataDivers={editFrais}
+          openEdit={openEdit}
+          handleClose={handleToggleEditDialog(false)}
+        />):""}
       <EditFooter icons={footerIcons} />
     </div>
   );

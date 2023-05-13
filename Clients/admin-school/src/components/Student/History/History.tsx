@@ -24,18 +24,6 @@ const History: FC<AbstractEmptyInterface> = (props) => {
 
   }, [studentStore]);
 
-  // const getHistoryDocument = () => {
-  //   let history: any[] = [];
-  //   const students = toJS(studentStore.allStudent);
-  //   for (let i = 0; i < students.length; i++) {
-  //       if (studentStore.selectedStudent?.role===students[i].role && studentStore.selectedStudent?.class===students[i].class) {
-  //         history= students[i].historyStudent;
-  //     }
-    
-      
-  //   }
-  //   return history;
-  // }
 
 
   return (

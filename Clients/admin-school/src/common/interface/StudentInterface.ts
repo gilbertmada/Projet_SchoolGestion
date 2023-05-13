@@ -10,6 +10,9 @@ export interface IStudent {
   matriculNumber: string;
   documents: any;
   historyStudent: any[];
+  historyStudentEcolage:any[];
+  historyStudentFrais:any[];
+  historyStudentDroit:any[];
   inscriptionDroit: string;
   class: string;
   address: string;

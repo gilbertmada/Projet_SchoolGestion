@@ -9,6 +9,7 @@ import { ProtectedRoute } from "../common/ProtectedRoute";
 import {
   allUsers,
   superUtilisateur,
+  admins,
   utilisateurPermission,
 
 } from "../common/utils/data";
@@ -25,7 +26,7 @@ const ListStudent = lazy(() => import("../components/Student/ListStudent/listStu
 const CreateDocument = lazy(() => import("../components/Student/Document/Document"));
 const CreateProfessor = lazy(() => import("../components/Professor/CreateProfessor"));
 const ListProfessor = lazy(() => import("../components/Professor/ListProfessor"));
-// import Dashboard from "../components/Dashboard";
+
 
 let signOutTime: any = 0;
 
@@ -59,55 +60,48 @@ const Router = () => {
     <Switch>
       <Route
         path="/login"
-        // path={login}
         exact={true}
         component={Login}
       />
       <ProtectedRoute
         path="/"
-        // path={pathDefault}
         exact={true}
         component={Dashboard}
-        access={allUsers}
+        access={utilisateurPermission}
       />
       <ProtectedRoute
         path="/user/list"
         exact={true}
         component={ListUser}
-        // access={adminswithCom}
-        access={utilisateurPermission}
+        access={admins}
       />
       <ProtectedRoute
         path="/user/new-user"
         exact={true}
-        // access={adminswithCom}
-        access={utilisateurPermission}
+        access={admins}
         component={CreateUser}
       />
       <ProtectedRoute
         path="/user/profile"
         exact={true}
         component={User}
-        access={allUsers}
+        access={admins}
       />
       <ProtectedRoute
         path="/student/list"
         exact={true}
         component={ListStudent}
-        // access={adminswithCom}
         access={utilisateurPermission}
       />
       <ProtectedRoute
         path="/student/new-student"
         exact={true}
-        // access={adminswithCom}
         access={utilisateurPermission}
         component={CreateStudent}
       />
          <ProtectedRoute
         path="/student/document"
         exact={true}
-        // access={adminswithCom}
         access={utilisateurPermission}
         component={CreateDocument}
       />
@@ -115,12 +109,11 @@ const Router = () => {
         path="/student/ecolage"
         exact={true}
         component={Ecolage}
-        access={allUsers}
+        access={utilisateurPermission}
         />
       <ProtectedRoute
         path="/professor/new-professor"
         exact={true}
-        // access={adminswithCom}
         access={utilisateurPermission}
         component={CreateProfessor}
       />
@@ -134,14 +127,12 @@ const Router = () => {
          <ProtectedRoute
         path="/class/new-class"
         exact={true}
-        // access={adminswithCom}
         access={utilisateurPermission}
         component={CreateClass}
       />
         <ProtectedRoute
         path="/class/list"
         exact={true}
-        // access={adminswithCom}
         access={utilisateurPermission}
         component={ListClass}
       />
@@ -149,14 +140,12 @@ const Router = () => {
          <ProtectedRoute
         path="/school/new-school"
         exact={true}
-        // access={adminswithCom}
         access={superUtilisateur}
         component={CreateSchool}
       />
       <ProtectedRoute
         path="/school/list"
         exact={true}
-        // access={adminswithCom}
         access={superUtilisateur}
         component={ListSchool}
       />

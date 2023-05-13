@@ -26,21 +26,23 @@ import { ConfirmModal, ConfirmQuitModal, DeleteTotalModal } from "../../../commo
 import { profRoles } from "../../../common/utils/data";
 import config from "../../../config/index";
 import { ProfessorStoreInterface } from "../../../store/ProfessorStore";
+import { UserStoreInterface } from "../../../store/UserStore";
 import { AbstractEmptyInterface } from "../../../types";
 import { toJS } from "mobx";
 import rootStore from '../../../store/AppStore';
 import useStyles from "./style";
+import { schoolStore } from "../../../store";
 
 interface CreateProfProps extends AbstractEmptyInterface {
   professorStore: ProfessorStoreInterface;
-
+  userStore: UserStoreInterface
 }
 
 const nameImage = "image";
 
 const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
 
-  const { professorStore } = props as CreateProfProps;
+  const { professorStore, userStore } = props as CreateProfProps;
 
   const classes = useStyles();
   const history = useHistory();
@@ -70,6 +72,12 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
   }, [professorStore.selectedProfessor]);
 
 
+  //   useEffect(() => {
+  // if (schoolStore.user) {
+  //   return schoolStore.user
+  // }
+  //   }, [schoolStore.user]);
+
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setProfessor({ ...professor, [name]: value });
@@ -91,14 +99,14 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
     e.preventDefault();
 
     if (!professorStore.selectedProfessor) {
-      
-        props.professorStore.createProfessor(professor).then((addProf: any) => {
-          if (addProf) {
-            history.push("/professor/list");
-            professorStore.getAllProfessor();
-          }
-        });
-      
+
+      props.professorStore.createProfessor(professor).then((addProf: any) => {
+        if (addProf) {
+          history.push("/professor/list");
+          professorStore.getAllProfessor();
+        }
+      });
+
     } else {
       props.professorStore.updateProfessor(professor).then((editProf: any) => {
 
@@ -118,15 +126,15 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
     e.preventDefault();
 
     setPathRedirect(path);
-    
 
-    if (!isStorage ) {
+
+    if (!isStorage) {
       setOpenQuitModal(true);
     } else {
       setOpenModal(true)
     }
 
-   
+
     // setOpenModal(true);
   };
 
@@ -306,7 +314,7 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
                     />
                   </Grid>
                   <Grid container={true} spacing={2}>
-                    <Grid item={true} md={6}>
+                    <Grid item={true} md={4}>
                       <TextField
                         label="Nom"
                         required={true}
@@ -317,12 +325,23 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
                       />
                     </Grid>
 
-                    <Grid item={true} xs={12} md={6}>
+                    <Grid item={true} xs={12} md={4}>
                       <TextField
                         label="Prénom"
+                        required={true}
                         name="firstName"
                         fullWidth={true}
                         value={professor.firstName || ""}
+                        onChange={handleChange}
+                      />
+                    </Grid>
+                    <Grid item={true} xs={12} md={4}>
+                      <TextField
+                        label="Ecole"
+                        required={true}
+                        name="schoolName"
+                        fullWidth={true}
+                        value={userStore.user?.schoolName ||  professor.schoolName ||  ""}
                         onChange={handleChange}
                       />
                     </Grid>
@@ -361,8 +380,8 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
                       />
                     </Grid>
                   </Grid>
-                 
-                </Grid> 
+
+                </Grid>
               </Grid>
             </div>
           </div>
@@ -373,4 +392,4 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
   );
 };
 
-export default inject("professorStore")(observer(CreateProfessor));
+export default inject("professorStore", "userStore")(observer(CreateProfessor));

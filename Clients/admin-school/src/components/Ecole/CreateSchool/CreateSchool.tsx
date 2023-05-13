@@ -89,7 +89,7 @@ const CreateSchool: FC<AbstractEmptyInterface> = (props: any) => {
     setUser({ ...user, [name]: value });
     setEcole({ ...ecole, user });
     schoolStore.setUser({ ...user, [name]: value });
- 
+
   };
 
   const toggleSchool = () => {
@@ -104,18 +104,18 @@ const CreateSchool: FC<AbstractEmptyInterface> = (props: any) => {
   const handleUpdateSchool = (dataUser: any) => {
     setUser({ ...user, ...dataUser });
     setEcole({ ...ecole, user: dataUser });
+
     schoolStore.setUser({ ...user, ...dataUser });
     schoolStore.setEcole({ ...ecole, user: dataUser });
-   
+
 
 
   };
-  console.log("ecole...", ecole);
-  console.log("schoolStore.selectedSchool", toJS(schoolStore.selectedSchool));
+
 
   const onSubmit = (e: any) => {
     e.preventDefault();
-   
+
     if (!toJS(schoolStore.selectedSchool)) {
 
       props.schoolStore.createSchool(ecole).then((addUser: any) => {
@@ -125,6 +125,9 @@ const CreateSchool: FC<AbstractEmptyInterface> = (props: any) => {
         }
       });
     } else {
+      console.log("ecole...", ecole);
+      console.log("schoolStore.selectedSchool", toJS(schoolStore.selectedSchool));
+      console.log("schoolStore", toJS(schoolStore));
       props.schoolStore.updateSchool(ecole).then((editSchool: any) => {
         if (editSchool) {
           history.push("/school/list");
@@ -216,7 +219,7 @@ const CreateSchool: FC<AbstractEmptyInterface> = (props: any) => {
   ];
 
 
-
+  console.log("ecole.;;;;;;;;;..;;",toJS(schoolStore.user));
 
   return (
     <div className={classes.root}>
@@ -263,8 +266,9 @@ const CreateSchool: FC<AbstractEmptyInterface> = (props: any) => {
         ]}
       />
 
+
       <form onSubmit={onSubmit}>
-        <div className={classes.itemClass}>
+        {/* <div className={classes.itemClass}>
           <Grid item={true} md={4}>
             <TextField
               label="Nom d'ecole"
@@ -276,10 +280,10 @@ const CreateSchool: FC<AbstractEmptyInterface> = (props: any) => {
 
             />
           </Grid>
-        </div>
+        </div> */}
 
         <Grid item={true} sm={12} xs={12}>
-          <div className={classes.title}>UTILISATEUR  <EditIcon onClick={ChangeIt} className={classes.iconStyle} style={{ display: HideBtn }} /></div>
+          <div className={classes.title}>UTILISATEUR </div>
           <div className={classes.item}>
             <Grid container={true} direction="row" spacing={1}>
               <Grid item={true} sm={4} xs={12}>
@@ -288,7 +292,7 @@ const CreateSchool: FC<AbstractEmptyInterface> = (props: any) => {
                   name="username"
                   required={true}
                   value={
-                    ecole.user?.username || ""
+                    schoolStore.user?.username || ""
                   }
                   disabled={true}
                   InputProps={{
@@ -310,7 +314,22 @@ const CreateSchool: FC<AbstractEmptyInterface> = (props: any) => {
                   disabled={true}
                   required={true}
                   onChange={handleChangeSchool}
-                  value={ecole.user?.lastName || ""}
+                  value={schoolStore.user?.lastName ||""}
+                  InputProps={{
+                    classes: {
+                      input: classes.resizeTextField,
+                    },
+                  }}
+                />
+              </Grid>
+              <Grid item={true} sm={4} xs={12}>
+                <TextField
+                  label="Nom"
+                  name="firstName"
+                  disabled={true}
+                  required={true}
+                  onChange={handleChangeSchool}
+                  value={schoolStore.user?.firstName || ""}
                   InputProps={{
                     classes: {
                       input: classes.resizeTextField,
@@ -324,12 +343,12 @@ const CreateSchool: FC<AbstractEmptyInterface> = (props: any) => {
 
               <Grid item={true} sm={4} xs={12}>
                 <TextField
-                  label="Nom"
-                  name="firstName"
+                  label="Nom d'ecole"
+                  name="schoolName"
                   disabled={true}
                   required={true}
                   onChange={handleChangeSchool}
-                  value={ecole.user?.firstName || ""}
+                  value={schoolStore.user?.schoolName || ""}
                   InputProps={{
                     classes: {
                       input: classes.resizeTextField,
@@ -344,7 +363,7 @@ const CreateSchool: FC<AbstractEmptyInterface> = (props: any) => {
                   disabled={true}
                   required={true}
                   onChange={handleChangeSchool}
-                  value={ecole.user?.email || ""}
+                  value={schoolStore.user?.email || ""}
                   InputProps={{
                     classes: {
                       input: classes.resizeTextField,

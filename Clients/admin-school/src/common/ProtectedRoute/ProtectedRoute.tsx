@@ -21,6 +21,7 @@ const getNoAccessDefaultPath = (access: string[], noAccessRedirection?: string):
   const loggedUser = userStore.user;
   if (isConnected && loggedUser) {
     if (access.includes(loggedUser.role)) {
+      
       return '';
     }
     return noAccessRedirection || '/';
