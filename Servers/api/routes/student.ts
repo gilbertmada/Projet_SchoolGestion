@@ -6,7 +6,7 @@ import studentControleur from "../controllers/StudentController";
 
 const router = Router();
 // get list
-router.get("/", [checkJwt, checkRole(allUsers)], studentControleur.getListStudent);
+router.get("/",  [checkJwt, checkRole(allUsers)] , studentControleur.getListStudent);
 
 //Create new Student
 router.post("/", [checkJwt, checkRole(allUsers)], studentControleur.createStudent);
@@ -46,8 +46,6 @@ router.patch("/historyEcolage", [checkJwt, checkRole(allUsers)], studentControle
 //getHistoryFraisDivers
 router.patch("/historyFrais", [checkJwt, checkRole(allUsers)], studentControleur.AddNewHistoryStudentFrais);
 
-//getHistoryDroit
-router.patch("/historyDroit", [checkJwt, checkRole(allUsers)], studentControleur.AddNewHistoryStudentDroit);
 // Get list ecolage
 router.get("/getEcolage", [checkJwt, checkRole(allUsers)], studentControleur.getListEcolage);
 //Get list Frais Divers

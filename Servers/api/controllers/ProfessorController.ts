@@ -26,7 +26,6 @@ export default class ProfessorController {
           email: req.body?.email,
           IM: req.body?.IM,
           matiere: req.body?.matiere,
-          password: bcrypt.hashSync(req.body.password, 8),
           photo: req.body?.photo,
           createdBy: getUserIdFromToken(token),
           role: req.body?.role,
@@ -107,9 +106,7 @@ export default class ProfessorController {
         updatedAt: Date.now(),
         isArchive: info.isArchive
       };
-      if (info.newPassword) {
-        updatedInfo.password = bcrypt.hashSync(info.newPassword, 8);
-      }
+    
       if (info.role) {
         updatedInfo.role = info.role;
       }

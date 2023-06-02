@@ -28,7 +28,7 @@ export default class studentControleur {
 
   //new student
   static createStudent = async (req: Request, res: Response) => {
- 
+
     console.log("newData....", req.body);
 
     const token = <string>res.getHeader("token");
@@ -37,7 +37,7 @@ export default class studentControleur {
     }).then(async (student: any) => {
       if (student) {
         return res.status(200).json({
-          matriculNumber: student.matriculNumber === req.body.matriculNumber && student.class === req.body.class ? "MatriculNumber already exists" : "",
+          matriculNumber: (student.class === req.body.class && student.matriculNumber === req.body.matriculNumber) ? "MatriculNumber already exists" : "",
         });
       } else {
         const newData = {
@@ -54,7 +54,7 @@ export default class studentControleur {
           photo: req.body.photo,
           inscriptionDroit: req.body.inscriptionDroit,
           historyStudentDroit: req.body.historyStudentDroit,
-          isPrive:req.body.isPrive
+          isPrive: req.body.isPrive
         }
 
 
@@ -64,11 +64,9 @@ export default class studentControleur {
           deleted: false,
         });
 
-        console.log("newStudent....", newStudent);
         try {
 
           const student = await newStudent.save();
-          console.log("student....", student);
           res.status(200).send(student);
 
         } catch (err) {
@@ -90,6 +88,7 @@ export default class studentControleur {
       ecolageMonth: ecolage.ecolageMonth,
       isEcolage: true,
     });
+    
     try {
       const ecolagePrive = await newEcolage.save();
       res.send(ecolagePrive);
@@ -165,7 +164,7 @@ export default class studentControleur {
           }
         }
       );
-      console.log("resp....", resp);
+  
       res.status(200).send(resp);
     } catch (err) {
       res.status(500).send({
@@ -404,62 +403,7 @@ export default class studentControleur {
     }
   }
 
-  static AddNewHistoryStudentDroit = async (req: Request, res: Response) => {
-
-    let listHistoryDroit: HistoryInfo[] | undefined = [];
-    const { student } = req.body;
-
-    console.log("data......", req.body);
-
-
-    const eleve = await Student.findOne({ _id: student._id });
-    console.log("eleve....", eleve);
-    if (!eleve) {
-      res.status(404).send({
-        status: 'ERROR',
-        code: 'STUDENT_NOT_FOUND',
-        message: "Unable to find student to update"
-      });
-      return;
-    }
-
-    try {
-
-      // if (eleve.class) {
-
-      //   eleve?.historyStudentDroit.push({
-      //       text: `- <b>${data.student}</b>, classe de <b>${student.class}</b>, de numéro de matricule  <b>${data.matriculNumber}</b> a payé de frais divers de somme <b>${data.frais} Ar</b> le <b>${ moment(data.datePayDivers).format("DD/MM/YYYY") }</b>.`,
-      //       date: new Date()
-      //     })
-
-      //   }
-      // listHistoryFrais = eleve?.historyStudentFrais
-      //   .slice()
-      //   .sort((a: HistoryInfo, b: HistoryInfo) => {
-      //     const date1 = a.date;
-      //     const date2 = b.date;
-
-      //     return new Date(date2).getTime() - new Date(date1).getTime();
-      //   });
-
-
-      // const resp = await Student.updateOne({ _id: eleve?._id },
-      //   {
-      //     $set: {
-      //       historyStudentDroit: listHistoryDroit,
-      //     }
-      //   }
-      // );
-      // console.log("resp....", resp);
-      // res.status(200).send(resp);
-    } catch (err) {
-      res.status(500).send({
-        status: 'ERROR',
-        code: 'INTERNAL_SERVER_ERROR',
-        message: "Unable to update user"
-      });
-    }
-  }
+ 
   static getFilteredStudent = async (req: Request, res: Response) => {
 
     const { filter } = req.body;
@@ -561,15 +505,15 @@ export default class studentControleur {
   }
 
   static sendMail = async (req: Request, res: Response) => {
+    let listHistoryDocument: HistoryInfo[] = [];
+    const {user,student} = req.body;
+    console.log("data.....", req.body);
 
-    const data = req.body;
-    console.log("data.....", data);
-
-    if (!data.Document.label) {
+    if (!student.Document.label) {
       return res.status(400).send({
         status: "ERROR",
-        code: "NO_SIGNATURE",
-        message: `Signature is mandatory`,
+        code: "NO_DOCUMENT",
+        message: `Document is mandatory`,
       });
     }
 
@@ -582,6 +526,45 @@ export default class studentControleur {
     }
 
 
+    const eleve = await Student.findOne({ _id: student._id });
+
+    if (!eleve) {
+      res.status(404).send({
+        status: 'ERROR',
+        code: 'STUDENT_NOT_FOUND',
+        message: "Unable to find student to update"
+      });
+      return;
+    }
+
+
+      if (eleve.class) {
+        if ((eleve.role === "LEAD_H" || eleve.role === "LEAD_F")) {
+          eleve?.historyStudent.push({
+            text: `- <b>${user.lastName}</b> a envoyé de document <b>${student.Document.label}</b> à <b>${student.lastName}</b>,
+              <b>${student.nomRole}</b>  <b>${student.class}</b> le <b>${moment().format("DD/MM/YYYY")}</b>.`,
+            date: new Date()
+          })
+
+        }
+      }
+
+      listHistoryDocument = eleve?.historyStudent
+        .slice()
+        .sort((a: HistoryInfo, b: HistoryInfo) => {
+          const date1 = a.date;
+          const date2 = b.date;
+
+          return new Date(date2).getTime() - new Date(date1).getTime();
+        });
+
+      const resp = await Student.updateOne({ _id: eleve._id },
+        {
+          $set: {
+            historyStudent: listHistoryDocument,
+          }
+        }
+      );
 
     //DOCUMENT end
 
@@ -591,10 +574,11 @@ export default class studentControleur {
 
       let filename;
 
-      if (data.Document.label) {
-        filename = `Document-${data.Document.label}`;
+      if (student.Document.label) {
+        filename = `Document-${student.Document.label}`;
+      }else{
+        filename = "";
       }
-
 
       const pathPdf = `${path}${filename}`;
 
@@ -622,7 +606,7 @@ export default class studentControleur {
 
       const mailOptions = {
         from: mailerConfig.email,
-        to: data?.email,
+        to: student?.email,
         subject: `Bienvenue chez School Gestion ! Quelques documents sur la gestion de votre enseignement`,
 
         attachments: [
@@ -643,18 +627,20 @@ export default class studentControleur {
 
 
 
+
       return res.status(200).send({
         status: "SUCCESS",
         message: "file successfully downloaded",
         path: pathPdf,
         filename: filename,
+        resp,
       });
     } catch (error) {
-      console.log("errr", error)
+      console.log("errr...", error)
       return res.status(500).send({
         status: "ERROR",
         code: "SERVER_ERROR",
-        message: `Failed to save signatures, ${error}`,
+        message: `Failed to save document, ${error}`,
       });
     }
   };

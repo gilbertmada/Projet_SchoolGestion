@@ -15,7 +15,6 @@ export default class SchoolController {
     const user: IUser | any = await User.findById({ _id: school.user._id });
 
 
-    console.log("createCreate....", req.body);
     const newSchool = new School({
       // schoolName: school.schoolName,
       user: user,    
@@ -25,7 +24,7 @@ export default class SchoolController {
 
 
     try {
-      console.log("saveClasse....", newSchool);
+
       const saveClasse = await newSchool.save();
 
       res.send(saveClasse);
@@ -111,7 +110,6 @@ export default class SchoolController {
 
     const { _id, ...info } = req.body;
 
-    console.log("info...", req.body);
 
     const token = <string>res.getHeader("token");
 

@@ -8,6 +8,7 @@ import student from "./student";
 import uploadFile from "./uploadFile";
 import exportToPdf from "./exportToPdf";
 import countDefault from "./countDefault";
+import note from "./note";
 import test from "./test";
 
 
@@ -23,6 +24,7 @@ routes.use("/professor", professor);
 routes.use("/student", student);
 routes.use("/uploadFile", uploadFile);
 routes.use("/exportToPdf", exportToPdf);
+routes.use("/note", note);
 routes.use("/test", test);
 
 export default routes;

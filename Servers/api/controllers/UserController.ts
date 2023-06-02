@@ -12,7 +12,6 @@ export default class UserController {
     const token = <string>res.getHeader("token");
     let jwtPayload;
     const listSchool = await School.find({ delete: false });
-    console.log("listSchool./", listSchool);
 
     try {
       jwtPayload = <any>jwt.verify(token, config.get("jwtSecret"));
@@ -138,7 +137,6 @@ export default class UserController {
     for (let i = 0; i < users.length; i++) {
       returnedUsers.push(users[i].transform());
     }
-    console.log("returnedUsers....", returnedUsers);
     return res.status(200).send(returnedUsers);
   };
 
