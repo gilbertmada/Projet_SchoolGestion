@@ -122,55 +122,22 @@ const CreateDocument: FC<CreateDocProps> = (props: any) => {
         e.preventDefault();
         
         if (isRole === true) {
-            studentStore.sendMail(editEleve);
+            studentStore.sendMail(userStore.user, editEleve,);
+            history.push("/student/list");
         }
 
     };
     
-    const onSubmit = (e: any) => {
-        e.preventDefault();
-
-        if (isRole === true) {
-
-            props.studentStore.updateStudent(editEleve).then((addUser: any) => {
-                if (addUser) {
-                    history.push("/student/list");
-
-                }
-            });
-            console.log("userStore.user.....", toJS(userStore.user));
-            console.log("editEleve.....", editEleve);
-            console.log("document.....", document);
-     
-            studentStore.AddNewHistoryDocument(userStore.user, editEleve, document.Document);
-
-        }
-
-
-    };
 
     const footerIcons: FooterIcon[] = [
+   
         {
             id: 0,
-            ItemIcon: SaveListIcon,
-            label: "Ajouter",
-            type: "submit",
-            onClick: onSubmit,
-            title: "Sauvegarder  ",
-        },
-        {
-            id: 1,
             ItemIcon: FastForwardIcon,
             onClick: sendMail,
             title: "Envoyer par émail",
         },
-        // {
-        //   id: 2,
-        //   ItemIcon: DeleteIcon,
-        //   label: "Supprimer",
-        //   onClick: handleOpenDeleteModal,
-        //   title: "Supprimer"
-        // },
+    
     ]
 
     return (
@@ -211,7 +178,7 @@ const CreateDocument: FC<CreateDocProps> = (props: any) => {
                 />
 
             </div>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={sendMail}>
                 <div className={classes.content}>
                     <BodyTitle title="Documents" />
                     <div className={classes.fields}>

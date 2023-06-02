@@ -7,12 +7,12 @@ import { withStyles } from '@material-ui/styles';
 import { inject, observer } from "mobx-react";
 import axios from 'axios';
 import { FC, useEffect, useLayoutEffect, useState } from 'react';
-import config from '../../config';
-import ListSearch from '../List/ListSearch';
-import { IProfessor } from '../interface/classeInterface/professorClasse';
-import useStyles from './style';
-import { ProfessorStoreInterface } from "../../store/ProfessorStore";
-import { AbstractEmptyInterface } from "../../types";
+import config from '../../../config';
+import ListSearch from '../../List/ListSearch';
+import { IProfessor } from '../../interface/classeInterface/professorClasse';
+import useStyles from '../style';
+import { ProfessorStoreInterface } from "../../../store/ProfessorStore";
+import { AbstractEmptyInterface } from "../../../types";
 import { getProfessorColumns } from './table.info';
 
 
@@ -37,10 +37,6 @@ const SearchProfessorModal: FC<any> = ({ openModal, handleClose, setProfessor })
   const [isLoading, setIsLoading] = useState(false);
   const [enseignant, setEnseignant] = useState<IProfessor[] | []>([]);
   const [screenSize, setScreenSize] = useState(screen.width);
-  // const [countDrivers, setCountDrivers] = useState(0);
-
-
-  //   const { professorStore,openModal,handleClose } = props as ListProfessorProps;
 
   useLayoutEffect(() => {
     setScreenSize(window.innerWidth - 75);

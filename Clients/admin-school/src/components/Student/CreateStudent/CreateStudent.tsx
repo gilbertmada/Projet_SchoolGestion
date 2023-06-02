@@ -118,7 +118,11 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
     const { code, label } = newValue;
     const data = code as string;
     const nom = label as string;
-
+    if (data ==="LEAD_H" || data ==="LEAD_F") {
+      setIsRole(true);
+    } else {
+      setIsRole(false);
+    }
     setRole(newValue);
     setStudent({ ...student, role: data, nomRole: nom });
     studentStore.setStudent({ ...student, role: data, nomRole: nom });
@@ -179,7 +183,8 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
 
   const onSubmit = (e: any) => {
     e.preventDefault();
-    const errors = validationData(studentStore);
+    const newStudent = { ...student, schoolName: userStore.user?.schoolName }
+    const errors = validationData(studentStore,newStudent);
 
     setSaveErrors(errors);
 
@@ -191,7 +196,7 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
 
     if (!studentStore.selectedStudent) {
 
-      props.studentStore.createStudent(student).then((addUser: any) => {
+      props.studentStore.createStudent(newStudent).then((addUser: any) => {
         if (addUser) {
           history.push("/student/list");
           studentStore.getAllStudent();
@@ -199,7 +204,7 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
       });
     }
     else {
-      props.studentStore.updateStudent(student).then((editStudent: any) => {
+      props.studentStore.updateStudent(newStudent).then((editStudent: any) => {
 
         if (editStudent?.status === 200) {
 
@@ -378,7 +383,7 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
             clickHandler: handleOpenConfirmModal,
           },
           {
-            label: "Elèves",
+            label: "Liste des élèves",
             path: "/student/list",
             clickHandler: handleOpenConfirmModal,
           },
@@ -432,6 +437,7 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
                     <TextField
                       label="Ecole"
                       required={true}
+                      disabled={true}
                       name="schoolName"
                       fullWidth={true}
                       value={userStore.user?.schoolName || student.schoolName || ""}
@@ -526,6 +532,7 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
                     <TextField
                       label="Droit d'inscription"
                       required={true}
+                      disabled={true}
                       name="inscriptionDroit"
                       fullWidth={true}
                       value={student?.inscriptionDroit || ""}

@@ -2,6 +2,7 @@
 import Users from '../../Assets/dashboard/CLICAR-user-20.svg';
 import school from '../../Assets/dashboard/school.png';
 import etuduant from '../../Assets/dashboard/etudiants.png';
+import note from '../../Assets/dashboard/note.jpg';
 import enseignant from '../../Assets/dashboard/enseignant.png';
 import rootStore from '../../store/AppStore';
 import classe from '../../Assets/dashboard/classe.svg';
@@ -9,7 +10,7 @@ import { inject, observer } from 'mobx-react';
 import {
   admins,
   utilisateurPermission,
-  superUtilisateur
+  superUtilisateur,
 } from '../utils/data';
 import { userStore } from '../../store';
 
@@ -58,6 +59,13 @@ const rowData = (): Idashboard[] => [
     nbr: rootStore.numbers.schoolNumber,
     images: school,
     permissions: superUtilisateur,
+  },
+  {
+    titre: 'NOTES',
+    link: '/note/list',
+    nbr: rootStore.numbers.noteNumber,
+    images: note,
+    permissions: utilisateurPermission,
   },
   // {
   //   titre: 'TEST',

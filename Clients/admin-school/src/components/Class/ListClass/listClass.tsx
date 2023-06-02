@@ -51,7 +51,7 @@ const ListClass: FC<AbstractEmptyInterface> = (props: any) => {
 
     {
       field: "firstName",
-      headerName: "Nom de Professeur",
+      headerName: "Nom de l'enseignant",
       width: Math.floor(screenSize / 7),
       headerClassName: classes.tableHeader,
       valueFormatter: (params) => params.row?.prof?.firstName,
@@ -59,36 +59,36 @@ const ListClass: FC<AbstractEmptyInterface> = (props: any) => {
     },
     {
       field: "lastName",
-      headerName: "Prénom de Professeur",
+      headerName: "Prénom de l'enseignant",
       width: Math.floor(screenSize / 7),
       headerClassName: classes.tableHeader,
       valueFormatter: (params) => params.row?.prof?.lastName,
     },
     {
       field: "IM",
-      headerName: "IM de Professeur",
+      headerName: "IM de l'enseignant",
       width: Math.floor(screenSize / 7),
       headerClassName: classes.tableHeader,
       valueFormatter: (params) => params.row?.prof?.IM,
     },
     {
       field: "email",
-      headerName: "Email de Professeur",
-      width: Math.floor(screenSize / 7),
+      headerName: "Email de l'enseignant",
+      width: Math.floor(screenSize / 6),
       headerClassName: classes.tableHeader,
       valueFormatter: (params) => params.row?.prof?.email,
     },
     {
       field: "matiere",
       headerName: "Matière",
-      width: Math.floor(screenSize / 7),
+      width: Math.floor(screenSize / 8),
       headerClassName: classes.tableHeader,
       valueFormatter: (params) => params.row?.prof?.matiere,
     },
     {
       field: "schoolName",
       headerName: "Ecole",
-      width: Math.floor(screenSize / 8),
+      width: Math.floor(screenSize / 7),
       headerClassName: classes.tableHeader,
     },
     {

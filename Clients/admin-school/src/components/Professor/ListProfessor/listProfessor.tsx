@@ -146,8 +146,8 @@ const ListProfessor: FC<AbstractEmptyInterface> = (props: any) => {
 
   const currentPaths = [
     { label: "Dashboard", path: "/" },
-    { label: "Professeurs", path: "/professor/list" },
-    { label: "Liste des professeurs", path: "/professor/list" },
+    // { label: "Professeurs", path: "/professor/list" },
+    { label: "Liste des Enseignants", path: "/professor/list" },
   ];
 
 

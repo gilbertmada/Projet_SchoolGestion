@@ -97,10 +97,11 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
 
   const onSubmit = (e: any) => {
     e.preventDefault();
+    const newProfessor={...professor,schoolName:userStore.user?.schoolName}
 
     if (!professorStore.selectedProfessor) {
 
-      props.professorStore.createProfessor(professor).then((addProf: any) => {
+      props.professorStore.createProfessor(newProfessor).then((addProf: any) => {
         if (addProf) {
           history.push("/professor/list");
           professorStore.getAllProfessor();
@@ -108,7 +109,7 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
       });
 
     } else {
-      props.professorStore.updateProfessor(professor).then((editProf: any) => {
+      props.professorStore.updateProfessor(newProfessor).then((editProf: any) => {
 
         if (editProf?.status === 200 && professorStore.filters?.currentlyWorking === true) {
 
@@ -254,7 +255,7 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
             clickHandler: handleOpenConfirmModal,
           },
           {
-            label: "Enseignant",
+            label: "Liste des Enseignants",
             path: "/professor/list",
             clickHandler: handleOpenConfirmModal,
           },
@@ -339,6 +340,7 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
                       <TextField
                         label="Ecole"
                         required={true}
+                        disabled={true}
                         name="schoolName"
                         fullWidth={true}
                         value={userStore.user?.schoolName ||  professor.schoolName ||  ""}

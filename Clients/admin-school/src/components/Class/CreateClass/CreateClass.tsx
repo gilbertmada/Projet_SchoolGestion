@@ -22,7 +22,7 @@ import { ClasseStoreInterface } from "../../../store/ClasseStore";
 import { UserStoreInterface } from "../../../store/UserStore";
 import { ProfessorStoreInterface } from "../../../store/ProfessorStore";
 import { AbstractEmptyInterface } from "../../../types";
-import SearchProfessorModal from "../../../common/SearchModal/SearchProfessorModal";
+import SearchProfessorModal from "../../../common/SearchModal/ModalProfessor/SearchProfessorModal";
 import { profHorror, profDay } from "../../../common/utils/data";
 import { validationData } from "../CreateLogic";
 import { toJS } from "mobx";
@@ -36,7 +36,7 @@ interface CreateClassProps extends AbstractEmptyInterface {
     userStore: UserStoreInterface
 }
 const CreateClass: FC<AbstractEmptyInterface> = (props: any) => {
-    const { classeStore, professorStore,userStore } = props as CreateClassProps;
+    const { classeStore, professorStore, userStore } = props as CreateClassProps;
 
     const classes = useStyles();
     const history = useHistory();
@@ -128,7 +128,6 @@ const CreateClass: FC<AbstractEmptyInterface> = (props: any) => {
         setProf({ ...prof, [name]: value });
         setClasse({ ...classe, prof })
         classeStore.setProf({ ...prof, [name]: value });
-        // classeStore.setClasse({ ...classe,prof });
     };
 
     const handleUpdateProfessor = (dataProf: any) => {
@@ -214,9 +213,8 @@ const CreateClass: FC<AbstractEmptyInterface> = (props: any) => {
     const onSubmit = (e: any) => {
         e.preventDefault();
 
-        const list = toJS(classeStore.allClass);
-
-        const errors = validationData(classeStore);
+        const newClasse = { ...classe, schoolName: userStore.user?.schoolName }
+        const errors = validationData(classeStore, newClasse);
 
         setSaveErrors(errors);
 
@@ -225,16 +223,17 @@ const CreateClass: FC<AbstractEmptyInterface> = (props: any) => {
             return;
         }
 
+
         if (!toJS(classeStore.selectedClasse)) {
 
 
-            props.classeStore.createClasses(classe).then((addClasse: any) => {
+            props.classeStore.createClasses(newClasse).then((addClasse: any) => {
                 if (addClasse) {
                     history.push("/class/list");
                 }
             })
         } else {
-            props.classeStore.updateClasses(classe).then((editClasse: any) => {
+            props.classeStore.updateClasses(newClasse).then((editClasse: any) => {
                 if (editClasse) {
                     history.push("/class/list");
                     // classeStore.getAllClass();
@@ -244,8 +243,7 @@ const CreateClass: FC<AbstractEmptyInterface> = (props: any) => {
         }
 
     }
-    console.log("classeStore....", toJS(classeStore));
-    console.log("class....", classe);
+
 
     const footerIcons: FooterIcon[] = [
         {
@@ -311,6 +309,7 @@ const CreateClass: FC<AbstractEmptyInterface> = (props: any) => {
                             <TextField
                                 label="Ecole"
                                 name="schoolName"
+                                disabled={true}
                                 fullWidth={true}
                                 // value={dataClasse.schoolName || ""}
                                 value={userStore.user?.schoolName || classe.schoolName || ""}
@@ -451,4 +450,4 @@ const CreateClass: FC<AbstractEmptyInterface> = (props: any) => {
         </div>
     );
 }
-export default inject("classeStore","userStore")(observer(CreateClass))
+export default inject("classeStore", "userStore")(observer(CreateClass))

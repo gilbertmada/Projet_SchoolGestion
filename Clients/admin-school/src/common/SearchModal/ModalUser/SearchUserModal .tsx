@@ -7,12 +7,12 @@ import { withStyles } from '@material-ui/styles';
 import { inject, observer } from "mobx-react";
 import axios from 'axios';
 import { FC, useEffect, useLayoutEffect, useState } from 'react';
-import config from '../../config';
-import ListSearch from '../List/ListSearch';
-import { IUser } from '../interface/userInterface';
-import useStyles from './style';
-import { ProfessorStoreInterface } from "../../store/ProfessorStore";
-import { AbstractEmptyInterface } from "../../types";
+import config from '../../../config';
+import ListSearch from '../../List/ListSearch';
+import { IUser } from '../../interface/userInterface';
+import useStyles from '../style';
+import { ProfessorStoreInterface } from "../../../store/ProfessorStore";
+import { AbstractEmptyInterface } from "../../../types";
 import { getUserColumns } from './table.infoUser';
 
 

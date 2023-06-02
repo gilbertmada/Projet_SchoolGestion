@@ -30,7 +30,7 @@ import { SchoolStoreInterface } from "../../../store/SchoolStore";
 import { AbstractEmptyInterface } from "../../../types";
 import EditIcon from '@material-ui/icons/Edit';
 import { toJS } from "mobx";
-import SearchSchoolModal from "../../../common/SearchModal/SearchSchoolModal ";
+import SearchSchoolModal from "../../../common/SearchModal/ModalUser/SearchUserModal ";
 import rootStore from '../../../store/AppStore';
 import useStyles from "./style";
 

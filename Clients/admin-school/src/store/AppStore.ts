@@ -11,6 +11,7 @@ export interface RootStoreInterface {
     studentNumber: number,
     professorNumber: number,
     classNumber: number,
+    noteNumber:number,
   };
   snackBarState: {
     open: boolean;
@@ -42,6 +43,7 @@ class AppStore implements RootStoreInterface {
     professorNumber: 0,
     classNumber:0,
     schoolNumber:0,
+    noteNumber:0,
   };
 
 

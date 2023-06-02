@@ -43,7 +43,8 @@ export interface StudentStoreInterface {
     ecolagePrive: IEcolagePrive[];
     sumEcolagePrive: any;
     sumFraisDivers: any;
-    sendMail: (data: any) => void;
+    sendMail: (user: any, student: any) => void;
+    // sendMail: (data: any) => void;
     setDroit: (data: IFraisDivers) => void;
     AddNewHistoryDocument: (user: any, docName: any, student: IStudent) => void;
     setEcolagePrive: (data: IEcolagePrive) => void;
@@ -157,7 +158,7 @@ class StudentStore implements StudentStoreInterface {
 
     @action setSelectedStudent = (student: IStudent | null) => {
 
-            this.selectedStudent = student;
+        this.selectedStudent = student;
 
     };
 
@@ -174,12 +175,12 @@ class StudentStore implements StudentStoreInterface {
     @action setDroit = (d: IFraisDivers) => {
 
         this.droit = [...this.droit, d];
-    
+
 
     };
 
     @action setEcolagePrive = (ecolage: IEcolagePrive) => {
-   
+
         this.ecolagePrive = [...this.ecolagePrive, ecolage];
 
 
@@ -361,10 +362,9 @@ class StudentStore implements StudentStoreInterface {
             }
 
 
-            console.log("newValue....", newValue);
+ 
             const add = await axios.post(`${config.servers.apiUrl}student`, newValue);
 
-            console.log("createStudent...;", add);
             if (add.data.matriculNumber === 'MatriculNumber already exists') {
                 rootStore.updateSnackBar(true, 'Numéro matricule existe déjà');
 
@@ -384,11 +384,15 @@ class StudentStore implements StudentStoreInterface {
         }
     };
 
-    @action sendMail = async (data: any) => {
+    @action sendMail = async (user: any, student: any,) => {
         this.isLoading = true;
         try {
 
-            const add = await axios.post(`${config.servers.apiUrl}student/sendMail`, data);
+            const add = await axios.post(`${config.servers.apiUrl}student/sendMail`,
+                {
+                    user,
+                    student,
+                });
 
             if (!add.data.Document.label) {
                 rootStore.updateSnackBar(true, 'Pas de nom de document');
