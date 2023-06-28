@@ -10,26 +10,47 @@ export default class noteController {
 
     const token = <string>res.getHeader("token");
     const note: INotes | any = req.body;
-    const student: IStudent | any = await Student.findById({ _id: note.stud._id });
+    // const student: IStudent | any = await Student.findById({ _id: note.stud._id });
     //     const noteJ={
-    // note_Maths:note.noteJ.note_Maths,
-    // coef_Maths:note.noteJ.coef_Maths,
-    // note_Pc:note.noteJ.note_Pc,
-    // coef_Pc:note.noteJ.coef_Pc,
-    // note_Ang:note.noteJ.note_Ang,
-    // coef_Ang:note.noteJ.coef_Ang,
-    // note_Fr:note.noteJ.note_Fr,
-    // coef_Fr:note.noteJ.coef_Fr,
-    // note_Mal:note.noteJ.note_Mal,
-    // coef_Mal:note.noteJ.coef_Mal,
-    // note_HistoGeo:note.noteJ.note_HistoGeo,
-    // coef_HistoGeo:note.noteJ.coef_HistoGeo,
-    // note_Philo:note.noteJ.note_Philo,
-    // coef_Philo:note.noteJ.coef_Philo,
-    // note_Eps:note.noteJ.note_Eps,
-    // coef_Eps:note.noteJ.coef_Eps,
+    // note_Maths:note.noteJournalier.note_Maths,
+    // coef_Maths:note.noteJournalier.coef_Maths,
+    // note_Pc:note.noteJournalier.note_Pc,
+    // coef_Pc:note.noteJournalier.coef_Pc,
+    // note_Ang:note.noteJournalier.note_Ang,
+    // coef_Ang:note.noteJournalier.coef_Ang,
+    // note_Fr:note.noteJournalier.note_Fr,
+    // coef_Fr:note.noteJournalier.coef_Fr,
+    // note_Mal:note.noteJournalier.note_Mal,
+    // coef_Mal:note.noteJournalier.coef_Mal,
+    // note_HistoGeo:note.noteJournalier.note_HistoGeo,
+    // coef_HistoGeo:note.noteJournalier.coef_HistoGeo,
+    // note_Philo:note.noteJournalier.note_Philo,
+    // coef_Philo:note.noteJournalier.coef_Philo,
+    // note_Eps:note.noteJournalier.note_Eps,
+    // coef_Eps:note.noteJournalier.coef_Eps,
 
     //     }
+    // const noteCompo = {
+    //   note_Maths: note.noteComposition.note_Maths,
+    //   coef_Maths: note.noteComposition.coef_Maths,
+    //   note_Pc: note.noteComposition.note_Pc,
+    //   coef_Pc: note.noteComposition.coef_Pc,
+    //   note_Ang: note.noteComposition.note_Ang,
+    //   coef_Ang: note.noteComposition.coef_Ang,
+    //   note_Fr: note.noteComposition.note_Fr,
+    //   coef_Fr: note.noteComposition.coef_Fr,
+    //   note_Mal: note.noteComposition.note_Mal,
+    //   coef_Mal: note.noteComposition.coef_Mal,
+    //   note_HistoGeo: note.noteComposition.note_HistoGeo,
+    //   coef_HistoGeo: note.noteComposition.coef_HistoGeo,
+    //   note_Philo: note.noteComposition.note_Philo,
+    //   coef_Philo: note.noteComposition.coef_Philo,
+    //   note_SVT: note.noteComposition.note_SVT,
+    //   coef_SVT: note.noteComposition.coef_SVT,
+    //   note_Eps: note.noteComposition.note_Eps,
+    //   coef_Eps: note.noteComposition.coef_Eps,
+
+    // }
     const newNote = new Notes({
       ...note,
       createdBy: getUserIdFromToken(token),
@@ -48,78 +69,22 @@ export default class noteController {
   };
 
   static editNote = async (req: Request, res: Response) => {
-    const { _id, ...info } = req.body;
 
-
+    const note = req.body;
+    console.log("body...", note);
     const token = <string>res.getHeader("token");
 
     try {
 
+      note.updatedBy = getUserIdFromToken(token);
+      note.updatedAt = new Date();
 
-      const student: IStudent | any = await Student.findById({ _id: info.stud._id });
-      if (!student) {
-        res.status(403).send({
-          status: 'ERROR',
-          code: 'USER_NOT_FOUND',
-          message: "Unable to find class to update"
-        });
-        return;
-      }
-      console.log("info...", info);
-
-      const noteJ = {
-        note_Maths: info.noteJournalier.note_Maths,
-        coef_Maths: info.noteJournalier.coef_Maths,
-        note_Pc: info.noteJournalier.note_Pc,
-        coef_Pc: info.noteJournalier.coef_Pc,
-        note_Ang: info.noteJournalier.note_Ang,
-        coef_Ang: info.noteJournalier.coef_Ang,
-        note_Fr: info.noteJournalier.note_Fr,
-        coef_Fr: info.noteJournalier.coef_Fr,
-        note_Mal: info.noteJournalier.note_Mal,
-        coef_Mal: info.noteJournalier.coef_Mal,
-        note_HistoGeo: info.noteJournalier.note_HistoGeo,
-        coef_HistoGeo: info.noteJournalier.coef_HistoGeo,
-        note_Philo: info.noteJournalier.note_Philo,
-        coef_Philo: info.noteJournalier.coef_Philo,
-        note_SVT: info.noteJournalier.note_SVT,
-        coef_SVT: info.noteJournalier.coef_SVT,
-        note_Eps: info.noteJournalier.note_Eps,
-        coef_Eps: info.noteJournalier.coef_Eps,
-
-      }
-
-      const noteCompo = {
-        note_Maths: info.noteComposition.note_Maths,
-        coef_Maths: info.noteComposition.coef_Maths,
-        note_Pc: info.noteComposition.note_Pc,
-        coef_Pc: info.noteComposition.coef_Pc,
-        note_Ang: info.noteComposition.note_Ang,
-        coef_Ang: info.noteComposition.coef_Ang,
-        note_Fr: info.noteComposition.note_Fr,
-        coef_Fr: info.noteComposition.coef_Fr,
-        note_Mal: info.noteComposition.note_Mal,
-        coef_Mal: info.noteComposition.coef_Mal,
-        note_HistoGeo: info.noteComposition.note_HistoGeo,
-        coef_HistoGeo: info.noteComposition.coef_HistoGeo,
-        note_Philo: info.noteComposition.note_Philo,
-        coef_Philo: info.noteComposition.coef_Philo,
-        note_SVT: info.noteComposition.note_SVT,
-        coef_SVT: info.noteComposition.coef_SVT,
-        note_Eps: info.noteComposition.note_Eps,
-        coef_Eps: info.noteComposition.coef_Eps,
-
-      }
-      const updatedInfo: any = {
-        stud: student,
-        noteJourlier: noteJ,
-        noteComposition: noteCompo,
-        createdBy: getUserIdFromToken(token),
-        deleted: false,
-      };
-
-      const resp = await Notes.updateOne({ _id: req.body.id }, updatedInfo);
-      console.log("updatedInfo...", updatedInfo);
+      const resp = await Notes.updateOne({ _id: note._id },
+        {
+          ...note,
+        }
+      );
+      console.log("resp...", resp);
       res.status(200).send(resp);
     } catch (err) {
       res.status(500).send({

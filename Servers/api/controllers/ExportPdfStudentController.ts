@@ -10,6 +10,7 @@ import HeadRecu from "./PDF/RecuDroit/HeadRecu";
 import TableRecu from "./PDF/RecuDroit/TableRecu";
 import HeadRecuEcolage from "./PDF/RecuEcolage/HeadRecuEcolage";
 import HeadEmploiDuTemps from "./PDF/EmploiDuTemps/HeadEmploiDuTemps";
+import HeadBulletin from "./PDF/Bulletin/Bulletin1erTrim/HeadBulletin";
 import {HeaderTableHorrorMorning} from "./PDF/EmploiDuTemps/headerHorrorMorning";
 import {HeaderTableHorrorLarge} from "./PDF/EmploiDuTemps/headerHorrorLarge";
 import {HeaderTableHorrorLong} from "./PDF/EmploiDuTemps/headerHorrorLong";
@@ -324,6 +325,83 @@ export default class ExportPdfStudentController {
 
 
             const filename = `Emploi du temps ${data[0].className}.pdf`;
+            const pathPdf = `${path}${filename}`;
+            fs.writeFileSync(pathPdf, jsPdfPrint.output())
+            jsPdfPrint.save(pathPdf);
+
+            return res.status(200).send({
+                status: "success",
+                message: "file successfully downloaded",
+                path: pathPdf,
+                filename: filename,
+            });
+        } catch (error) {
+            console.log('this is an error', error);
+
+            res.status(500).send({
+                status: "error",
+                message: "Something went wrong" + error,
+
+            });
+        }
+    }
+    static exportToPdfBulletin1erTrim = async (req: Request, res: Response) => {
+
+        const path = "./fichier/PDFFiles/";
+
+        if (!fs.existsSync(path)) {
+            fs.mkdirSync(path, { recursive: true });
+        }
+
+        const jsPdfPrint = new JSPDF('p', 'mm', 'a4', true);
+        jsPdfPrint.addFileToVFS('Roboto-Bold.ttf', font.font);
+        jsPdfPrint.addFont('Roboto-Bold.ttf', 'custom', 'normal');
+        jsPdfPrint.setFont('custom', 'normal');
+
+        try {
+
+            const data = req.body;      
+
+            console.log("BULLETIN...",data);
+
+            HeadBulletin(
+                {
+                    schoolName: `${data.stud.schoolName}`,
+                    scolarYear:`${data.stud.scolarYear}`,
+                    firstName:`${data.stud.firstName}`,
+                    lastName:`${data.stud.lastName}`,
+                    class: `${data.stud.class}`,
+                    matriculNumber:`${data.stud.matriculNumber}`,
+                },
+                jsPdfPrint
+            );
+
+            // HeaderTableEmploiDuTemps(50, jsPdfPrint);
+
+            // HeaderTableHorrorMorning(60, jsPdfPrint,false,horror);
+
+            // HeaderTableHorrorLarge(50, jsPdfPrint);
+
+            // HeaderTableHorrorLong(190, jsPdfPrint);
+
+            // TableBetween(120, jsPdfPrint);
+
+            // HeaderTableHorrorAfternoon(130, jsPdfPrint,horror);
+
+            // TableEmploiDuTemps(
+            //     [
+            //         horror,
+            //         ...data.sort((a: any, b: any) => {
+            //             return a.prof.IM - b.prof.IM
+            //         }),
+
+
+            //     ],
+            //     jsPdfPrint
+            // )
+
+
+            const filename = `Bulletin de note de ${data.stud.lastName}.pdf`;
             const pathPdf = `${path}${filename}`;
             fs.writeFileSync(pathPdf, jsPdfPrint.output())
             jsPdfPrint.save(pathPdf);

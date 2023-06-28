@@ -7,7 +7,14 @@ export interface INotes extends Document {
     stud: IStudent;
     noteJournalier: INoteJournalier;
     noteComposition: INoteComposition;
+    noteJournalier2e: INoteJournalier;
+    noteComposition2e: INoteComposition;
+    noteJournalier3e: INoteJournalier;
+    noteComposition3e: INoteComposition;
     total1erTrim:any;
+    total2eTrim:any;
+    total3eTrim:any;
+    totalTrim:any;
     totalCoefJ0:any;
     totalJour1:any;
     totalJour2:any;
@@ -17,6 +24,7 @@ export interface INotes extends Document {
     generalMoyen1erTrim: any;
     generalMoyen2eTrim: any;
     generalMoyen3eTrim: any;
+    generalMoyenTrim: any;
     deleted: boolean;
     isArchive: boolean;
     updatedBy: string;
@@ -239,7 +247,23 @@ const NoteSchema: Schema = new Schema({
     },
     noteJournalier: NoteJSchema,
     noteComposition: NoteCompoSchema,
+    noteJournalier2e: NoteJSchema,
+    noteComposition2e: NoteCompoSchema,
+    noteJournalier3e: NoteJSchema,
+    noteComposition3e: NoteCompoSchema,
     total1erTrim: {
+        type: Number,
+        required: false,
+    },
+    total2eTrim: {
+        type: Number,
+        required: false,
+    },
+    total3eTrim: {
+        type: Number,
+        required: false,
+    },
+    totalTrim: {
         type: Number,
         required: false,
     },
@@ -251,7 +275,11 @@ const NoteSchema: Schema = new Schema({
         type: Number,
         required: false,
     },
-    generalMoyen3Trim: {
+    generalMoyen3eTrim: {
+        type: Number,
+        required: false,
+    },
+    generalMoyenTrim: {
         type: Number,
         required: false,
     },

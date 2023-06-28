@@ -44,6 +44,7 @@ export default class studentControleur {
           schoolName: req.body.schoolName,
           firstName: req.body.firstName,
           lastName: req.body.lastName,
+          scolarYear: req.body.scolarYear,
           email: req.body.email,
           class: req.body.class,
           height: req.body.height,

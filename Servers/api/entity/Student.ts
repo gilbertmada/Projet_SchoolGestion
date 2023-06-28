@@ -5,6 +5,7 @@ export interface IStudent extends Document {
     firstName: string;
     lastName: string;
     height: string;
+    scolarYear: string;
     matriculNumber: string;
     role: string;
     document:IDocument;
@@ -84,6 +85,10 @@ const StudentSchema: Schema = new Schema({
         required: false,
     },
     lastName: {
+        type: String,
+        required: false,
+    },
+    scolarYear: {
         type: String,
         required: false,
     },
