@@ -27,6 +27,8 @@ const CreateDocument = lazy(() => import("../components/Student/Document/Documen
 const CreateProfessor = lazy(() => import("../components/Professor/CreateProfessor"));
 const ListProfessor = lazy(() => import("../components/Professor/ListProfessor"));
 const CreateNote = lazy(() => import("../components/Notes/CreateNotes/CreateNote"));
+const CreateSecondNote = lazy(() => import("../components/Notes/CreateNotes/CreateSecondNote"));
+const CreateThirdNote = lazy(() => import("../components/Notes/CreateNotes/CreateThirdNote"));
 const ListeNote = lazy(() => import("../components/Notes/ListNote/listNote"));
 
 
@@ -156,6 +158,18 @@ const Router = () => {
         exact={true}
         access={utilisateurPermission}
         component={CreateNote}
+      />
+         <ProtectedRoute
+        path="/note/second-note"
+        exact={true}
+        access={utilisateurPermission}
+        component={CreateSecondNote}
+      />
+         <ProtectedRoute
+        path="/note/third-note"
+        exact={true}
+        access={utilisateurPermission}
+        component={CreateThirdNote}
       />
         <ProtectedRoute
         path="/note/list"

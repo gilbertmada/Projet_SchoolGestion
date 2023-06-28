@@ -532,14 +532,24 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
                     <TextField
                       label="Droit d'inscription"
                       required={true}
-                      disabled={true}
+                      // disabled={true}
                       name="inscriptionDroit"
                       fullWidth={true}
                       value={student?.inscriptionDroit || ""}
                       onChange={handleChange}
                     />
                   </Grid>
-
+                  <Grid item={true} xs={12} md={4}>
+                    <TextField
+                      label="Année Scolaire"
+                      required={true}
+                      // disabled={true}
+                      name="scolarYear"
+                      fullWidth={true}
+                      value={student?.scolarYear || ""}
+                      onChange={handleChange}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
             </div>

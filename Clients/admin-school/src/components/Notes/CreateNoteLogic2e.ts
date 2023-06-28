@@ -2,7 +2,7 @@ import moment from "moment";
 import { toJS } from "mobx";
 import { StudentStoreInterface } from "../../store/StudentStore";
 
-export const validationData = (store: any, NoteJ: any, NoteCompo: any, CoefJ: any, CoefCompo: any) => {
+export const validationData = ( NoteJ: any, NoteCompo: any, CoefJ: any, CoefCompo: any) => {
   const errors: string[] = [];
 
 
@@ -10,9 +10,9 @@ export const validationData = (store: any, NoteJ: any, NoteCompo: any, CoefJ: an
   console.log("CoefCompo//", CoefCompo);
   console.log("NoteJ//", NoteJ);
   console.log("NoteCompo//", NoteCompo);
-  if (!store.stud?.matriculNumber) {
-    errors.push("L'information d'élève est vide");
-  }
+  // if (!store.stud?.matriculNumber) {
+  //   errors.push("L'information d'élève est vide");
+  // }
 
   if (NoteJ.length < 9 && CoefJ.length > 0) {
     console.log("CoefJ//", CoefJ);

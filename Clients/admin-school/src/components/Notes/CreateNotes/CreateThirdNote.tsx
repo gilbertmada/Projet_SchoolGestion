@@ -14,7 +14,6 @@ import SaveListIcon from "@material-ui/icons/Save";
 import { inject, observer } from "mobx-react";
 import { FC, useEffect, useState } from "react";
 import EditFooter from "../../../common/EditFooter";
-import PictureAsPdfIcon from "@material-ui/icons/PictureAsPdf";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useHistory } from "react-router-dom";
 import { FooterIcon } from "../../../common/interface";
@@ -24,11 +23,9 @@ import ErrorSnackbar from "../../../common/ErrorSnackbar";
 import { NoteStoreInterface } from "../../../store/NoteStore";
 import { UserStoreInterface } from "../../../store/UserStore";
 import { AbstractEmptyInterface } from "../../../types";
-import SearchStudentModal from "../../../common/SearchModal/ModalStudent/SearchStudentModal";
 import { INoteJournalier, INoteComposition } from '../../../common/interface/notenterface';
-import { validationData } from "../CreateNoteLogic";
+import { validationData } from "../CreateNoteLogic2e";
 import { defaultNoteJournalier, defaultNoteComposition } from './defaultData';
-import exportPDFStore from "../../../store/ExportPDFStore";
 import { toJS } from "mobx";
 import rootStore from '../../../store/AppStore';
 import useStyles from "./style";
@@ -62,15 +59,15 @@ interface CreateNoteProps extends AbstractEmptyInterface {
     // validationErrorNoteJ: noteJValidationError
     // validationErrorNoteCompo: noteCompoValidationError
 }
-const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
+const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
     const { noteStore } = props as CreateNoteProps;
 
     const classes = useStyles();
     const history = useHistory();
     const HideBtn = noteStore.isFromBooking ? "block" : "none"
     const disableIt = !!noteStore.note?.stud;
-    const [noteJournalier, setNoteJournalier] = useState<INoteJournalier>(defaultNoteJournalier);
-    const [noteComposition, setNoteComposition] = useState<INoteComposition>(defaultNoteComposition);
+    const [noteJournalier3e, setNoteJournalier3e] = useState<any>({});
+    const [noteComposition3e, setNoteComposition3e] = useState<any>({});
     const [stud, setStud] = useState<any>({});
 
     const [note, setNote] = useState<any>({});
@@ -91,19 +88,26 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
         noteStore.getAllNotes();
     }, [noteStore]);
 
+    useEffect(() => {
+        if (noteStore.selectedNote?.stud !== undefined) {
+            noteStore.setNoteJournalier(noteStore.selectedNote.noteJournalier);
+            noteStore.setNoteComposition(noteStore.selectedNote.noteComposition);
+            noteStore.setStud(noteStore.selectedNote.stud);
+        }
 
-    console.log("allNote........", toJS(noteStore));
+    }, [noteStore]);
+    console.log("allNote2........", toJS(noteStore));
 
     useEffect(() => {
         if (noteStore.selectedNote?.stud !== undefined) {
-            setNoteJournalier(noteStore.selectedNote.noteJournalier);
-            setNoteComposition(noteStore.selectedNote.noteComposition);
-            setStud(noteStore.selectedNote.stud);
+            setNoteJournalier3e(noteStore.selectedNote.noteJournalier3e);
+            setNoteComposition3e(noteStore.selectedNote.noteComposition3e);
+
         }
 
     }, [noteStore.selectedNote]);
 
-    console.log("selectedNote....", noteStore.selectedNote);
+    console.log("selectedNote2....", noteStore.selectedNote);
 
     const toggleStudent = () => {
         setModalStudent(!modalStateStudent);
@@ -113,108 +117,125 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
     const ChangeIt = () => {
         setItEnabled(!enabled)
     }
+
     const handleChangeJournalier = (e: any) => {
         const { name, value } = e.target;
-        setNoteJournalier({ ...noteJournalier, [name]: value });
-        setNote({ ...note, noteJournalier });
+        setNoteJournalier3e({ ...noteJournalier3e, [name]: value });
+        setNote({ ...note, noteJournalier3e });
         noteStore.setNoteJournalier({
-            ...noteJournalier,
+            ...noteJournalier3e,
             [name]: value,
 
         });
-        noteStore.setNote({ ...note, noteJournalier });
+        noteStore.setNote({ ...note, noteJournalier3e });
 
 
     };
 
     const handleChangeComposition = (e: any) => {
         const { name, value } = e.target;
-        setNoteComposition({ ...noteComposition, [name]: value });
-        setNote({ ...note, noteComposition })
-        noteStore.setNoteComposition({
-            ...noteComposition,
+        setNoteComposition3e({ ...noteComposition3e, [name]: value });
+        setNote({ ...note, noteComposition3e })
+        noteStore.setNoteComposition3e({
+            ...noteComposition3e,
             [name]: value,
+
         });
-        noteStore.setNote({ ...note, noteComposition });
+        noteStore.setNote({ ...note, noteComposition3e });
 
 
     };
 
 
-    const handleChangeStudent = (e: any) => {
-        const { name, value } = e.target;
-        setStud({ ...stud, [name]: value });
-        setNote({ ...note, stud })
-        noteStore.setNote({ ...stud, [name]: value });
+
+
+
+    const handleCloseErrors = () => setOpenErrorSnackbar(!openErrorSnackbar);
+
+    const handleCloseConfirmModal = () => {
+        setOpenModal(false);
     };
 
-    const handleUpdateStudent = (dataStud: any) => {
-        setStud({ ...stud, ...dataStud });
-        setNote({ ...note, stud: dataStud });
-        noteStore.setStud({ ...stud, ...dataStud });
-        noteStore.setNote({ ...note, stud: dataStud });
+    const handleOpenConfirmModal = (path: string) => (e: any) => {
+        e.preventDefault();
+
+        setPathRedirect(path);
+
+        // if (!isStorage) {
+        //   setOpenQuitModal(true);
+        // } else {
+        //   setOpenModal(true)
+        // }
+
+        setOpenModal(true);
+
+    }
+
+    const handleOpenDeleteModal = () => {
+
+        setOpenDeleteModal(true);
+    };
 
 
+    const handleCloseDeleteModal = () => {
+        setOpenDeleteModal(false);
     };
 
     const numberNaNJTrue: any = [];
     const numberNaNCompoTrue: any = [];
     const numberNaNCoefJTrue: any = [];
     const numberNaNCoefCompoTrue: any = [];
-    let generalMoyen1erTrim: any = 0;
+    let generalMoyen3eTrim: any = 0;
     const listNoteDef: any = [];
 
     const arrayDeNoteJ: any[] = [
-        { valueNote: noteJournalier?.note_Maths },
-        { valueNote: noteJournalier?.note_Pc },
-        { valueNote: noteJournalier?.note_Ang },
-        { valueNote: noteJournalier?.note_Mal },
-        { valueNote: noteJournalier?.note_Fr },
-        { valueNote: noteJournalier?.note_Philo },
-        { valueNote: noteJournalier?.note_HistoGeo },
-        { valueNote: noteJournalier?.note_SVT },
-        { valueNote: noteJournalier?.note_Eps },
+        { valueNote: noteJournalier3e?.note_Maths },
+        { valueNote: noteJournalier3e?.note_Pc },
+        { valueNote: noteJournalier3e?.note_Ang },
+        { valueNote: noteJournalier3e?.note_Mal },
+        { valueNote: noteJournalier3e?.note_Fr },
+        { valueNote: noteJournalier3e?.note_Philo },
+        { valueNote: noteJournalier3e?.note_HistoGeo },
+        { valueNote: noteJournalier3e?.note_SVT },
+        { valueNote: noteJournalier3e?.note_Eps },
     ]
 
     const arrayDeCoefJ: any[] = [
-        { valueCoef: noteJournalier?.coef_Maths },
-        { valueCoef: noteJournalier?.coef_Pc },
-        { valueCoef: noteJournalier?.coef_Ang },
-        { valueCoef: noteJournalier?.coef_Mal },
-        { valueCoef: noteJournalier?.coef_Fr },
-        { valueCoef: noteJournalier?.coef_Philo },
-        { valueCoef: noteJournalier?.coef_HistoGeo },
-        { valueCoef: noteJournalier?.coef_SVT },
-        { valueCoef: noteJournalier?.coef_Eps },
+        { valueCoef: noteJournalier3e?.coef_Maths },
+        { valueCoef: noteJournalier3e?.coef_Pc },
+        { valueCoef: noteJournalier3e?.coef_Ang },
+        { valueCoef: noteJournalier3e?.coef_Mal },
+        { valueCoef: noteJournalier3e?.coef_Fr },
+        { valueCoef: noteJournalier3e?.coef_Philo },
+        { valueCoef: noteJournalier3e?.coef_HistoGeo },
+        { valueCoef: noteJournalier3e?.coef_SVT },
+        { valueCoef: noteJournalier3e?.coef_Eps },
     ]
 
 
     const arrayDeNoteCompo: any[] = [
-        { valueNote: noteComposition?.note_Maths },
-        { valueNote: noteComposition?.note_Pc },
-        { valueNote: noteComposition?.note_Ang },
-        { valueNote: noteComposition?.note_Mal },
-        { valueNote: noteComposition?.note_Fr },
-        { valueNote: noteComposition?.note_Philo },
-        { valueNote: noteComposition?.note_HistoGeo },
-        { valueNote: noteComposition?.note_SVT },
-        { valueNote: noteComposition?.note_Eps },
+        { valueNote: noteComposition3e?.note_Maths },
+        { valueNote: noteComposition3e?.note_Pc },
+        { valueNote: noteComposition3e?.note_Ang },
+        { valueNote: noteComposition3e?.note_Mal },
+        { valueNote: noteComposition3e?.note_Fr },
+        { valueNote: noteComposition3e?.note_Philo },
+        { valueNote: noteComposition3e?.note_HistoGeo },
+        { valueNote: noteComposition3e?.note_SVT },
+        { valueNote: noteComposition3e?.note_Eps },
     ]
 
     const arrayDeCoefCompo: any[] = [
-        { valueCoef: noteComposition?.coef_Maths },
-        { valueCoef: noteComposition?.coef_Pc },
-        { valueCoef: noteComposition?.coef_Ang },
-        { valueCoef: noteComposition?.coef_Mal },
-        { valueCoef: noteComposition?.coef_Fr },
-        { valueCoef: noteComposition?.coef_Philo },
-        { valueCoef: noteComposition?.coef_HistoGeo },
-        { valueCoef: noteComposition?.coef_SVT },
-        { valueCoef: noteComposition?.coef_Eps },
+        { valueCoef: noteComposition3e?.coef_Maths },
+        { valueCoef: noteComposition3e?.coef_Pc },
+        { valueCoef: noteComposition3e?.coef_Ang },
+        { valueCoef: noteComposition3e?.coef_Mal },
+        { valueCoef: noteComposition3e?.coef_Fr },
+        { valueCoef: noteComposition3e?.coef_Philo },
+        { valueCoef: noteComposition3e?.coef_HistoGeo },
+        { valueCoef: noteComposition3e?.coef_SVT },
+        { valueCoef: noteComposition3e?.coef_Eps },
     ]
-
-
-
 
     const NoteMath = () => {
 
@@ -428,8 +449,8 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
     const getTotalCoefCompo: number = listCoefCompo().length > 0 ? listCoefCompo()
         .map((item: any) => parseInt(item, 10))
         .reduce((a: any, b: any) => a + b) : 0;
-
-    const totalNote1erTrim = () => {
+    console.log("listNoteDef....", listNoteDef);
+    const totalNote3eTrim = () => {
         let somme = 0;
         for (let i = 0; i < listNoteDef.length; i++) {
             somme += listNoteDef[i];
@@ -483,71 +504,41 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
         }
 
     }
-
+    console.log("numberNaNCoefCompoTrue....", numberNaNCoefCompoTrue);
     if (numberNaNJTrue.length === 9) {
-        generalMoyen1erTrim = +totalNote1erTrim() / +getTotalCoefCompo;
-
+        generalMoyen3eTrim = +totalNote3eTrim() / +getTotalCoefCompo;
+        console.log("totalNote1erTrim.tss J...", +totalNote3eTrim());
     }
     if (numberNaNCompoTrue.length === 9) {
-        generalMoyen1erTrim = +totalNote1erTrim() / +getTotalCoefJ;
-
+        generalMoyen3eTrim = +totalNote3eTrim() / +getTotalCoefJ;
+        console.log("totalNote1erTrim...tssCompo.", +totalNote3eTrim());
     }
     if (numberNaNJTrue.length !== 9 && numberNaNCompoTrue.length !== 9) {
-        generalMoyen1erTrim = +totalNote1erTrim() / +getTotalCoefJ;
-
+        generalMoyen3eTrim = +totalNote3eTrim() / +getTotalCoefJ;
+        console.log("totalNote1erTrim....", +totalNote3eTrim());
     }
-    console.log("arrayDeNoteJ....", arrayDeNoteJ);
-    console.log("arrayDeNoteCompo....", arrayDeNoteCompo);
-    console.log("arrayDeCoefJ....", arrayDeCoefJ);
-    console.log("arrayDeCoefCompo....", arrayDeCoefCompo);
 
+
+    const totalTrim = (+noteStore.selectedNote?.total1erTrim + +noteStore.selectedNote?.total2eTrim + +totalNote3eTrim()) / 3;
+    const generalMoyenTrim = (+noteStore.selectedNote?.generalMoyen1erTrim + +noteStore.selectedNote?.generalMoyen2eTrim + +generalMoyen3eTrim) / 3;
     const newNote: any = {
-        _id: stud._id,
-        noteJournalier: { ...noteJournalier },
-        noteComposition: { ...noteComposition },
-        stud: { ...stud },
+        _id: noteStore.selectedNote?.stud._id,
+        stud: { ...noteStore.selectedNote?.stud },
+        noteJournalier: { ...noteStore.selectedNote?.noteJournalier },
+        noteComposition: { ...noteStore.selectedNote?.noteComposition },
+        noteJournalier2e: { ...noteStore.selectedNote?.noteJournalier2e },
+        noteComposition2e: { ...noteStore.selectedNote?.noteComposition2e },
+        noteJournalier3e: { ...noteJournalier3e },
+        noteComposition3e: { ...noteComposition3e },
         totalCoefJ0: +getTotalCoefJ,
-        total1erTrim: +totalNote1erTrim().toFixed(2),
-        generalMoyen1erTrim: +generalMoyen1erTrim.toFixed(2),
+        total3eTrim: +totalNote3eTrim().toFixed(2),
+        generalMoyen3eTrim: +generalMoyen3eTrim.toFixed(2),
+        totalTrim: +totalTrim.toFixed(2),
+        generalMoyenTrim: +generalMoyenTrim.toFixed(2),
 
 
     }
 
-    const handleCloseErrors = () => setOpenErrorSnackbar(!openErrorSnackbar);
-
-    const handleCloseConfirmModal = () => {
-        setOpenModal(false);
-    };
-
-    const handleOpenConfirmModal = (path: string) => (e: any) => {
-        e.preventDefault();
-
-        setPathRedirect(path);
-
-        // if (!isStorage) {
-        //   setOpenQuitModal(true);
-        // } else {
-        //   setOpenModal(true)
-        // }
-
-        setOpenModal(true);
-
-    }
-
-    const handleOpenDeleteModal = () => {
-
-        setOpenDeleteModal(true);
-    };
-
-
-    const handleCloseDeleteModal = () => {
-        setOpenDeleteModal(false);
-    };
-
-    const handleAddNew = () => {
-        // location.reload();
-        history.push("/note/second-note");
-    };
     const deleteClasse = () => {
 
         if (toJS(noteStore.selectedNote)) {
@@ -567,14 +558,17 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
     const onSubmit = (e: any) => {
         e.preventDefault();
 
-        console.log("numberNaNCoefCompoTrue....", numberNaNCoefCompoTrue);
-        console.log("numberNaNCoefJTrue....", numberNaNCoefJTrue);
-
+        console.log("totalTrim....", totalTrim);
+        console.log("generalMoyenTrim....", generalMoyenTrim);
+        console.log("arrayDeNoteJ....", arrayDeNoteJ);
+        console.log("listCoefJ....", listCoefJ());
+        console.log("arrayDeNoteCompo....", arrayDeNoteCompo);
+        console.log("arrayDeCoefJ....", arrayDeCoefJ);
+        console.log("arrayDeCoefCompo....", arrayDeCoefCompo);
         console.log("getTotalCoefJ....", +getTotalCoefJ);
         console.log("noteMath....", NoteMath());
-        console.log("pc....", NotePc());
         console.log("newNote", newNote);
-        const errors = validationData(newNote, numberNaNJTrue, numberNaNCompoTrue, numberNaNCoefJTrue, numberNaNCoefCompoTrue);
+        const errors = validationData(numberNaNJTrue, numberNaNCompoTrue, numberNaNCoefJTrue, numberNaNCoefCompoTrue);
 
         setSaveErrors(errors);
 
@@ -583,37 +577,18 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
             return;
         }
 
-        if (!toJS(noteStore.selectedNote)) {
 
+        props.noteStore.updateNote(newNote).then((editClasse: any) => {
+            if (editClasse) {
+                history.push("/note/list");
+                // classeStore.getAllClass();
+            }
 
-            props.noteStore.createNotes(newNote).then((addClasse: any) => {
-                if (addClasse) {
-                    history.push("/note/list");
-                }
-            })
-        } else {
-            props.noteStore.updateNote(newNote).then((editClasse: any) => {
+        });
 
-                if (editClasse) {
-                    history.push("/note/list");
-                    // classeStore.getAllClass();
-                }
-
-            });
-        }
 
     }
-    const handleDownload = () => {
-        // if (isArchive === false) {
-        //   rootStore.updateSnackBar(true, 'Vous devez saisir le nom de classe');
-        // } else {
-        //   const listFilters = toJS(noteStore.allNote);
-        //   exportPDFStore.exportPdfEmploiDuTemps(listFilters);
-        // }
-        exportPDFStore.exportToPdfBulletin1erTrim(newNote);
 
-    }
- 
 
     const footerIcons: FooterIcon[] = [
         {
@@ -638,20 +613,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
             onClick: handleOpenDeleteModal,
             title: "Supprimer"
         },
-        {
-            id: 3,
-            ItemIcon: PictureAsPdfIcon,
-            onClick: handleDownload,
-            title: "Exporter en Bulletin",
-        },
-        {
-            id: 4,
-            ItemIcon: AddIcon,
-            title: "2eme_Trim",
-            onClick: handleAddNew,
-            // title: `${studentStore.selectedStudent?.schoolName.includes("Privé") ? "Ecolage" : "Frais divers"
-            //   }`,
-        },
+
     ];
 
     return (
@@ -662,119 +624,31 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                     handleCloseConfirmModal={handleCloseConfirmModal}
                     path={pathRedirect}
                 />
-                <SearchStudentModal
+                {/* <SearchStudentModal
                     handleClose={toggleStudent}
                     openModal={modalStateStudent}
                     setEleve={handleUpdateStudent}
-                />
+                /> */}
                 <DeleteTotalModal
                     isOpen={openDeleteModal}
                     handleCloseDeleteModal={handleCloseDeleteModal}
                     deleteData={deleteClasse}
                 />
-
-      <HeaderPath
-        paths={[
-            { label: "Dashboard", path: "/" },
-            { label: "Liste des Notes", path: "/note/list" },
-            { label: "Creation des notes 1er Trimestre", path: "/note/new-note" },
-        ]}
-      />
+                <HeaderPath
+                    paths={[
+                        { label: "Dashboard", path: "/" },
+                        { label: "Liste des Notes", path: "/note/list" },
+                        { label: "Creation des notes 1er Trimestre", path: "/note/new-note" },
+                        { label: "Creation des notes 2eme Trimestre", path: "/note/second-note" },
+                        { label: "Creation des notes 3eme Trimestre", path: "/note/third-note" },
+                    ]}
+                />
             </div>
             <form onSubmit={onSubmit}>
                 <Grid container={true} direction="row" spacing={1} >
-                    <Grid item={true} sm={12} xs={12}>
-                        <div className={classes.title}>ELEVE  <EditIcon onClick={ChangeIt} className={classes.iconStyle} style={{ display: HideBtn }} /></div>
-                        <div className={classes.item}>
-                            <Grid container={true} direction="row" spacing={1}>
-                                <Grid item={true} sm={4} xs={12}>
-                                    <TextField
-                                        label="Choix d'élève"
-                                        name="number"
-                                        required={true}
-                                        value={
-                                            stud.matriculNumber || ""
-                                        }
-                                        disabled={true}
-                                        InputProps={{
-                                            endAdornment: !noteStore.isFromBooking ? (
-                                                <SearchOutlined onClick={toggleStudent} />
-                                            ) : (
-                                                ""
-                                            ),
-                                            classes: {
-                                                input: classes.resizeTextField,
-                                            },
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item={true} sm={4} xs={12}>
-                                    <TextField
-                                        label="Prénom"
-                                        name="lastName"
-                                        disabled={true}
-                                        required={true}
-                                        onChange={handleChangeStudent}
-                                        value={stud.lastName || ""}
-                                        InputProps={{
-                                            classes: {
-                                                input: classes.resizeTextField,
-                                            },
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item={true} sm={4} xs={12}>
-                                    <TextField
-                                        label="Nom"
-                                        name="firstName"
-                                        disabled={true}
-                                        required={true}
-                                        onChange={handleChangeStudent}
-                                        value={stud.firstName || ""}
-                                        InputProps={{
-                                            classes: {
-                                                input: classes.resizeTextField,
-                                            },
-                                        }}
-                                    />
-                                </Grid>
-                            </Grid>
-                            <Grid container={true} direction="row" spacing={1}>
-                                <Grid item={true} sm={4} xs={12}>
-                                    <TextField
-                                        label="Ecole"
-                                        name="schoolName"
-                                        disabled={true}
-                                        required={true}
-                                        onChange={handleChangeStudent}
-                                        value={stud.schoolName || ""}
-                                        InputProps={{
-                                            classes: {
-                                                input: classes.resizeTextField,
-                                            },
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item={true} sm={4} xs={12}>
-                                    <TextField
-                                        label="Nom de classe"
-                                        name="class"
-                                        disabled={true}
-                                        required={true}
-                                        onChange={handleChangeStudent}
-                                        value={stud.class || ""}
-                                        InputProps={{
-                                            classes: {
-                                                input: classes.resizeTextField,
-                                            },
-                                        }}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </div>
-                    </Grid>
+
                     <Grid item={true} md={6} xs={12}>
-                        <div className={classes.title}>NOTE JOURNALIERE 1er TRIM </div>
+                        <div className={classes.title}>NOTE JOURNALIERE 3eme TRIM </div>
                         <div className={classes.itemNote}>
                             <Grid container={true} direction="row" spacing={1} >
                                 <Grid item={true} sm={3} xs={12}>
@@ -782,7 +656,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note Maths"
                                         name="note_Maths"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.note_Maths || 0}
+                                        value={noteJournalier3e?.note_Maths || 0}
 
                                     />
                                 </Grid>
@@ -792,7 +666,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Maths"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.coef_Maths || 0}
+                                        value={noteJournalier3e?.coef_Maths || 0}
 
                                     />
                                 </Grid>
@@ -801,7 +675,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note PC"
                                         name="note_Pc"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.note_Pc || 0}
+                                        value={noteJournalier3e?.note_Pc || 0}
 
                                     />
                                 </Grid>
@@ -811,7 +685,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Pc"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.coef_Pc || 0}
+                                        value={noteJournalier3e?.coef_Pc || 0}
 
                                     />
                                 </Grid>
@@ -824,7 +698,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note Anglais"
                                         name="note_Ang"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.note_Ang || 0}
+                                        value={noteJournalier3e?.note_Ang || 0}
 
                                     />
                                 </Grid>
@@ -834,7 +708,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Ang"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.coef_Ang || 0}
+                                        value={noteJournalier3e?.coef_Ang || 0}
 
                                     />
                                 </Grid>
@@ -843,7 +717,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note Malagasy"
                                         name="note_Mal"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.note_Mal || 0}
+                                        value={noteJournalier3e?.note_Mal || 0}
 
                                     />
                                 </Grid>
@@ -853,7 +727,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Mal"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.coef_Mal || 0}
+                                        value={noteJournalier3e?.coef_Mal || 0}
 
                                     />
                                 </Grid>
@@ -865,7 +739,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note Français"
                                         name="note_Fr"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.note_Fr || 0}
+                                        value={noteJournalier3e?.note_Fr || 0}
 
                                     />
                                 </Grid>
@@ -875,7 +749,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Fr"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.coef_Fr || 0}
+                                        value={noteJournalier3e?.coef_Fr || 0}
 
                                     />
                                 </Grid>
@@ -884,7 +758,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note Philo"
                                         name="note_Philo"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.note_Philo || 0}
+                                        value={noteJournalier3e?.note_Philo || 0}
 
                                     />
                                 </Grid>
@@ -894,7 +768,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Philo"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.coef_Philo || 0}
+                                        value={noteJournalier3e?.coef_Philo || 0}
 
                                     />
                                 </Grid>
@@ -907,7 +781,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note Histo-Géo"
                                         name="note_HistoGeo"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.note_HistoGeo || 0}
+                                        value={noteJournalier3e?.note_HistoGeo || 0}
 
                                     />
                                 </Grid>
@@ -917,7 +791,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_HistoGeo"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.coef_HistoGeo || 0}
+                                        value={noteJournalier3e?.coef_HistoGeo || 0}
 
                                     />
                                 </Grid>
@@ -926,7 +800,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note SVT"
                                         name="note_SVT"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.note_SVT || 0}
+                                        value={noteJournalier3e?.note_SVT || 0}
 
                                     />
                                 </Grid>
@@ -936,7 +810,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_SVT"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.coef_SVT || 0}
+                                        value={noteJournalier3e?.coef_SVT || 0}
 
                                     />
                                 </Grid>
@@ -945,7 +819,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note EPS"
                                         name="note_Eps"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.note_Eps || 0}
+                                        value={noteJournalier3e?.note_Eps || 0}
 
                                     />
                                 </Grid>
@@ -955,7 +829,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Eps"
                                         onChange={handleChangeJournalier}
-                                        value={noteJournalier?.coef_Eps || 0}
+                                        value={noteJournalier3e?.coef_Eps || 0}
 
                                     />
                                 </Grid>
@@ -965,7 +839,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                     </Grid>
 
                     <Grid item={true} md={6} xs={12}>
-                        <div className={classes.title}>NOTE DE COMPOSITION  1er TRIM </div>
+                        <div className={classes.title}>NOTE DE COMPOSITION  3eme  TRIM </div>
                         <div className={classes.itemNote}>
                             <Grid container={true} direction="row" spacing={1} >
                                 <Grid item={true} sm={3} xs={12}>
@@ -973,7 +847,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note Maths"
                                         name="note_Maths"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.note_Maths || 0}
+                                        value={noteComposition3e?.note_Maths || 0}
 
                                     />
                                 </Grid>
@@ -983,7 +857,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Maths"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.coef_Maths || 0}
+                                        value={noteComposition3e?.coef_Maths || 0}
 
                                     />
                                 </Grid>
@@ -992,7 +866,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note PC"
                                         name="note_Pc"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.note_Pc || 0}
+                                        value={noteComposition3e?.note_Pc || 0}
 
                                     />
                                 </Grid>
@@ -1002,7 +876,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Pc"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.coef_Pc || 0}
+                                        value={noteComposition3e?.coef_Pc || 0}
 
                                     />
                                 </Grid>
@@ -1015,7 +889,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note Anglais"
                                         name="note_Ang"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.note_Ang || 0}
+                                        value={noteComposition3e?.note_Ang || 0}
 
                                     />
                                 </Grid>
@@ -1025,7 +899,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Ang"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.coef_Ang || 0}
+                                        value={noteComposition3e?.coef_Ang || 0}
 
                                     />
                                 </Grid>
@@ -1034,7 +908,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note Malagasy"
                                         name="note_Mal"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.note_Mal || 0}
+                                        value={noteComposition3e?.note_Mal || 0}
 
                                     />
                                 </Grid>
@@ -1044,7 +918,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Mal"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.coef_Mal || 0}
+                                        value={noteComposition3e?.coef_Mal || 0}
 
                                     />
                                 </Grid>
@@ -1056,7 +930,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note Français"
                                         name="note_Fr"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.note_Fr || 0}
+                                        value={noteComposition3e?.note_Fr || 0}
 
                                     />
                                 </Grid>
@@ -1066,7 +940,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Fr"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.coef_Fr || 0}
+                                        value={noteComposition3e?.coef_Fr || 0}
 
                                     />
                                 </Grid>
@@ -1075,7 +949,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note Philo"
                                         name="note_Philo"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.note_Philo || 0}
+                                        value={noteComposition3e?.note_Philo || 0}
 
                                     />
                                 </Grid>
@@ -1085,7 +959,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Philo"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.coef_Philo || 0}
+                                        value={noteComposition3e?.coef_Philo || 0}
 
                                     />
                                 </Grid>
@@ -1098,7 +972,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note Histo-Géo"
                                         name="note_HistoGeo"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.note_HistoGeo || 0}
+                                        value={noteComposition3e?.note_HistoGeo || 0}
 
                                     />
                                 </Grid>
@@ -1108,7 +982,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_HistoGeo"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.coef_HistoGeo || 0}
+                                        value={noteComposition3e?.coef_HistoGeo || 0}
 
                                     />
                                 </Grid>
@@ -1117,7 +991,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note SVT"
                                         name="note_SVT"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.note_SVT || 0}
+                                        value={noteComposition3e?.note_SVT || 0}
 
                                     />
                                 </Grid>
@@ -1127,7 +1001,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_SVT"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.coef_SVT || 0}
+                                        value={noteComposition3e?.coef_SVT || 0}
 
                                     />
                                 </Grid>
@@ -1136,7 +1010,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         label="Note EPS"
                                         name="note_Eps"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.note_Eps || 0}
+                                        value={noteComposition3e?.note_Eps || 0}
 
                                     />
                                 </Grid>
@@ -1146,7 +1020,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         required={true}
                                         name="coef_Eps"
                                         onChange={handleChangeComposition}
-                                        value={noteComposition?.coef_Eps || 0}
+                                        value={noteComposition3e?.coef_Eps || 0}
 
                                     />
                                 </Grid>
@@ -1169,4 +1043,4 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
         </div >
     );
 }
-export default inject("noteStore", "userStore")(observer(CreateNote))
+export default inject("noteStore", "userStore")(observer(CreateThirdNote))

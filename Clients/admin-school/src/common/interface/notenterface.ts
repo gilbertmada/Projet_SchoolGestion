@@ -2,7 +2,7 @@ import { IStudent } from "./StudentInterface";
 
 
 export interface INoteJournalier {
-    _id: string;
+
     note_Maths: any;
     coef_Maths: any;
     note_Pc: any;
@@ -25,7 +25,7 @@ export interface INoteJournalier {
 }
 
 export interface INoteComposition {
-    _id: string;
+
     note_Maths: any;
     coef_Maths: any;
     note_Pc: any;
@@ -47,13 +47,19 @@ export interface INoteComposition {
 
 }
 
-
 export interface INotes {
     _id: string;
     noteJournalier:INoteJournalier;
     noteComposition:INoteComposition;
+    noteJournalier2e:INoteJournalier;
+    noteComposition2e:INoteComposition;
+    noteJournalier3e:INoteJournalier;
+    noteComposition3e:INoteComposition;
     stud: IStudent;
     total1erTrim:any;
+    total2eTrim:any;
+    total3eTrim:any;
+    totalTrim:any;
     totalCoefJ0:any;
     totalCoefCompo0:any;
     totalJ1:any;
@@ -64,6 +70,7 @@ export interface INotes {
     generalMoyen1erTrim:any;
     generalMoyen2eTrim:any;
     generalMoyen3eTrim:any;
+    generalMoyenTrim: any;
     deleted: boolean;
     updatedBy: string;
     createdAt: Date;

@@ -3,23 +3,72 @@ import { action, makeObservable, observable, runInAction } from 'mobx';
 import config from '../config';
 import { parseError } from '../services/utils';
 import { IClasse } from '../common/interface/classeInterface/classeInterface';
-import { INotes } from '../common/interface/notenterface';
+import { INotes, INoteJournalier, INoteComposition } from '../common/interface/notenterface';
 import rootStore from './AppStore';
 import { IStudent } from '../common/interface/StudentInterface';
 
+// export const defaultNoteJournalier = {
+//     note_Maths: 0,
+//     coef_Maths: 0,
+//     note_Pc: 0,
+//     coef_Pc: 0,
+//     note_Ang: 0,
+//     coef_Ang: 0,
+//     note_Mal: 0,
+//     coef_Mal: 0,
+//     note_Fr: 0,
+//     coef_Fr: 0,
+//     note_Philo: 0,
+//     coef_Philo: 0,
+//     note_HistoGeo: 0,
+//     coef_HistoGeo: 0,
+//     note_SVT: 0,
+//     coef_SVT: 0,
+//     note_Eps: 0,
+//     coef_Eps: 0,
+  
+//   }
+  
+//   export const defaultNoteComposition = {
+//     note_Maths: 0,
+//     coef_Maths: 0,
+//     note_Pc: 0,
+//     coef_Pc: 0,
+//     note_Ang: 0,
+//     coef_Ang: 0,
+//     note_Mal: 0,
+//     coef_Mal: 0,
+//     note_Fr: 0,
+//     coef_Fr: 0,
+//     note_Philo: 0,
+//     coef_Philo: 0,
+//     note_HistoGeo: 0,
+//     coef_HistoGeo: 0,
+//     note_SVT: 0,
+//     coef_SVT: 0,
+//     note_Eps: 0,
+//     coef_Eps: 0,
+//   }
 export interface NoteStoreInterface {
     isLoading: boolean;
     allNote: INotes[];
     stud: IStudent | null;
     noteJounalier: any;
+    noteComposition: any;
+    noteJounalier2e: any;
+    noteComposition2e: any;
+    noteJounalier3e: any;
+    noteComposition3e: any;
     totalJour0: any;
     total1erTrim: any;
+    total2eTrim: any;
+    total3eTrim: any;
     totalJour1: any;
     totalJour2: any;
     totalComposition0: any
     totalComposition1: any
     totalComposition2: any
-    noteComposition: any;
+
     generalMoyen0: any;
     generalMoyen1: any;
     generalMoyen2: any;
@@ -31,6 +80,10 @@ export interface NoteStoreInterface {
     setNote: (data: any) => void;
     setNoteJournalier: (note: any) => void;
     setNoteComposition: (note: any) => void;
+    setNoteJournalier2e: (note: any) => void;
+    setNoteComposition2e: (note: any) => void;
+    setNoteJournalier3e: (note: any) => void;
+    setNoteComposition3e: (note: any) => void;
     getAllNotes: () => Promise<any>;
     createNotes: (data: INotes) => void;
     updateNote: (data: INotes) => void;
@@ -56,7 +109,19 @@ class Notes implements NoteStoreInterface {
 
     @observable noteComposition: any = {};
 
+    @observable noteJounalier2e: any = {};
+
+    @observable noteComposition2e: any = {};
+
+    @observable noteJounalier3e: any = {};
+
+    @observable noteComposition3e: any = {};
+
     @observable total1erTrim: any = 0;
+
+    @observable total2eTrim: any = 0;
+
+    @observable total3eTrim: any = 0;
 
     @observable generalMoyen0: any = "0";
 
@@ -85,9 +150,6 @@ class Notes implements NoteStoreInterface {
         this.selectedNote = note;
     };
 
-    // @observable day: any[] = [];
-
-    @observable horror: any[] = [];
 
     @action setNote = (data: INotes | null) => {
         this.note = data;
@@ -103,9 +165,23 @@ class Notes implements NoteStoreInterface {
         this.noteComposition = data;
     };
 
-    // @action setHorror = (data: any[]) => {
-    //     this.horror = data;
-    // };
+    @action setNoteJournalier2e = (data: any) => {
+        this.noteJounalier2e = data;
+    };
+
+
+    @action setNoteComposition2e = (data: any) => {
+        this.noteComposition2e = data;
+    };
+
+    @action setNoteJournalier3e = (data: any) => {
+        this.noteJounalier3e = data;
+    };
+
+
+    @action setNoteComposition3e = (data: any) => {
+        this.noteComposition3e = data;
+    };
 
     @action setStud = (data: IStudent | null) => {
         this.stud = data;
@@ -124,11 +200,8 @@ class Notes implements NoteStoreInterface {
 
         try {
             console.log("data...", data);
-
-
-            this.total1erTrim = data.total1erTrim;
-
-
+            
+            
             const add = await axios.post(`${config.servers.apiUrl}note`, data);
 
             rootStore.succesSnackBar(true, 'Classe ajouter avec succès');
@@ -144,6 +217,7 @@ class Notes implements NoteStoreInterface {
         }
 
     };
+
 
 
     @action getFilteredNote = async (filter: Record<string, unknown>) => {
@@ -174,20 +248,24 @@ class Notes implements NoteStoreInterface {
     };
 
 
-    @action updateNote = async (noteUpdate: INotes) => {
+    @action updateNote = async (noteUpdate: any) => {
         try {
             console.log("noteUpdate....", noteUpdate);
-
+            this.isLoading = true;
             const note = await axios.patch(`${config.servers.apiUrl}note/edit`, noteUpdate);
 
             rootStore.updateSnackBar(true, 'Modifié', 'success');
 
-            return note;
+
+            return note
+
         } catch (err) {
             parseError(err, {
                 404: "Le note demandé est introuvable",
                 403: 'Vous ne pouvez pas effectuer cette opération ou le mot de passe entré est incorrect',
             });
+        } finally {
+            this.isLoading = false;
         }
     };
 

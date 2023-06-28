@@ -88,7 +88,7 @@ const ListNote: FC<AbstractEmptyInterface> = (props: any) => {
       valueFormatter: (params) => params.row.generalMoyen1erTrim,
     },
     {
-      field: "total2erTrim",
+      field: "total2eTrim",
       headerName: "Totale Note  2e_trim",
       width: Math.floor(screenSize / 8),
       headerClassName: classes.tableHeader,

@@ -3,6 +3,7 @@ export interface IStudent {
   schoolName: string;
   lastName: string;
   firstName: string;
+  scolarYear: string;
   role: string;
   nomRole: string;
   email: string;

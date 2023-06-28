@@ -6,6 +6,7 @@ export const getStudentColumns = (
   screenSize: number
 ): GridColDef[] => {
   return [
+    
     {
       field: "schoolName",
       headerName: "Ecole",
