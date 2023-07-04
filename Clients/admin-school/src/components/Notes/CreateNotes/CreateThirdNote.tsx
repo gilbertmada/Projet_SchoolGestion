@@ -14,7 +14,7 @@ import SaveListIcon from "@material-ui/icons/Save";
 import { inject, observer } from "mobx-react";
 import { FC, useEffect, useState } from "react";
 import EditFooter from "../../../common/EditFooter";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import PictureAsPdfIcon from "@material-ui/icons/PictureAsPdf";
 import { useHistory } from "react-router-dom";
 import { FooterIcon } from "../../../common/interface";
 import { ConfirmModal, DeleteTotalModal } from "../../../common/Modal";
@@ -25,7 +25,7 @@ import { UserStoreInterface } from "../../../store/UserStore";
 import { AbstractEmptyInterface } from "../../../types";
 import { INoteJournalier, INoteComposition } from '../../../common/interface/notenterface';
 import { validationData } from "../CreateNoteLogic2e";
-import { defaultNoteJournalier, defaultNoteComposition } from './defaultData';
+import exportPDFStore from "../../../store/ExportPDFStore";
 import { toJS } from "mobx";
 import rootStore from '../../../store/AppStore';
 import useStyles from "./style";
@@ -60,7 +60,7 @@ interface CreateNoteProps extends AbstractEmptyInterface {
     // validationErrorNoteCompo: noteCompoValidationError
 }
 const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
-    const { noteStore } = props as CreateNoteProps;
+    const { noteStore,userStore } = props as CreateNoteProps;
 
     const classes = useStyles();
     const history = useHistory();
@@ -68,20 +68,15 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
     const disableIt = !!noteStore.note?.stud;
     const [noteJournalier3e, setNoteJournalier3e] = useState<any>({});
     const [noteComposition3e, setNoteComposition3e] = useState<any>({});
-    const [stud, setStud] = useState<any>({});
-
     const [note, setNote] = useState<any>({});
     const [enabled, setItEnabled] = useState(disableIt);
     const [isStorage, setIsStorage] = useState(false);
     const [saveErrors, setSaveErrors] = useState<string[]>([]);
     const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
-    const [isDay, setIsDay] = useState(false);
     const [isSelect, setIsSelect] = useState(false);
-    const [isSchool, setIsSchool] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [pathRedirect, setPathRedirect] = useState("");
-    const [errorNote, setErrorNote] = useState("");
     const [modalStateStudent, setModalStudent] = useState(false);
 
     useEffect(() => {
@@ -90,33 +85,37 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
 
     useEffect(() => {
         if (noteStore.selectedNote?.stud !== undefined) {
+            setIsSelect(true);
             noteStore.setNoteJournalier(noteStore.selectedNote.noteJournalier);
             noteStore.setNoteComposition(noteStore.selectedNote.noteComposition);
+            noteStore.setNoteJournalier2e(noteStore.selectedNote.noteJournalier2e);
+            noteStore.setNoteComposition2e(noteStore.selectedNote.noteComposition2e);
             noteStore.setStud(noteStore.selectedNote.stud);
+        } else {
+            setIsSelect(false);
         }
 
     }, [noteStore]);
-    console.log("allNote2........", toJS(noteStore));
+
 
     useEffect(() => {
         if (noteStore.selectedNote?.stud !== undefined) {
-            setNoteJournalier3e(noteStore.selectedNote.noteJournalier3e);
-            setNoteComposition3e(noteStore.selectedNote.noteComposition3e);
+            if (noteStore.selectedNote.noteJournalier3e || noteStore.selectedNote.noteComposition3e) {
+                setIsStorage(true);
+                setNoteJournalier3e(noteStore.selectedNote.noteJournalier3e);
+                setNoteComposition3e(noteStore.selectedNote.noteComposition3e);
+            } else {
+                setIsStorage(false);
+            }
+
 
         }
 
+
+
     }, [noteStore.selectedNote]);
 
-    console.log("selectedNote2....", noteStore.selectedNote);
 
-    const toggleStudent = () => {
-        setModalStudent(!modalStateStudent);
-        noteStore.setIsFromBooking(false);
-    };
-
-    const ChangeIt = () => {
-        setItEnabled(!enabled)
-    }
 
     const handleChangeJournalier = (e: any) => {
         const { name, value } = e.target;
@@ -421,6 +420,44 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
     listNoteDef.push(NoteSVT());
     listNoteDef.push(NoteEps());
 
+    const arrayListNoteDef: any[] = [
+        {
+            label: "MATHEMATIQUES",
+            value: NoteMath(),
+        },
+        {
+            label: "PHYSIQUE_CHIMIE",
+            value: NotePc(),
+        },
+        {
+            label: "ANGLAIS",
+            value: NoteAng(),
+        },
+        {
+            label: "MALAGASY",
+            value: NoteMal(),
+        },
+        {
+            label: "FRANÇAIS",
+            value: NoteFr(),
+        },
+        {
+            label: "PHILOSOPHIE",
+            value: NotePhilo(),
+        },
+        {
+            label: "HISTO_GEO",
+            value: NoteHistoGeo(),
+        },
+        {
+            label: "SVT",
+            value: NoteSVT(),
+        },
+        {
+            label: "EPS",
+            value: NoteEps(),
+        },
+    ];
 
     const listCoefJ = () => {
         const list = [];
@@ -449,7 +486,7 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
     const getTotalCoefCompo: number = listCoefCompo().length > 0 ? listCoefCompo()
         .map((item: any) => parseInt(item, 10))
         .reduce((a: any, b: any) => a + b) : 0;
-    console.log("listNoteDef....", listNoteDef);
+
     const totalNote3eTrim = () => {
         let somme = 0;
         for (let i = 0; i < listNoteDef.length; i++) {
@@ -464,7 +501,8 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
         if (arrayDeNoteJ[i]?.valueNote === 0
             || arrayDeNoteJ[i]?.valueNote === null
             || Number.isNaN(arrayDeNoteJ[i]?.valueNote) === true
-            || arrayDeNoteJ[i]?.valueNote === '') {
+            || arrayDeNoteJ[i]?.valueNote === ''
+            || arrayDeNoteJ[i]?.valueNote === undefined) {
             numberNaNJTrue.push(i);
         }
 
@@ -475,7 +513,8 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
         if (arrayDeNoteCompo[j]?.valueNote === 0
             || arrayDeNoteCompo[j]?.valueNote === null
             || Number.isNaN(arrayDeNoteCompo[j]?.valueNote) === true
-            || arrayDeNoteCompo[j]?.valueNote === '') {
+            || arrayDeNoteCompo[j]?.valueNote === ''
+            || arrayDeNoteCompo[j]?.valueNote === undefined) {
             numberNaNCompoTrue.push(j);
 
         }
@@ -487,7 +526,8 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
         if (arrayDeCoefJ[k].valueCoef === 0
             || arrayDeCoefJ[k].valueCoef === null
             || Number.isNaN(arrayDeCoefJ[k].valueCoef) === true
-            || arrayDeCoefJ[k].valueCoef === '') {
+            || arrayDeCoefJ[k].valueCoef === ''
+            || arrayDeCoefJ[k].valueCoef === undefined) {
             numberNaNCoefJTrue.push(k);
 
         }
@@ -498,24 +538,25 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
         if (arrayDeCoefCompo[l].valueCoef === 0
             || arrayDeCoefCompo[l].valueCoef === null
             || Number.isNaN(arrayDeCoefCompo[l].valueCoef) === true
-            || arrayDeCoefCompo[l].valueCoef === '') {
+            || arrayDeCoefCompo[l].valueCoef === ''
+            || arrayDeCoefCompo[l].valueCoef === undefined) {
             numberNaNCoefCompoTrue.push(l);
 
         }
 
     }
-    console.log("numberNaNCoefCompoTrue....", numberNaNCoefCompoTrue);
+
     if (numberNaNJTrue.length === 9) {
         generalMoyen3eTrim = +totalNote3eTrim() / +getTotalCoefCompo;
-        console.log("totalNote1erTrim.tss J...", +totalNote3eTrim());
+   
     }
+
     if (numberNaNCompoTrue.length === 9) {
         generalMoyen3eTrim = +totalNote3eTrim() / +getTotalCoefJ;
-        console.log("totalNote1erTrim...tssCompo.", +totalNote3eTrim());
     }
+
     if (numberNaNJTrue.length !== 9 && numberNaNCompoTrue.length !== 9) {
         generalMoyen3eTrim = +totalNote3eTrim() / +getTotalCoefJ;
-        console.log("totalNote1erTrim....", +totalNote3eTrim());
     }
 
 
@@ -528,13 +569,21 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
         noteComposition: { ...noteStore.selectedNote?.noteComposition },
         noteJournalier2e: { ...noteStore.selectedNote?.noteJournalier2e },
         noteComposition2e: { ...noteStore.selectedNote?.noteComposition2e },
+        arrayListNoteDef2e: noteStore.selectedNote?.arrayListNoteDef2e,
         noteJournalier3e: { ...noteJournalier3e },
         noteComposition3e: { ...noteComposition3e },
         totalCoefJ0: +getTotalCoefJ,
+        total1erTrim: noteStore.selectedNote?.total1erTrim,
+        total2eTrim: noteStore.selectedNote?.total2eTrim,
         total3eTrim: +totalNote3eTrim().toFixed(2),
+        generalMoyen1erTrim: noteStore.selectedNote?.generalMoyen1erTrim,
+        generalMoyen2eTrim: noteStore.selectedNote?.generalMoyen2eTrim,
         generalMoyen3eTrim: +generalMoyen3eTrim.toFixed(2),
         totalTrim: +totalTrim.toFixed(2),
         generalMoyenTrim: +generalMoyenTrim.toFixed(2),
+        arrayListNoteDef: noteStore.selectedNote?.arrayListNoteDef,
+        arrayListNoteDef3e: [...arrayListNoteDef],
+        roleUser: userStore.user?.nomRole,
 
 
     }
@@ -558,16 +607,6 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
     const onSubmit = (e: any) => {
         e.preventDefault();
 
-        console.log("totalTrim....", totalTrim);
-        console.log("generalMoyenTrim....", generalMoyenTrim);
-        console.log("arrayDeNoteJ....", arrayDeNoteJ);
-        console.log("listCoefJ....", listCoefJ());
-        console.log("arrayDeNoteCompo....", arrayDeNoteCompo);
-        console.log("arrayDeCoefJ....", arrayDeCoefJ);
-        console.log("arrayDeCoefCompo....", arrayDeCoefCompo);
-        console.log("getTotalCoefJ....", +getTotalCoefJ);
-        console.log("noteMath....", NoteMath());
-        console.log("newNote", newNote);
         const errors = validationData(numberNaNJTrue, numberNaNCompoTrue, numberNaNCoefJTrue, numberNaNCoefCompoTrue);
 
         setSaveErrors(errors);
@@ -580,15 +619,20 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
 
         props.noteStore.updateNote(newNote).then((editClasse: any) => {
             if (editClasse) {
+               
                 history.push("/note/list");
-                // classeStore.getAllClass();
+            
             }
 
         });
 
 
     }
+    const handleDownload = () => {
 
+        exportPDFStore.exportToPdfBulletinTrim(newNote);
+
+    }
 
     const footerIcons: FooterIcon[] = [
         {
@@ -612,6 +656,12 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
             label: "Supprimer",
             onClick: handleOpenDeleteModal,
             title: "Supprimer"
+        },
+        {
+            id: 3,
+            ItemIcon: PictureAsPdfIcon,
+            onClick: handleDownload,
+            title: "Exporter en Bulletin",
         },
 
     ];
@@ -638,9 +688,9 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
                     paths={[
                         { label: "Dashboard", path: "/" },
                         { label: "Liste des Notes", path: "/note/list" },
-                        { label: "Creation des notes 1er Trimestre", path: "/note/new-note" },
-                        { label: "Creation des notes 2eme Trimestre", path: "/note/second-note" },
-                        { label: "Creation des notes 3eme Trimestre", path: "/note/third-note" },
+                        { label: `${!isSelect ? "Creation des notes 1er Trim" : "Note 1er Trim"}`, path: "/note/new-note" },
+                        { label: `${!isSelect ? "Creation des notes 2eme Trim" : "Note 2eme Trim"}`, path: "/note/second-note" },
+                        { label: `${!isStorage ? "Creation des notes 3eme Trim" : "Note 3eme Trim"}`, path: "/note/third-note" },
                     ]}
                 />
             </div>

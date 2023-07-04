@@ -6,9 +6,7 @@ import { log } from 'console';
 
 export interface ExportPdfInterface {
 
-  exportToPdfBulletin1erTrim: (data: any) => void;
-  exportToPdfBulletin2eTrim: (data: any) => void;
-  exportToPdfBulletin3eTrim: (data: any) => void;
+  exportToPdfBulletinTrim: (data: any) => void;
   exportToPdfListStudent: (data: any) => void;
   exportToPdfRecuDroit: (data: any) => void;
   exportToPdfRecuEcolage: (data: any) => void;
@@ -36,9 +34,9 @@ class ExportToPDFStore implements ExportPdfInterface {
     }
   };
 
-  exportToPdfBulletin1erTrim = async (data: any) => {
+  exportToPdfBulletinTrim = async (data: any) => {
     try {
-      const resp = await axios.post(`${config.servers.apiUrl}exportToPdf/bulletin1erTrim`, data);
+      const resp = await axios.post(`${config.servers.apiUrl}exportToPdf/bulletinTrim`, data);
 
       if (resp) {
         downloadFile(
@@ -54,41 +52,6 @@ class ExportToPDFStore implements ExportPdfInterface {
     }
   };
 
-  exportToPdfBulletin2eTrim = async (data: any) => {
-    try {
-      const resp = await axios.post(`${config.servers.apiUrl}exportToPdf/bulletin2eTrim`, data);
-
-      if (resp) {
-        downloadFile(
-          `${config.servers.apiUrl}uploadFile/file/download/PDFFiles/${resp.data.filename}`
-        );
-        
-      }
-    } catch (error: any) {
-      if (error.message.includes('code 400')) {
-        return;
-      }
-      rootStore.updateSnackBar(true, "Une erreur s'est produite. Veuillez réessayer plus tard!");
-    }
-  };
-
-  exportToPdfBulletin3eTrim = async (data: any) => {
-    try {
-      const resp = await axios.post(`${config.servers.apiUrl}exportToPdf/bulletin3eTrim`, data);
-
-      if (resp) {
-        downloadFile(
-          `${config.servers.apiUrl}uploadFile/file/download/PDFFiles/${resp.data.filename}`
-        );
-        
-      }
-    } catch (error: any) {
-      if (error.message.includes('code 400')) {
-        return;
-      }
-      rootStore.updateSnackBar(true, "Une erreur s'est produite. Veuillez réessayer plus tard!");
-    }
-  };
   
   exportToPdfRecuDroit = async (data: any) => {
 
@@ -148,10 +111,10 @@ class ExportToPDFStore implements ExportPdfInterface {
 
   exportPdfEmploiDuTemps = async (data: any) => {
     try {
-      console.log('emploi du temps.....',data);
+ 
       
       const resp = await axios.post(`${config.servers.apiUrl}exportToPdf/emploiDuTemps`, data);
-      console.log('emploi du tempsretour.....',resp);
+      
       if (resp) {
         downloadFile(
           `${config.servers.apiUrl}uploadFile/file/download/PDFFiles/${resp.data.filename}`

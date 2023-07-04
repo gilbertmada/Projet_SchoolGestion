@@ -34,36 +34,14 @@ import rootStore from '../../../store/AppStore';
 import useStyles from "./style";
 import { isFunction } from "lodash";
 
-export interface noteJValidationError {
-    note_Maths: any;
-    note_Pc: any;
-    note_Fr: any;
-    note_Ang: any;
-    note_HistoGeo: any;
-    note_Philo: any;
-    note_Mal: any;
-    note_Eps: any;
-}
-
-export interface noteCompoValidationError {
-    note_Maths?: any;
-    note_Pc?: string;
-    note_Fr?: string;
-    note_Ang?: string;
-    note_HistoGeo?: string;
-    note_Philo?: string;
-    note_Mal?: string;
-    note_Eps?: string;
-}
 
 interface CreateNoteProps extends AbstractEmptyInterface {
     noteStore: NoteStoreInterface;
     userStore: UserStoreInterface
-    // validationErrorNoteJ: noteJValidationError
-    // validationErrorNoteCompo: noteCompoValidationError
+
 }
 const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
-    const { noteStore } = props as CreateNoteProps;
+    const { noteStore,userStore } = props as CreateNoteProps;
 
     const classes = useStyles();
     const history = useHistory();
@@ -92,18 +70,19 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
     }, [noteStore]);
 
 
-    console.log("allNote........", toJS(noteStore));
-
     useEffect(() => {
         if (noteStore.selectedNote?.stud !== undefined) {
+            setIsSelect(true);
             setNoteJournalier(noteStore.selectedNote.noteJournalier);
             setNoteComposition(noteStore.selectedNote.noteComposition);
             setStud(noteStore.selectedNote.stud);
+        } else {
+            setIsSelect(false);
         }
 
     }, [noteStore.selectedNote]);
 
-    console.log("selectedNote....", noteStore.selectedNote);
+
 
     const toggleStudent = () => {
         setModalStudent(!modalStateStudent);
@@ -399,7 +378,45 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
     listNoteDef.push(NoteHistoGeo());
     listNoteDef.push(NoteSVT());
     listNoteDef.push(NoteEps());
-
+    
+    const arrayListNoteDef:any[] = [
+        {
+            label: "MATHEMATIQUES",
+            value: NoteMath(),
+        },
+        {
+            label: "PHYSIQUE_CHIMIE",
+            value: NotePc(),
+        },
+        {
+            label: "ANGLAIS",
+            value: NoteAng(),
+        },
+        {
+            label: "MALAGASY",
+            value: NoteMal(),
+        },
+        {
+            label: "FRANÇAIS",
+            value: NoteFr(),
+        },
+        {
+            label: "PHILOSOPHIE",
+            value: NotePhilo(),
+        },
+        {
+            label: "HISTO_GEO",
+            value: NoteHistoGeo(),
+        },
+        {
+            label: "SVT",
+            value: NoteSVT(),
+        },
+        {
+            label: "EPS",
+            value: NoteEps(),
+        },
+    ];
 
     const listCoefJ = () => {
         const list = [];
@@ -443,7 +460,8 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
         if (arrayDeNoteJ[i]?.valueNote === 0
             || arrayDeNoteJ[i]?.valueNote === null
             || Number.isNaN(arrayDeNoteJ[i]?.valueNote) === true
-            || arrayDeNoteJ[i]?.valueNote === '') {
+            || arrayDeNoteJ[i]?.valueNote === ''
+            || arrayDeNoteJ[i]?.valueNote === undefined) {
             numberNaNJTrue.push(i);
         }
 
@@ -454,7 +472,8 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
         if (arrayDeNoteCompo[j]?.valueNote === 0
             || arrayDeNoteCompo[j]?.valueNote === null
             || Number.isNaN(arrayDeNoteCompo[j]?.valueNote) === true
-            || arrayDeNoteCompo[j]?.valueNote === '') {
+            || arrayDeNoteCompo[j]?.valueNote === ''
+            || arrayDeNoteCompo[j]?.valueNote === undefined) {
             numberNaNCompoTrue.push(j);
 
         }
@@ -466,7 +485,8 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
         if (arrayDeCoefJ[k].valueCoef === 0
             || arrayDeCoefJ[k].valueCoef === null
             || Number.isNaN(arrayDeCoefJ[k].valueCoef) === true
-            || arrayDeCoefJ[k].valueCoef === '') {
+            || arrayDeCoefJ[k].valueCoef === ''
+            || arrayDeCoefJ[k].valueCoef === undefined) {
             numberNaNCoefJTrue.push(k);
 
         }
@@ -477,7 +497,8 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
         if (arrayDeCoefCompo[l].valueCoef === 0
             || arrayDeCoefCompo[l].valueCoef === null
             || Number.isNaN(arrayDeCoefCompo[l].valueCoef) === true
-            || arrayDeCoefCompo[l].valueCoef === '') {
+            || arrayDeCoefCompo[l].valueCoef === ''
+            || arrayDeCoefCompo[l].valueCoef === undefined) {
             numberNaNCoefCompoTrue.push(l);
 
         }
@@ -496,10 +517,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
         generalMoyen1erTrim = +totalNote1erTrim() / +getTotalCoefJ;
 
     }
-    console.log("arrayDeNoteJ....", arrayDeNoteJ);
-    console.log("arrayDeNoteCompo....", arrayDeNoteCompo);
-    console.log("arrayDeCoefJ....", arrayDeCoefJ);
-    console.log("arrayDeCoefCompo....", arrayDeCoefCompo);
+
 
     const newNote: any = {
         _id: stud._id,
@@ -509,7 +527,8 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
         totalCoefJ0: +getTotalCoefJ,
         total1erTrim: +totalNote1erTrim().toFixed(2),
         generalMoyen1erTrim: +generalMoyen1erTrim.toFixed(2),
-
+        roleUser: userStore.user?.nomRole,
+        arrayListNoteDef: [...arrayListNoteDef],
 
     }
 
@@ -545,7 +564,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
     };
 
     const handleAddNew = () => {
-        // location.reload();
+
         history.push("/note/second-note");
     };
     const deleteClasse = () => {
@@ -567,13 +586,6 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
     const onSubmit = (e: any) => {
         e.preventDefault();
 
-        console.log("numberNaNCoefCompoTrue....", numberNaNCoefCompoTrue);
-        console.log("numberNaNCoefJTrue....", numberNaNCoefJTrue);
-
-        console.log("getTotalCoefJ....", +getTotalCoefJ);
-        console.log("noteMath....", NoteMath());
-        console.log("pc....", NotePc());
-        console.log("newNote", newNote);
         const errors = validationData(newNote, numberNaNJTrue, numberNaNCompoTrue, numberNaNCoefJTrue, numberNaNCoefCompoTrue);
 
         setSaveErrors(errors);
@@ -604,16 +616,11 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
 
     }
     const handleDownload = () => {
-        // if (isArchive === false) {
-        //   rootStore.updateSnackBar(true, 'Vous devez saisir le nom de classe');
-        // } else {
-        //   const listFilters = toJS(noteStore.allNote);
-        //   exportPDFStore.exportPdfEmploiDuTemps(listFilters);
-        // }
-        exportPDFStore.exportToPdfBulletin1erTrim(newNote);
+      
+        exportPDFStore.exportToPdfBulletinTrim(newNote);
 
     }
- 
+
 
     const footerIcons: FooterIcon[] = [
         {
@@ -673,13 +680,13 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                     deleteData={deleteClasse}
                 />
 
-      <HeaderPath
-        paths={[
-            { label: "Dashboard", path: "/" },
-            { label: "Liste des Notes", path: "/note/list" },
-            { label: "Creation des notes 1er Trimestre", path: "/note/new-note" },
-        ]}
-      />
+                <HeaderPath
+                    paths={[
+                        { label: "Dashboard", path: "/" },
+                        { label: "Liste des Notes", path: "/note/list" },
+                        { label: `${!isSelect ? "Creation des notes 1er Trim" : "Note 1er Trim"}`, path: "/note/new-note" },
+                    ]}
+                />
             </div>
             <form onSubmit={onSubmit}>
                 <Grid container={true} direction="row" spacing={1} >

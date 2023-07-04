@@ -45,7 +45,7 @@ class Schools implements SchoolStoreInterface {
 
     @action setSelectedSchool = (school: ISchool | null) => {
         this.selectedSchool = school;
-        console.log("setSelectedSchool......",this.selectedSchool);
+     
     };
 
 
@@ -121,11 +121,11 @@ class Schools implements SchoolStoreInterface {
 
   @action updateSchool = async (schoolUpdate: any) => {
     try {
-        console.log("schoolUpdate...",schoolUpdate);
+
       const classe = await axios.patch(`${config.servers.apiUrl}school/edit`, schoolUpdate);
      
         rootStore.updateSnackBar(true, 'Modifié', 'success');
-        console.log("schoolUpdate.upda...",classe);
+
       return classe;
     } catch (err) {
       parseError(err, {
@@ -156,9 +156,9 @@ class Schools implements SchoolStoreInterface {
 
     @action deleteTotalSchool = async (schoolDelete: ISchool) => {
         try {
-            console.log("schoolDelete.del...",schoolDelete);
+ 
             const delSchool = await axios.patch(`${config.servers.apiUrl}school/deleteTotal`, schoolDelete);
-            console.log("delSchool.del...",delSchool);
+ 
             rootStore.updateSnackBar(true, 'Supprimé', 'success');
             return delSchool;
         } catch (err) {

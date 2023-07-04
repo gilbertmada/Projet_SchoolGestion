@@ -14,6 +14,7 @@ import SaveListIcon from "@material-ui/icons/Save";
 import { inject, observer } from "mobx-react";
 import { FC, useEffect, useState } from "react";
 import EditFooter from "../../../common/EditFooter";
+import PictureAsPdfIcon from "@material-ui/icons/PictureAsPdf";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useHistory } from "react-router-dom";
 import { FooterIcon } from "../../../common/interface";
@@ -25,7 +26,7 @@ import { UserStoreInterface } from "../../../store/UserStore";
 import { AbstractEmptyInterface } from "../../../types";
 import { INoteJournalier, INoteComposition } from '../../../common/interface/notenterface';
 import { validationData } from "../CreateNoteLogic2e";
-import { defaultNoteJournalier, defaultNoteComposition } from './defaultData';
+import exportPDFStore from "../../../store/ExportPDFStore";
 import { toJS } from "mobx";
 import rootStore from '../../../store/AppStore';
 import useStyles from "./style";
@@ -60,7 +61,7 @@ interface CreateNoteProps extends AbstractEmptyInterface {
     // validationErrorNoteCompo: noteCompoValidationError
 }
 const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
-    const { noteStore } = props as CreateNoteProps;
+    const { noteStore, userStore } = props as CreateNoteProps;
 
     const classes = useStyles();
     const history = useHistory();
@@ -88,7 +89,6 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
     }, [noteStore]);
 
 
-    console.log("allNote1........", toJS(noteStore));
 
     useEffect(() => {
         if (noteStore.selectedNote?.stud !== undefined) {
@@ -100,13 +100,16 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
     }, [noteStore]);
     useEffect(() => {
         if (noteStore.selectedNote?.stud !== undefined) {
+            setIsSelect(true);
             setNoteJournalier2e(noteStore.selectedNote.noteJournalier2e);
             setNoteComposition2e(noteStore.selectedNote.noteComposition2e);
 
+        } else {
+            setIsSelect(false);
         }
 
     }, [noteStore.selectedNote]);
-    console.log("selectedNote.1...", noteStore.selectedNote);
+
 
     const toggleStudent = () => {
         setModalStudent(!modalStateStudent);
@@ -412,6 +415,44 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
     listNoteDef.push(NoteSVT());
     listNoteDef.push(NoteEps());
 
+    const arrayListNoteDef2e: any[] = [
+        {
+            label: "MATHEMATIQUES",
+            value: NoteMath(),
+        },
+        {
+            label: "PHYSIQUE_CHIMIE",
+            value: NotePc(),
+        },
+        {
+            label: "ANGLAIS",
+            value: NoteAng(),
+        },
+        {
+            label: "MALAGASY",
+            value: NoteMal(),
+        },
+        {
+            label: "FRANÇAIS",
+            value: NoteFr(),
+        },
+        {
+            label: "PHILOSOPHIE",
+            value: NotePhilo(),
+        },
+        {
+            label: "HISTO_GEO",
+            value: NoteHistoGeo(),
+        },
+        {
+            label: "SVT",
+            value: NoteSVT(),
+        },
+        {
+            label: "EPS",
+            value: NoteEps(),
+        },
+    ];
 
     const listCoefJ = () => {
         const list = [];
@@ -440,7 +481,7 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
     const getTotalCoefCompo: number = listCoefCompo().length > 0 ? listCoefCompo()
         .map((item: any) => parseInt(item, 10))
         .reduce((a: any, b: any) => a + b) : 0;
-    console.log("listNoteDef....", listNoteDef);
+
     const totalNote2eTrim = () => {
         let somme = 0;
         for (let i = 0; i < listNoteDef.length; i++) {
@@ -455,7 +496,8 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
         if (arrayDeNoteJ[i]?.valueNote === 0
             || arrayDeNoteJ[i]?.valueNote === null
             || Number.isNaN(arrayDeNoteJ[i]?.valueNote) === true
-            || arrayDeNoteJ[i]?.valueNote === '') {
+            || arrayDeNoteJ[i]?.valueNote === ''
+            || arrayDeNoteJ[i]?.valueNote === undefined) {
             numberNaNJTrue.push(i);
         }
 
@@ -466,7 +508,8 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
         if (arrayDeNoteCompo[j]?.valueNote === 0
             || arrayDeNoteCompo[j]?.valueNote === null
             || Number.isNaN(arrayDeNoteCompo[j]?.valueNote) === true
-            || arrayDeNoteCompo[j]?.valueNote === '') {
+            || arrayDeNoteCompo[j]?.valueNote === ''
+            || arrayDeNoteCompo[j]?.valueNote === undefined) {
             numberNaNCompoTrue.push(j);
 
         }
@@ -478,7 +521,8 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
         if (arrayDeCoefJ[k].valueCoef === 0
             || arrayDeCoefJ[k].valueCoef === null
             || Number.isNaN(arrayDeCoefJ[k].valueCoef) === true
-            || arrayDeCoefJ[k].valueCoef === '') {
+            || arrayDeCoefJ[k].valueCoef === ''
+            || arrayDeCoefJ[k].valueCoef === undefined) {
             numberNaNCoefJTrue.push(k);
 
         }
@@ -489,24 +533,26 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
         if (arrayDeCoefCompo[l].valueCoef === 0
             || arrayDeCoefCompo[l].valueCoef === null
             || Number.isNaN(arrayDeCoefCompo[l].valueCoef) === true
-            || arrayDeCoefCompo[l].valueCoef === '') {
+            || arrayDeCoefCompo[l].valueCoef === ''
+            || arrayDeCoefCompo[l].valueCoef === undefined) {
             numberNaNCoefCompoTrue.push(l);
 
         }
 
     }
-    console.log("numberNaNCoefCompoTrue....", numberNaNCoefCompoTrue);
+
     if (numberNaNJTrue.length === 9) {
         generalMoyen2eTrim = +totalNote2eTrim() / +getTotalCoefCompo;
-        console.log("totalNote1erTrim.tss J...", +totalNote2eTrim());
+  
     }
+
     if (numberNaNCompoTrue.length === 9) {
         generalMoyen2eTrim = +totalNote2eTrim() / +getTotalCoefJ;
-        console.log("totalNote1erTrim...tssCompo.", +totalNote2eTrim());
+ 
     }
+
     if (numberNaNJTrue.length !== 9 && numberNaNCompoTrue.length !== 9) {
         generalMoyen2eTrim = +totalNote2eTrim() / +getTotalCoefJ;
-        console.log("totalNote1erTrim....", +totalNote2eTrim());
     }
 
     //  generalMoyen1erTrim = (+totalNote1erTrim() / +getTotalCoefJ);
@@ -515,12 +561,16 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
         stud: { ...noteStore.selectedNote?.stud },
         noteJournalier: { ...noteStore.selectedNote?.noteJournalier },
         noteComposition: { ...noteStore.selectedNote?.noteComposition },
+        arrayListNoteDef: noteStore.selectedNote?.arrayListNoteDef,
         noteJournalier2e: { ...noteJournalier2e },
         noteComposition2e: { ...noteComposition2e },
-        totalCoefJ0: +getTotalCoefJ,
+        total1erTrim:noteStore.selectedNote?.total1erTrim ,
+        generalMoyen1erTrim:noteStore.selectedNote?.generalMoyen1erTrim ,
         total2eTrim: +totalNote2eTrim().toFixed(2),
-        generalMoyen2eTrim: +generalMoyen2eTrim.toFixed(2),
-
+        generalMoyen2eTrim: +generalMoyen2eTrim.toFixed(2),  
+        roleUser: userStore.user?.nomRole,
+        arrayListNoteDef2e:[ ...arrayListNoteDef2e ],
+        totalCoefJ0: +getTotalCoefJ,
 
     }
 
@@ -548,15 +598,6 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
         e.preventDefault();
 
 
-        console.log("arrayDeNoteJ....", arrayDeNoteJ);
-        console.log("listCoefJ....", listCoefJ());
-        console.log("listNoteDef....", listNoteDef);
-        console.log("arrayDeCoefJ....", arrayDeCoefJ);
-        console.log("arrayDeCoefCompo....", arrayDeCoefCompo);
-        console.log("getTotalCoefJ....", +getTotalCoefJ);
-        console.log("NoteEps....", NoteEps());
-        console.log("newNote", newNote);
-        
         const errors = validationData(numberNaNJTrue, numberNaNCompoTrue, numberNaNCoefJTrue, numberNaNCoefCompoTrue);
 
         setSaveErrors(errors);
@@ -566,27 +607,23 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
             return;
         }
 
-        // if (!toJS(noteStore.selectedNote?.noteJournalier2e)) {
 
-
-        //     props.noteStore.createNotes(newNote).then((addClasse: any) => {
-        //         if (addClasse) {
-        //             history.push("/note/list");
-        //         }
-        //     })
-        // } else {
         props.noteStore.updateNote(newNote).then((editClasse: any) => {
 
             if (editClasse) {
                 history.push("/note/list");
-                // classeStore.getAllClass();
             }
 
         });
-        // }
+
 
     }
 
+    const handleDownload = () => {
+    
+        exportPDFStore.exportToPdfBulletinTrim(newNote);
+
+    }
 
     const footerIcons: FooterIcon[] = [
         {
@@ -613,11 +650,16 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
         },
         {
             id: 3,
+            ItemIcon: PictureAsPdfIcon,
+            onClick: handleDownload,
+            title: "Exporter en Bulletin",
+        },
+        {
+            id: 4,
             ItemIcon: AddIcon,
             title: "3em_Trim",
             onClick: handleAddNew,
-            // title: `${studentStore.selectedStudent?.schoolName.includes("Privé") ? "Ecolage" : "Frais divers"
-            //   }`,
+
         },
     ];
 
@@ -629,11 +671,7 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
                     handleCloseConfirmModal={handleCloseConfirmModal}
                     path={pathRedirect}
                 />
-                {/* <SearchStudentModal
-                    handleClose={toggleStudent}
-                    openModal={modalStateStudent}
-                    setEleve={handleUpdateStudent}
-                /> */}
+
                 <DeleteTotalModal
                     isOpen={openDeleteModal}
                     handleCloseDeleteModal={handleCloseDeleteModal}
@@ -643,8 +681,8 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
                     paths={[
                         { label: "Dashboard", path: "/" },
                         { label: "Liste des Notes", path: "/note/list" },
-                        { label: "Creation des notes 1er Trimestre", path: "/note/new-note" },
-                        { label: "Creation des notes 2eme Trimestre", path: "/note/second-note" },
+                        { label: `${!isSelect ? "Creation des notes 1er Trim" : "Note 1er Trim"}`, path: "/note/new-note" },
+                        { label: `${!isSelect ? "Creation des notes 2eme Trim" : "Note 2eme Trim"}`, path: "/note/second-note" },
                     ]}
                 />
             </div>

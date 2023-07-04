@@ -7,48 +7,7 @@ import { INotes, INoteJournalier, INoteComposition } from '../common/interface/n
 import rootStore from './AppStore';
 import { IStudent } from '../common/interface/StudentInterface';
 
-// export const defaultNoteJournalier = {
-//     note_Maths: 0,
-//     coef_Maths: 0,
-//     note_Pc: 0,
-//     coef_Pc: 0,
-//     note_Ang: 0,
-//     coef_Ang: 0,
-//     note_Mal: 0,
-//     coef_Mal: 0,
-//     note_Fr: 0,
-//     coef_Fr: 0,
-//     note_Philo: 0,
-//     coef_Philo: 0,
-//     note_HistoGeo: 0,
-//     coef_HistoGeo: 0,
-//     note_SVT: 0,
-//     coef_SVT: 0,
-//     note_Eps: 0,
-//     coef_Eps: 0,
-  
-//   }
-  
-//   export const defaultNoteComposition = {
-//     note_Maths: 0,
-//     coef_Maths: 0,
-//     note_Pc: 0,
-//     coef_Pc: 0,
-//     note_Ang: 0,
-//     coef_Ang: 0,
-//     note_Mal: 0,
-//     coef_Mal: 0,
-//     note_Fr: 0,
-//     coef_Fr: 0,
-//     note_Philo: 0,
-//     coef_Philo: 0,
-//     note_HistoGeo: 0,
-//     coef_HistoGeo: 0,
-//     note_SVT: 0,
-//     coef_SVT: 0,
-//     note_Eps: 0,
-//     coef_Eps: 0,
-//   }
+
 export interface NoteStoreInterface {
     isLoading: boolean;
     allNote: INotes[];
@@ -199,7 +158,6 @@ class Notes implements NoteStoreInterface {
 
 
         try {
-            console.log("data...", data);
             
             
             const add = await axios.post(`${config.servers.apiUrl}note`, data);
@@ -250,7 +208,7 @@ class Notes implements NoteStoreInterface {
 
     @action updateNote = async (noteUpdate: any) => {
         try {
-            console.log("noteUpdate....", noteUpdate);
+           
             this.isLoading = true;
             const note = await axios.patch(`${config.servers.apiUrl}note/edit`, noteUpdate);
 

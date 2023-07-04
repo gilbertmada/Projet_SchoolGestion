@@ -55,6 +55,8 @@ export interface INotes {
     noteComposition2e:INoteComposition;
     noteJournalier3e:INoteJournalier;
     noteComposition3e:INoteComposition;
+    arrayListNoteDef:any[];
+    arrayListNoteDef2e:any[];
     stud: IStudent;
     total1erTrim:any;
     total2eTrim:any;

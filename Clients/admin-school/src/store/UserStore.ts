@@ -89,7 +89,7 @@ class UserStore implements UserStoreInterface {
       this.isGettingInfo = true;
       const me = await axios.get(`${config.servers.apiUrl}user/me`);
       this.isGettingInfo = false;
-      console.log("me....",me);
+   
     
    
       if (me.data) {
@@ -110,11 +110,11 @@ class UserStore implements UserStoreInterface {
 
 
   @action updateUserInfo = async (userUpdate: IUser /* & { newPassword?: string | undefined } */ ) => {
-console.log("userUpdate....",userUpdate);
+
 
     try {
       const user = await axios.patch(`${config.servers.apiUrl}user/${userUpdate._id}`, userUpdate);
-      console.log("user....",user);
+
       if (user.data.acknowledged === true) {
         this.getUserInfo();
         rootStore.updateSnackBar(true, 'Enregistré', 'success');
