@@ -11,7 +11,7 @@ const HeaderTableEmploiDuTemps = (y: number, jsPdfPrint: any, nextTable?: boolea
   }
 
   const width = 260 / getColumns.length;
-  let incrementWidth = 43.33;
+  let incrementWidth = 28;
 
   for (let i = 0; i < getColumns.length; i++) {
     jsPdfPrint.setFontSize(10);

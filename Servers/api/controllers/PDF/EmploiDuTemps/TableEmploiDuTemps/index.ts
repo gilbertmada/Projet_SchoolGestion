@@ -22,18 +22,18 @@ const valueX = (list: any, nomDay: any) => {
 
 
   if (list.nomDay === "Lundi") {
-    x += 43.33;
+    x +=28;
   } else if (list.nomDay === "Mardi") {
-    x += 86.66;
+    x += 71.33;
   } else if (list.nomDay === "Mercredi") {
-    x += 129.99;
+    x +=114.66;
   }
   else if (list.nomDay === "Jeudi") {
-    x += 173.32;
+    x +=157.99;
   } else if (list.nomDay === "Vendredi") {
-    x += 216.65;
+    x += 201.32;
   } else if (list.nomDay === "Samedi") {
-    x += 259.98;
+    x += 244.65;
   }
 
   return x;

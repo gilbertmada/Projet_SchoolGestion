@@ -6,51 +6,11 @@ import { log } from "console";
 
 export default class noteController {
   static createNotes = async (req: Request, res: Response) => {
-    console.log("note.....", req.body);
+
 
     const token = <string>res.getHeader("token");
     const note: INotes | any = req.body;
-    // const student: IStudent | any = await Student.findById({ _id: note.stud._id });
-    //     const noteJ={
-    // note_Maths:note.noteJournalier.note_Maths,
-    // coef_Maths:note.noteJournalier.coef_Maths,
-    // note_Pc:note.noteJournalier.note_Pc,
-    // coef_Pc:note.noteJournalier.coef_Pc,
-    // note_Ang:note.noteJournalier.note_Ang,
-    // coef_Ang:note.noteJournalier.coef_Ang,
-    // note_Fr:note.noteJournalier.note_Fr,
-    // coef_Fr:note.noteJournalier.coef_Fr,
-    // note_Mal:note.noteJournalier.note_Mal,
-    // coef_Mal:note.noteJournalier.coef_Mal,
-    // note_HistoGeo:note.noteJournalier.note_HistoGeo,
-    // coef_HistoGeo:note.noteJournalier.coef_HistoGeo,
-    // note_Philo:note.noteJournalier.note_Philo,
-    // coef_Philo:note.noteJournalier.coef_Philo,
-    // note_Eps:note.noteJournalier.note_Eps,
-    // coef_Eps:note.noteJournalier.coef_Eps,
 
-    //     }
-    // const noteCompo = {
-    //   note_Maths: note.noteComposition.note_Maths,
-    //   coef_Maths: note.noteComposition.coef_Maths,
-    //   note_Pc: note.noteComposition.note_Pc,
-    //   coef_Pc: note.noteComposition.coef_Pc,
-    //   note_Ang: note.noteComposition.note_Ang,
-    //   coef_Ang: note.noteComposition.coef_Ang,
-    //   note_Fr: note.noteComposition.note_Fr,
-    //   coef_Fr: note.noteComposition.coef_Fr,
-    //   note_Mal: note.noteComposition.note_Mal,
-    //   coef_Mal: note.noteComposition.coef_Mal,
-    //   note_HistoGeo: note.noteComposition.note_HistoGeo,
-    //   coef_HistoGeo: note.noteComposition.coef_HistoGeo,
-    //   note_Philo: note.noteComposition.note_Philo,
-    //   coef_Philo: note.noteComposition.coef_Philo,
-    //   note_SVT: note.noteComposition.note_SVT,
-    //   coef_SVT: note.noteComposition.coef_SVT,
-    //   note_Eps: note.noteComposition.note_Eps,
-    //   coef_Eps: note.noteComposition.coef_Eps,
-
-    // }
     const newNote = new Notes({
       ...note,
       createdBy: getUserIdFromToken(token),
@@ -71,7 +31,7 @@ export default class noteController {
   static editNote = async (req: Request, res: Response) => {
 
     const note = req.body;
-    console.log("body...", note);
+    console.log("note.edit..", note);
     const token = <string>res.getHeader("token");
 
     try {
@@ -84,7 +44,7 @@ export default class noteController {
           ...note,
         }
       );
-      console.log("resp...", resp);
+      console.log("resp.", resp);
       res.status(200).send(resp);
     } catch (err) {
       res.status(500).send({

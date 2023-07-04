@@ -11,6 +11,8 @@ export interface INotes extends Document {
     noteComposition2e: INoteComposition;
     noteJournalier3e: INoteJournalier;
     noteComposition3e: INoteComposition;
+    arrayListNoteDef: Array<any>;
+    arrayListNoteDef2e: Array<any>;
     total1erTrim:any;
     total2eTrim:any;
     total3eTrim:any;
@@ -240,10 +242,8 @@ const NoteCompoSchema: Schema = new Schema({
 const NoteSchema: Schema = new Schema({
 
     stud: {
-        // type: mongoose.Schema.Types.ObjectId,
         type: mongoose.Schema.Types.Mixed,
         required: false,
-        // ref: 'Professor',
     },
     noteJournalier: NoteJSchema,
     noteComposition: NoteCompoSchema,
@@ -251,6 +251,14 @@ const NoteSchema: Schema = new Schema({
     noteComposition2e: NoteCompoSchema,
     noteJournalier3e: NoteJSchema,
     noteComposition3e: NoteCompoSchema,
+    arrayListNoteDef: {
+        type: Array,
+        required: false
+     },
+     arrayListNoteDef2e: {
+        type: Array,
+        required: false
+     },
     total1erTrim: {
         type: Number,
         required: false,

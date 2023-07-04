@@ -32,6 +32,18 @@ export const horror = [
   '17h-18h',
 ]
 
+export const matiere = [
+  'MATHEMATIQUES',
+  'PHYSIQUE_CHIMIE',
+  'ANGLAIS',
+  'MALAGASY',
+  'FRANÇAIS',
+  'PHILOSOPHIE',
+  'HISTO_GEO',
+  'SVT',
+  'EPS',
+]
+
 function getRandomInt(max: number) {
   return Math.floor(Math.random() * max);
 }
