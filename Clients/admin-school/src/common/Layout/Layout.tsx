@@ -81,7 +81,7 @@ const Layout: FC<AbstractEmptyInterface> = (props) => {
         </Grid>
         <Grid item={true} >
           <div  className={classes.school}>
-            {userStore.user?.schoolName}
+            {userStore.user?.schoolName }
           </div>
 
         </Grid>

@@ -41,7 +41,7 @@ const SearchStudentModal: FC<any> = ({ openModal, handleClose, setEleve }) => {
       .get(`${config.servers.apiUrl}student/`)
       .then(res => {
         setStudent(res.data);
-        // setCountDrivers(res.data.count);
+    
       })
       .finally(() => {
         setIsLoading(false);
@@ -51,11 +51,13 @@ const SearchStudentModal: FC<any> = ({ openModal, handleClose, setEleve }) => {
 
 
   const getFiltereNote = async (keyword: string) => {
+    
     if (keyword !== '') {
 
       setIsLoading(true);
       const filtre = await axios
-        .post(`${config.servers.apiUrl}student/filter`, { keyword })
+        .post(`${config.servers.apiUrl}student/filter`, {
+          filter: keyword })
         .then(res => {
           setStudent(res.data);
         })

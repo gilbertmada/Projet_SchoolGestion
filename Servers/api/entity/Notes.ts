@@ -3,7 +3,7 @@ import { IStudent } from "./Student";
 
 
 export interface INotes extends Document {
-
+    idNote: string;
     stud: IStudent;
     noteJournalier: INoteJournalier;
     noteComposition: INoteComposition;
@@ -13,16 +13,16 @@ export interface INotes extends Document {
     noteComposition3e: INoteComposition;
     arrayListNoteDef: Array<any>;
     arrayListNoteDef2e: Array<any>;
-    total1erTrim:any;
-    total2eTrim:any;
-    total3eTrim:any;
-    totalTrim:any;
-    totalCoefJ0:any;
-    totalJour1:any;
-    totalJour2:any;
-    totalComposition0:any
-    totalComposition1:any
-    totalComposition2:any
+    total1erTrim: any;
+    total2eTrim: any;
+    total3eTrim: any;
+    totalTrim: any;
+    totalCoefJ0: any;
+    totalJour1: any;
+    totalJour2: any;
+    totalComposition0: any
+    totalComposition1: any
+    totalComposition2: any
     generalMoyen1erTrim: any;
     generalMoyen2eTrim: any;
     generalMoyen3eTrim: any;
@@ -163,7 +163,7 @@ const NoteJSchema: Schema = new Schema({
 
 // Create Schema noteCompo
 const NoteCompoSchema: Schema = new Schema({
-
+  
     note_Maths: {
         type: Number,
         required: false,
@@ -240,8 +240,12 @@ const NoteCompoSchema: Schema = new Schema({
 
 // Create Schema
 const NoteSchema: Schema = new Schema({
-
+    idNote: {
+        type: String,
+        required: false,
+    },
     stud: {
+        // type: mongoose.Schema.Types.ObjectId,
         type: mongoose.Schema.Types.Mixed,
         required: false,
     },
@@ -254,11 +258,11 @@ const NoteSchema: Schema = new Schema({
     arrayListNoteDef: {
         type: Array,
         required: false
-     },
-     arrayListNoteDef2e: {
+    },
+    arrayListNoteDef2e: {
         type: Array,
         required: false
-     },
+    },
     total1erTrim: {
         type: Number,
         required: false,

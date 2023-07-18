@@ -77,6 +77,7 @@ export default class ExportPdfStudentController {
                     })
 
                 ],
+                60,
                 jsPdfPrint
             )
 

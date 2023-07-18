@@ -5,7 +5,7 @@ const useStyles = makeStyles((theme) => ({
     height: '70px',
     borderBottom: '4px solid #0AB1E1',
     [theme.breakpoints.down('sm')]: {
-      backgroundColor: 'yellow',
+      backgroundColor: 'red',
     },
   
   },
@@ -13,14 +13,12 @@ const useStyles = makeStyles((theme) => ({
     background: '#F3F3F3',
   },
   school:{
-    // textDecoration:"",
     fontStyle: 'white',
     fontSize: '20px',
     display:'flex',
-    position: 'absolute',
     textAlign: 'center',
     height: '50px',
-    width: '30%',
+    width: '100%',
     paddingTop:"20px"
   },
   hidden:{

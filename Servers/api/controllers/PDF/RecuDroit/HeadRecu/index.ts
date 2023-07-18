@@ -13,7 +13,7 @@ const Head = (data: IProps, jsPdfPrint: any) => {
   const logo = readFileSync(`${imagePath}/logo.png`);
 
 
-  jsPdfPrint.addImage(logo, 'PNG', 14, 6, 60, 24);
+  jsPdfPrint.addImage(logo, 'PNG', 14, 6, 50, 30);
 
 
   jsPdfPrint.setFontSize(14);
@@ -21,6 +21,7 @@ const Head = (data: IProps, jsPdfPrint: any) => {
   jsPdfPrint.text(80, 17, `${data?.schoolName}`);
 
   jsPdfPrint.setFontSize(8);
+  jsPdfPrint.setTextColor(100);
   jsPdfPrint.setFont('Helvetica','normal');
   jsPdfPrint.text(80, 22, `Niveau : ${data?.height}`);
 

@@ -119,7 +119,7 @@ const ListStudent: FC<AbstractEmptyInterface> = (props: any) => {
   }, [studentStore]);
 
   const listStudents = toJS(studentStore.allStudent);
-  console.log("listStudents...", listStudents);
+
   const searchFilter = (searchField: any) => {
 
     for (let i = 0; i < listStudents.length; i++) {

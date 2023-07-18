@@ -10,6 +10,10 @@ interface IProps {
 
 const Head = (data: IProps, jsPdfPrint: any) => {
 
+  jsPdfPrint.setFontSize(15);
+  jsPdfPrint.setFont('Helvetica', 'bold');
+  jsPdfPrint.text(35, 45, 'SAGESSE-DISCIPLINE-REUSSITE');
+  
   jsPdfPrint.setFontSize(8);
   jsPdfPrint.setFont('Helvetica','bold');
   jsPdfPrint.text(40, 60, '.....................    REÇU DE DROIT   .....................');

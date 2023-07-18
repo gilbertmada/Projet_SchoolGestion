@@ -3,6 +3,10 @@ import getColumns from '../table.EmploiDuTemps';
 const HeaderTableEmploiDuTemps = (y: number, jsPdfPrint: any, nextTable?: boolean) => {
   jsPdfPrint.rect(25, y, 260, 10); // empty square
 
+  jsPdfPrint.setFontSize(15);
+  jsPdfPrint.setFont('Helvetica', 'bold');
+  jsPdfPrint.text(100, 35, 'SAGESSE-DISCIPLINE-REUSSITE');
+
   if (!nextTable) {
     jsPdfPrint.setFontSize(15);
     jsPdfPrint.setTextColor(0, 0, 0);

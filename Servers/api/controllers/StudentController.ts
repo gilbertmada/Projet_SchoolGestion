@@ -207,6 +207,7 @@ export default class studentControleur {
         schoolName: info.schoolName,
         lastName: info.lastName,
         firstName: info.firstName,
+        scolarYear: info.scolarYear,
         document: info.Document,
         photo: info.photo,
         class: info.class,
@@ -408,7 +409,10 @@ export default class studentControleur {
   static getFilteredStudent = async (req: Request, res: Response) => {
 
     const { filter } = req.body;
+    console.log("filter...",filter);
+    
     try {
+   
       const student: IStudent[] | [] = await Student
         .find({
           $and: [
@@ -421,16 +425,18 @@ export default class studentControleur {
                 { matriculNumber: { $regex: filter.filter, $options: "i" } },
               ],
             },
-            // { deleted: false, isArchive: false },
+            { deleted: false, isArchive: false },
           ],
         });
+  
 
-      let returnedUsers = [];
-
+      let returnedUsers:any = [];
+     
       for (let i = 0; i < student.length; i++) {
         returnedUsers.push(student[i].transform());
       }
-
+      console.log("student...",student);
+      console.log("returnedUsers...",returnedUsers);
       return res.status(200).send(returnedUsers);
     } catch (err) {
       return res.send([]);

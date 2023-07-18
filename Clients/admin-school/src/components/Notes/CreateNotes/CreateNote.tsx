@@ -41,7 +41,7 @@ interface CreateNoteProps extends AbstractEmptyInterface {
 
 }
 const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
-    const { noteStore,userStore } = props as CreateNoteProps;
+    const { noteStore, userStore } = props as CreateNoteProps;
 
     const classes = useStyles();
     const history = useHistory();
@@ -123,6 +123,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
     const handleChangeStudent = (e: any) => {
         const { name, value } = e.target;
         setStud({ ...stud, [name]: value });
+        noteStore.setStud({ ...stud, [name]: value });
         setNote({ ...note, stud })
         noteStore.setNote({ ...stud, [name]: value });
     };
@@ -378,8 +379,8 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
     listNoteDef.push(NoteHistoGeo());
     listNoteDef.push(NoteSVT());
     listNoteDef.push(NoteEps());
-    
-    const arrayListNoteDef:any[] = [
+
+    const arrayListNoteDef: any[] = [
         {
             label: "MATHEMATIQUES",
             value: NoteMath(),
@@ -518,9 +519,8 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
 
     }
 
-
     const newNote: any = {
-        _id: stud._id,
+        // idNote: stud._id,
         noteJournalier: { ...noteJournalier },
         noteComposition: { ...noteComposition },
         stud: { ...stud },
@@ -597,7 +597,6 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
 
         if (!toJS(noteStore.selectedNote)) {
 
-
             props.noteStore.createNotes(newNote).then((addClasse: any) => {
                 if (addClasse) {
                     history.push("/note/list");
@@ -616,7 +615,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
 
     }
     const handleDownload = () => {
-      
+
         exportPDFStore.exportToPdfBulletinTrim(newNote);
 
     }

@@ -10,8 +10,6 @@ const Header0 = (y: number, jsPdfPrint: any) => {
   jsPdfPrint.text(75, y - 2, `1ère TRIMESTRE`);
 
 
-
-
   const width = 160 / getColumns.length;
   let incrementWidth = 32;
 

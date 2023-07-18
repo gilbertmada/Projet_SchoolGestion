@@ -84,8 +84,9 @@ const TableEmploiDuTemps = (list: any[] | [], jsPdfPrint: any) => {
     for (let i = 1; i < getColumns.length; i++) {
 
       jsPdfPrint.setFontSize(10);
-      jsPdfPrint.setTextColor(0, 0, 0);
-      jsPdfPrint.getFontList('normal');
+      jsPdfPrint.setTextColor(100);
+      // jsPdfPrint.getFontList('normal');
+      jsPdfPrint.setFont('Helvetica', 'bold');
       jsPdfPrint.text(
         +valueX(list[a],list[a].nomDay),
         +valueY(list[a],list[a].nomHorror),

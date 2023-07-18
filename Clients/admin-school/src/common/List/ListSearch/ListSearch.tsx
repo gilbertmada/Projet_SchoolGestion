@@ -11,7 +11,7 @@ export interface actionButton {
   onClick: (e: any) => void;
 }
 interface ListSearchProps {
-  search: (keyword: string) => void;
+  search: (keyword: any) => void;
   create?: (e: any) => void;
   withCreate: boolean;
   floatingButtons?: actionButton[];
@@ -25,7 +25,7 @@ let typeTimeout: any;
 
 const ListSearch: FC<
   AbstractEmptyInterface & {
-    search: (keyword: string) => void;
+    search: (keyword: any) => void;
     create?: (e: any) => void;
     withCreate: boolean;
     floatingButtons?: actionButton[];

@@ -555,9 +555,9 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
         generalMoyen2eTrim = +totalNote2eTrim() / +getTotalCoefJ;
     }
 
-    //  generalMoyen1erTrim = (+totalNote1erTrim() / +getTotalCoefJ);
+
     const newNote: any = {
-        _id: noteStore.selectedNote?.stud._id,
+        // idNote: noteStore.selectedNote?.stud._id,
         stud: { ...noteStore.selectedNote?.stud },
         noteJournalier: { ...noteStore.selectedNote?.noteJournalier },
         noteComposition: { ...noteStore.selectedNote?.noteComposition },

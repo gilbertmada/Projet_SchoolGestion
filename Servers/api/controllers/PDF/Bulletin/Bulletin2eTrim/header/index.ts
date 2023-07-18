@@ -6,6 +6,7 @@ const Header1 = (y: number, jsPdfPrint: any) => {
 
   jsPdfPrint.rect(30, y, 175, 10); // empty square
   jsPdfPrint.setFontSize(16);
+  jsPdfPrint.setTextColor(0, 0, 0);
   jsPdfPrint.setFont('Helvetica', 'bold');
   jsPdfPrint.text(75, y - 2, `2e TRIMESTRE`);
 

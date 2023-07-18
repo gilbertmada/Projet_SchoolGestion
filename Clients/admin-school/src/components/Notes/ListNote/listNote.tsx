@@ -123,7 +123,7 @@ const ListNote: FC<AbstractEmptyInterface> = (props: any) => {
   }, [noteStore]);
 
   const listNotes = toJS(noteStore.allNote);
-
+  console.log("listNotes...",listNotes);
 
   const searchFilter = (searchField: any) => {
     if (searchField !== "") {

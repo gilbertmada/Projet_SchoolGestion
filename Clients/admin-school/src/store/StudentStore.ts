@@ -486,7 +486,7 @@ class StudentStore implements StudentStoreInterface {
     };
 
     @action getFilteredStudent = async (filter: Record<string, unknown>) => {
-
+        console.log("filter...",filter);
         try {
             this.isLoading = true;
             const students = await axios.post(`${config.servers.apiUrl}student/filter`,

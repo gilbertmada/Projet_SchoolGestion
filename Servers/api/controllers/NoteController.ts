@@ -10,7 +10,7 @@ export default class noteController {
 
     const token = <string>res.getHeader("token");
     const note: INotes | any = req.body;
-
+    console.log("note...", note);
     const newNote = new Notes({
       ...note,
       createdBy: getUserIdFromToken(token),
@@ -36,16 +36,16 @@ export default class noteController {
 
     try {
 
-      note.updatedBy = getUserIdFromToken(token);
-      note.updatedAt = new Date();
+      const newNote = await Promise.all([
+        Student.updateOne({ _id: note.stud.idStudent }, { ...note.stud }),
+        Notes.updateOne({ idNote: note.idNote },
+          {
+            ...note
+          })
+      ])
 
-      const resp = await Notes.updateOne({ _id: note._id },
-        {
-          ...note,
-        }
-      );
-      console.log("resp.", resp);
-      res.status(200).send(resp);
+      console.log("resp..", newNote);
+      res.status(200).send(newNote);
     } catch (err) {
       res.status(500).send({
         status: 'ERROR',

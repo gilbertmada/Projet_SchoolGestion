@@ -134,8 +134,8 @@ class ProfessorStore implements ProfessorStoreInterface {
 
       const add = await axios.post(`${config.servers.apiUrl}professor`, data);
 
-      if (add.data.email === 'Email already exists') {
-        rootStore.updateSnackBar(true, 'E-mail existe déjà');
+      if (add.data.email === 'Email or IM already exists' || add.data.IM === 'Email IM already exists') {
+        rootStore.updateSnackBar(true, 'E-mail ou IM existe déjà');
         return;
       }
 
@@ -155,8 +155,8 @@ class ProfessorStore implements ProfessorStoreInterface {
   @action updateProfessor = async (profUpdate: IProfessor) => {
     try {
       const professor = await axios.patch(`${config.servers.apiUrl}professor/edit`, profUpdate);
-     
-        rootStore.updateSnackBar(true, 'Modifié', 'success');
+
+      rootStore.updateSnackBar(true, 'Modifié', 'success');
 
       return professor;
     } catch (err) {

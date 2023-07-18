@@ -59,9 +59,10 @@ export default class classesController {
         createdBy: getUserIdFromToken(token),
         deleted: false,
       };
-      console.log("updatedInfo...", updatedInfo);
+
+ 
       const resp = await Classe.updateOne({ _id:req.body.id}, updatedInfo);
-      console.log("resp...", resp);
+  
       res.status(200).send(resp);
     } catch (err) {
       res.status(500).send({

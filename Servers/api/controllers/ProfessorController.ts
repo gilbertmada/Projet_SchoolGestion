@@ -12,11 +12,12 @@ export default class ProfessorController {
     const token = <string>res.getHeader("token");
 
     Professor.findOne({
-      $or: [{ email: req.body?.email }],
+      $or: [{ email: req.body?.email },
+      { IM: req.body?.IM, }],
     }).then(async (prof: any) => {
       if (prof) {
         return res.status(200).json({
-          email: prof?.email == req.body?.email ? "Email already exists" : "",
+          email: prof?.email == req.body?.email || prof?.IM == req.body?.IM ? "Email or IM already exists" : "",
         });
       } else {
         const newProfessor = new Professor({
@@ -106,7 +107,7 @@ export default class ProfessorController {
         updatedAt: Date.now(),
         isArchive: info.isArchive
       };
-    
+
       if (info.role) {
         updatedInfo.role = info.role;
       }

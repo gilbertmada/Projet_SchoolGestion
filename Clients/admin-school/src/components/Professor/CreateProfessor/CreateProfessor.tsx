@@ -21,28 +21,32 @@ import BodyTitle from "../../../common/BodyTitle";
 import EditFooter from "../../../common/EditFooter";
 import FormSelect from "../../../common/FormSelect/FormSelect";
 import HeaderPath from "../../../common/HeaderPath";
+import ErrorSnackbar from "../../../common/ErrorSnackbar";
 import { FooterIcon } from "../../../common/interface";
 import { ConfirmModal, ConfirmQuitModal, DeleteTotalModal } from "../../../common/Modal";
 import { profRoles } from "../../../common/utils/data";
 import config from "../../../config/index";
 import { ProfessorStoreInterface } from "../../../store/ProfessorStore";
+import { ClasseStoreInterface } from "../../../store/ClasseStore";
 import { UserStoreInterface } from "../../../store/UserStore";
 import { AbstractEmptyInterface } from "../../../types";
+import { validationData } from "../CreateLogic";
 import { toJS } from "mobx";
 import rootStore from '../../../store/AppStore';
 import useStyles from "./style";
-import { schoolStore } from "../../../store";
+
 
 interface CreateProfProps extends AbstractEmptyInterface {
   professorStore: ProfessorStoreInterface;
   userStore: UserStoreInterface
+  classeStore: ClasseStoreInterface
 }
 
 const nameImage = "image";
 
 const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
 
-  const { professorStore, userStore } = props as CreateProfProps;
+  const { professorStore, userStore,classeStore } = props as CreateProfProps;
 
   const classes = useStyles();
   const history = useHistory();
@@ -52,9 +56,9 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
   const [openModal, setOpenModal] = useState(false);
   const [openQuitModal, setOpenQuitModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [saveErrors, setSaveErrors] = useState<string[]>([]);
   const [showPassword, setShowPassword] = useState(false);
-  const [errorText, setErrorText] = useState("");
-  const [isErrorText, setIsErrorText] = useState(false);
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const [isAssigned, setIsAssigned] = useState(false);
   const [pathRedirect, setPathRedirect] = useState("");
 
@@ -72,11 +76,11 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
   }, [professorStore.selectedProfessor]);
 
 
-  //   useEffect(() => {
-  // if (schoolStore.user) {
-  //   return schoolStore.user
-  // }
-  //   }, [schoolStore.user]);
+
+  useEffect(() => {
+    classeStore.getAllClass();
+
+  }, [classeStore]);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -94,6 +98,9 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
     setProfessor({ ...professor, role: data, nomRole: nom });
 
   };
+
+
+const listClasse=toJS(classeStore.allClass);
 
   const onSubmit = (e: any) => {
     e.preventDefault();
@@ -139,6 +146,8 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
     // setOpenModal(true);
   };
 
+  const handleCloseErrors = () => setOpenErrorSnackbar(!openErrorSnackbar);
+
   const handleCloseConfirmModal = () => {
     setOpenModal(false);
   };
@@ -160,18 +169,25 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
 
   const deleteProfessor = () => {
 
-    if (professorStore.setSelectedProfessor) {
+    const errors = validationData(listClasse, professorStore.selectedProfessor);
+
+    setSaveErrors(errors);
+
+    if (errors.length) {
+      setOpenErrorSnackbar(true);
+      setOpenDeleteModal(false);
+      return;
+    }
+ 
       props.professorStore
-        .deleteProfessor(professorStore.setSelectedProfessor)
+        .deleteProfessor(professorStore.selectedProfessor)
         .then((editProf: any) => {
           if (editProf.status === 200) {
             setOpenDeleteModal(false);
             history.push("/professor/list");
           }
         });
-    } else {
-      setOpenDeleteModal(false);
-    }
+   
   };
 
   const handleAddNew = () => {
@@ -389,9 +405,15 @@ const CreateProfessor: FC<AbstractEmptyInterface> = (props: any) => {
           </div>
         </div>
         <EditFooter icons={footerIcons} />
+        <ErrorSnackbar
+          open={openErrorSnackbar}
+          handleClose={handleCloseErrors}
+          errors={saveErrors}
+          defaultTitle="Vérifiez le formulaire"
+        />
       </form>
     </div>
   );
 };
 
-export default inject("professorStore", "userStore")(observer(CreateProfessor));
+export default inject("professorStore", "userStore","classeStore")(observer(CreateProfessor));

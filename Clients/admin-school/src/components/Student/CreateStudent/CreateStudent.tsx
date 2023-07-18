@@ -23,33 +23,37 @@ import { ConfirmModal, ConfirmQuitModal, DeleteTotalModal } from "../../../commo
 import config from "../../../config/index";
 import { StudentStoreInterface } from "../../../store/StudentStore";
 import { UserStoreInterface } from "../../../store/UserStore";
+import { NoteStoreInterface } from "../../../store/NoteStore";
 import { AbstractEmptyInterface } from "../../../types";
 import exportPDFStore from "../../../store/ExportPDFStore";
 import { toJS } from "mobx";
 import rootStore from '../../../store/AppStore';
 import useStyles from "./style";
 import { validationData } from "../CreateLogic";
+import { validationDataStudent } from "../CreateLogicStudent";
 import MailIcon from "@material-ui/icons/Mail";
 import { etudiantRoles } from "../../../common/utils/data";
 
 interface CreateStudentProps extends AbstractEmptyInterface {
   studentStore: StudentStoreInterface;
   userStore: UserStoreInterface
+  noteStore: NoteStoreInterface
 }
 
 const nameImage = "image";
 const CreateStudent: FC<CreateStudentProps> = (props: any) => {
 
-  const { studentStore, userStore } = props as CreateStudentProps;
+  const { studentStore, userStore, noteStore } = props as CreateStudentProps;
   const classes = useStyles();
   const history = useHistory();
   const [isStorage, setIsStorage] = useState(false);
   const [isRole, setIsRole] = useState(false);
   const [student, setStudent] = useState<any>({});
   const [saveErrors, setSaveErrors] = useState<string[]>([]);
+  const [saveErrorsStudent, setSaveErrorsStudent] = useState<string[]>([]);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [isSchool, setIsSchool] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
   const [role, setRole] = useState<any>({});
   const [openQuitModal, setOpenQuitModal] = useState(false);
   const [openTotalDeleteModal, setOpenTotalDeleteModal] = useState(false);
@@ -63,7 +67,6 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
       setStudent(studentStore.selectedStudent);
     } else {
       setIsStorage(false);
-      setIsSchool(false);
 
     }
 
@@ -83,6 +86,11 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
     studentStore.getAllStudent();
 
   }, [studentStore]);
+
+  useEffect(() => {
+    noteStore.getAllNotes();
+
+  }, [noteStore]);
 
   useEffect(() => {
     if (studentStore.selectedStudent) {
@@ -118,7 +126,7 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
     const { code, label } = newValue;
     const data = code as string;
     const nom = label as string;
-    if (data ==="LEAD_H" || data ==="LEAD_F") {
+    if (data === "LEAD_H" || data === "LEAD_F") {
       setIsRole(true);
     } else {
       setIsRole(false);
@@ -184,7 +192,7 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
   const onSubmit = (e: any) => {
     e.preventDefault();
     const newStudent = { ...student, schoolName: userStore.user?.schoolName }
-    const errors = validationData(studentStore,newStudent);
+    const errors = validationData(studentStore, newStudent);
 
     setSaveErrors(errors);
 
@@ -230,6 +238,7 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
   }
 
   const listEcolages = toJS(studentStore.ecolagePrive);
+  const listNotes = toJS(noteStore.allNote);
   const listFrais = toJS(studentStore.droit);
   const selectListEcolage: any = [];
   const selectListFrais: any = [];
@@ -247,21 +256,36 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
     }
   }
 
+
+
   const deleteTotalUser = () => {
 
-    if (selectListEcolage.length > 0 || selectListFrais.length > 0) {
+    const dataStudent: any = {
+      listNotes,
+      selectListEcolage,
+      selectListFrais,
 
-      rootStore.updateSnackBar(true, "Vous devez supprimer toute liste d'écolage ou de frais divers");
-    } else {
-      props.studentStore
-        .deleteTotalStudent(studentStore.selectedStudent)
-        .then((editUser: any) => {
-          if (editUser?.status === 200) {
-            setOpenTotalDeleteModal(false);
-            history.push("/student/list");
-          }
-        });
     }
+    const errors = validationDataStudent(dataStudent, studentStore.selectedStudent);
+
+    setSaveErrors(errors);
+
+    if (errors.length) {
+      setOpenErrorSnackbar(true);
+      setOpenTotalDeleteModal(false);
+      return;
+    }
+
+
+    props.studentStore
+      .deleteTotalStudent(studentStore.selectedStudent)
+      .then((editUser: any) => {
+        if (editUser?.status === 200) {
+          setOpenTotalDeleteModal(false);
+          history.push("/student/list");
+        }
+      });
+
 
   }
 
@@ -566,5 +590,5 @@ const CreateStudent: FC<CreateStudentProps> = (props: any) => {
     </div>
   );
 }
-export default inject("studentStore", "userStore")(observer(CreateStudent));
+export default inject("studentStore", "userStore", "noteStore")(observer(CreateStudent));
 

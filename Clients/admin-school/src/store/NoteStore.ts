@@ -158,8 +158,8 @@ class Notes implements NoteStoreInterface {
 
 
         try {
-            
-            
+
+
             const add = await axios.post(`${config.servers.apiUrl}note`, data);
 
             rootStore.succesSnackBar(true, 'Classe ajouter avec succès');
@@ -207,12 +207,18 @@ class Notes implements NoteStoreInterface {
 
 
     @action updateNote = async (noteUpdate: any) => {
+        this.isLoading = true;
         try {
-           
-            this.isLoading = true;
-            const note = await axios.patch(`${config.servers.apiUrl}note/edit`, noteUpdate);
 
+            const note = await axios.patch(`${config.servers.apiUrl}note/edit`,
+                {
+                    ...noteUpdate,
+                    idNote: noteUpdate.stud._id,
+                    // idStud:noteUpdate.stud._id,
+                });
+          
             rootStore.updateSnackBar(true, 'Modifié', 'success');
+            console.log("note....", note);
 
 
             return note
