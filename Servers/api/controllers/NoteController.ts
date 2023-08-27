@@ -10,7 +10,6 @@ export default class noteController {
 
     const token = <string>res.getHeader("token");
     const note: INotes | any = req.body;
-    console.log("note...", note);
     const newNote = new Notes({
       ...note,
       createdBy: getUserIdFromToken(token),
@@ -31,7 +30,7 @@ export default class noteController {
   static editNote = async (req: Request, res: Response) => {
 
     const note = req.body;
-    console.log("note.edit..", note);
+
     const token = <string>res.getHeader("token");
 
     try {
@@ -44,7 +43,7 @@ export default class noteController {
           })
       ])
 
-      console.log("resp..", newNote);
+
       res.status(200).send(newNote);
     } catch (err) {
       res.status(500).send({

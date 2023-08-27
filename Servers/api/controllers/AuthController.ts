@@ -36,7 +36,7 @@ class AuthController {
     if (!(username && password)) {
       res.status(400).send("tsy izy a!");
     }
-    console.log('userSchool.....', userSchool);
+
 
     //Get user from database
     let user: any;

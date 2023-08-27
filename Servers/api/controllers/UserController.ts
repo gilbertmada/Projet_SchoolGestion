@@ -22,15 +22,7 @@ export default class UserController {
 
     const { userId } = jwtPayload;
     const user = await User.findOne({ _id: userId });
-    // for (let i = 0; i < listSchool.length; i++) {
 
-    //   if (user) {
-    //     return res.status(200).send({ schoolName: user?.schoolName !== listSchool[i].user.schoolName || user.role !== "ADMIN" ? "User not found" : "" });
-    //   } else {
-    //     return res.json(user);
-    //   }
-
-    // }
     if (!user) {
       return res.status(404).send("user not found");
     }

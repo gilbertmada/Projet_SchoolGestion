@@ -409,7 +409,7 @@ export default class studentControleur {
   static getFilteredStudent = async (req: Request, res: Response) => {
 
     const { filter } = req.body;
-    console.log("filter...",filter);
+
     
     try {
    
@@ -435,8 +435,7 @@ export default class studentControleur {
       for (let i = 0; i < student.length; i++) {
         returnedUsers.push(student[i].transform());
       }
-      console.log("student...",student);
-      console.log("returnedUsers...",returnedUsers);
+     
       return res.status(200).send(returnedUsers);
     } catch (err) {
       return res.send([]);
