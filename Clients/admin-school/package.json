@@ -1,5 +1,5 @@
 {
-    "homepage": "https://gilbertmada.github.io/Projet_SchoolGestion/",
+    "homepage": "https://gilbertmada.github.io/Projet_SchoolGestion",
     "name": "admin-school",
     "version": "0.1.0",
     "license": "UNLICENSED",
@@ -120,7 +120,6 @@
         "@typescript-eslint/parser": "^4.12.0",
         "babel-plugin-transform-imports": "^2.0.0",
         "customize-cra": "^1.0.0",
-        "eslint": "^7.17.0",
         "eslint-config-airbnb": "^18.2.1",
         "eslint-config-prettier": "^7.1.0",
         "eslint-config-react-app": "^6.0.0",
