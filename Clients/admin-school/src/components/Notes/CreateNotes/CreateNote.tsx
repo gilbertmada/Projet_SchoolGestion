@@ -85,8 +85,14 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
 
 
     const toggleStudent = () => {
-        setModalStudent(!modalStateStudent);
-        noteStore.setIsFromBooking(false);
+        if (isSelect === false) {
+            setModalStudent(!modalStateStudent);
+            noteStore.setIsFromBooking(false);
+        }
+
+
+
+
     };
 
     const ChangeIt = () => {
@@ -690,7 +696,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
             <form onSubmit={onSubmit}>
                 <Grid container={true} direction="row" spacing={1} >
                     <Grid item={true} sm={12} xs={12}>
-                        <div className={classes.title}>ELEVE  <EditIcon onClick={ChangeIt} className={classes.iconStyle} style={{ display: HideBtn }} /></div>
+                        <div className={classes.title}>ELEVE  </div>
                         <div className={classes.item}>
                             <Grid container={true} direction="row" spacing={1}>
                                 <Grid item={true} sm={4} xs={12}>
@@ -703,7 +709,7 @@ const CreateNote: FC<AbstractEmptyInterface> = (props: any) => {
                                         }
                                         disabled={true}
                                         InputProps={{
-                                            endAdornment: !noteStore.isFromBooking ? (
+                                            endAdornment: !isSelect ? (
                                                 <SearchOutlined onClick={toggleStudent} />
                                             ) : (
                                                 ""

@@ -125,9 +125,6 @@ const CreateSchool: FC<AbstractEmptyInterface> = (props: any) => {
         }
       });
     } else {
-      console.log("ecole...", ecole);
-      console.log("schoolStore.selectedSchool", toJS(schoolStore.selectedSchool));
-      console.log("schoolStore", toJS(schoolStore));
       props.schoolStore.updateSchool(ecole).then((editSchool: any) => {
         if (editSchool) {
           history.push("/school/list");
@@ -218,8 +215,6 @@ const CreateSchool: FC<AbstractEmptyInterface> = (props: any) => {
 
   ];
 
-
-  console.log("ecole.;;;;;;;;;..;;",toJS(schoolStore.user));
 
   return (
     <div className={classes.root}>

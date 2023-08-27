@@ -56,7 +56,7 @@ class AuthStore implements AuthStoreInterface {
     this.isLogginIn = true;
 
     userStore.failedFetchUser = false;
-    console.log("login.....", username, password);
+
 
     try {
     
@@ -65,7 +65,6 @@ class AuthStore implements AuthStoreInterface {
         password
       });
   
-      console.log("data.....", resp.data);
 
       this.setUser(resp.data);
       this.isLogginIn = false;

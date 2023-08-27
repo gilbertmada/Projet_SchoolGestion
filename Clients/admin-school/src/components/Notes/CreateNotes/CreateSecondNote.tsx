@@ -557,7 +557,7 @@ const CreateSecondNote: FC<AbstractEmptyInterface> = (props: any) => {
 
 
     const newNote: any = {
-        // idNote: noteStore.selectedNote?.stud._id,
+      
         stud: { ...noteStore.selectedNote?.stud },
         noteJournalier: { ...noteStore.selectedNote?.noteJournalier },
         noteComposition: { ...noteStore.selectedNote?.noteComposition },

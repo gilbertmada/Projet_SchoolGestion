@@ -25,9 +25,6 @@ const History: FC<AbstractEmptyInterface> = (props) => {
   }, [studentStore]);
 
 
-  console.log("historyStudentEcolage...........", studentStore.selectedStudent?.historyStudentEcolage);
-  console.log("historyStudentFrais..........", studentStore.selectedStudent?.historyStudentFrais);
-
   return (
     <div className={classes.container}>
       <div className={classes.title}>Historique des modifications</div>

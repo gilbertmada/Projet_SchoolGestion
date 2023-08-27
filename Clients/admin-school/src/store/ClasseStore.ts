@@ -128,7 +128,7 @@ class Classes implements ClasseStoreInterface {
 
   @action updateClasses = async (classeUpdate: IClasse) => {
     try {
-        console.log("classeUpdate...", classeUpdate);
+      
       const classe = await axios.patch(`${config.servers.apiUrl}classes/edit`, classeUpdate);
      
         rootStore.updateSnackBar(true, 'Modifié', 'success');

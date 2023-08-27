@@ -563,7 +563,7 @@ const CreateThirdNote: FC<AbstractEmptyInterface> = (props: any) => {
     const totalTrim = (+noteStore.selectedNote?.total1erTrim + +noteStore.selectedNote?.total2eTrim + +totalNote3eTrim()) / 3;
     const generalMoyenTrim = (+noteStore.selectedNote?.generalMoyen1erTrim + +noteStore.selectedNote?.generalMoyen2eTrim + +generalMoyen3eTrim) / 3;
     const newNote: any = {
-        // idNote: noteStore.selectedNote?.stud._id,
+      
         stud: { ...noteStore.selectedNote?.stud },
         noteJournalier: { ...noteStore.selectedNote?.noteJournalier },
         noteComposition: { ...noteStore.selectedNote?.noteComposition },

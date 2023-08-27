@@ -123,7 +123,6 @@ const ListNote: FC<AbstractEmptyInterface> = (props: any) => {
   }, [noteStore]);
 
   const listNotes = toJS(noteStore.allNote);
-  console.log("listNotes...",listNotes);
 
   const searchFilter = (searchField: any) => {
     if (searchField !== "") {
@@ -164,27 +163,6 @@ const ListNote: FC<AbstractEmptyInterface> = (props: any) => {
     { label: "Liste des Notes", path: "/note/list" },
   ];
 
-  const handleDownload = () => {
-    // if (isArchive === false) {
-    //   rootStore.updateSnackBar(true, 'Vous devez saisir le nom de classe');
-    // } else {
-    //   const listFilters = toJS(noteStore.allNote);
-    //   exportPDFStore.exportPdfEmploiDuTemps(listFilters);
-    // }
-
-
-  }
-  // const footerIcons: FooterIcon[] = [
-
-  //   {
-  //     id: 0,
-  //     ItemIcon: PictureAsPdfIcon,
-  //     onClick: handleDownload,
-  //     title: "Exporter en PDF l'emploi du temps",
-  //   },
-
-
-  // ];
 
   return (
     <div>

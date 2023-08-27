@@ -218,7 +218,7 @@ class Notes implements NoteStoreInterface {
                 });
           
             rootStore.updateSnackBar(true, 'Modifié', 'success');
-            console.log("note....", note);
+  
 
 
             return note

@@ -96,7 +96,7 @@ const ListSchool: FC<AbstractEmptyInterface> = (props: any) => {
       schoolStore.getAllSchool();
     }
   };
-  console.log("schoolStore....", toJS(schoolStore.allSchool));
+
   const createNew = () => {
     schoolStore.setSelectedSchool(null);
     schoolStore.allSchool = [];
@@ -104,7 +104,6 @@ const ListSchool: FC<AbstractEmptyInterface> = (props: any) => {
   };
 
   const onRowSelected = (dataSelected: any) => {
-    console.log("dataSelected....", dataSelected);
     
     schoolStore.setSelectedSchool(dataSelected);
     schoolStore.allSchool = [];

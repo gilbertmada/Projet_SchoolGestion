@@ -120,7 +120,7 @@ const ListUser: FC<AbstractEmptyInterface> = (props: any) => {
       userStore.getAllUser();
     }
   };
-  console.log("allUser....", list);
+
 
   const createNew = () => {
     userStore.setSelectedUser(null);

@@ -6,16 +6,12 @@ export const validationData = (store: any, NoteJ: any, NoteCompo: any, CoefJ: an
   const errors: string[] = [];
 
 
-  console.log("CoefJ//", CoefJ);
-  console.log("CoefCompo//", CoefCompo);
-  console.log("NoteJ//", NoteJ);
-  console.log("NoteCompo//", NoteCompo);
   if (!store.stud?.matriculNumber) {
     errors.push("L'information d'élève est vide");
   }
 
   if (NoteJ.length < 9 && CoefJ.length > 0) {
-    console.log("CoefJ//", CoefJ);
+ 
     errors.push("Les coefficients des notes journalières sont obligatoires");
 
   }
