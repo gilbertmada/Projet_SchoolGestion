@@ -1,5 +1,5 @@
 {
-    "homepage": "https://gilbertmada.github.io/Projet_SchoolGestion",
+    "homepage": "https://gilbertmada.github.io/Gestion_Ecole/",
     "name": "admin-school",
     "version": "0.1.0",
     "license": "UNLICENSED",
@@ -49,7 +49,6 @@
         "mobx": "^6.1.7",
         "mobx-react": "^7.1.0",
         "moment": "^2.29.1",
-        "node-sass": "^9.0.0",
         "prop-types": "^15.7.2",
         "react": "^17.0.1",
         "react-apexcharts": "^1.3.9",
@@ -135,8 +134,7 @@
         "husky": ">=4",
         "lint-staged": "^10.5.3",
         "prettier": "^2.2.1",
-        "react-app-rewired": "^2.1.8",
-        "sass": "^1.32.0"
+        "react-app-rewired": "^2.1.8"
     },
     "husky": {
         "hooks": {

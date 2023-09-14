@@ -263,19 +263,6 @@ const CreateSchool: FC<AbstractEmptyInterface> = (props: any) => {
 
 
       <form onSubmit={onSubmit}>
-        {/* <div className={classes.itemClass}>
-          <Grid item={true} md={4}>
-            <TextField
-              label="Nom d'ecole"
-              required={true}
-              name="schoolName"
-              fullWidth={true}
-              value={ecole?.schoolName || ""}
-              onChange={handleChange}
-
-            />
-          </Grid>
-        </div> */}
 
         <Grid item={true} sm={12} xs={12}>
           <div className={classes.title}>UTILISATEUR </div>
